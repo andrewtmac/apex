@@ -5,12 +5,18 @@ Listens for incoming Telegram messages. Only two authorized users (Andrew, Scott
 can send commands. The ONLY accepted command type is "UI ..." — any message
 prefixed with "UI" triggers a Claude-powered dashboard HTML modification.
 
+Command format:
+  UI                              — show help / available targets
+  UI APEX <change>                — modify APEX main dashboard
+  UI EPIK <change>                — modify epik-trade main dashboard (index)
+  UI EPIK <page> <change>         — modify specific epik-trade page
+                                     pages: overview, investor, proposals, leadership
+
 All other message types are rejected with a polite explanation.
 """
 
 import asyncio
 import os
-from datetime import datetime, timezone
 from pathlib import Path
 
 import httpx
@@ -18,10 +24,60 @@ import structlog
 
 logger = structlog.get_logger()
 
-DASHBOARD_HTML = Path(__file__).parent / "dashboard_v2.html"
+# --- Dashboard registry ---
+# Each entry: (display_name, description, file_path)
+# Relative paths resolve from the apex/scripts directory.
 
-# Authorized user chat IDs
-AUTHORIZED_USERS: dict[str, str] = {}  # populated in __init__
+APEX_DIR = Path(__file__).parent.parent  # /CODING/apex
+EPIK_DIR = Path("/Users/odin-mini/CODING/epik-trade/polymarket-autobot")
+
+DASHBOARDS: dict[str, dict[str, dict]] = {
+    "APEX": {
+        "main": {
+            "name": "APEX Dashboard",
+            "path": APEX_DIR / "scripts" / "dashboard_v2.html",
+            "url_hint": "http://100.64.161.91:8080",
+        },
+    },
+    "EPIK": {
+        "main": {
+            "name": "Epik Trade Dashboard",
+            "path": EPIK_DIR / "public" / "index.html",
+            "url_hint": "http://100.64.161.91:3001",
+        },
+        "overview": {
+            "name": "Epik Overview",
+            "path": EPIK_DIR / "public" / "overview.html",
+            "url_hint": "http://100.64.161.91:3001/overview",
+        },
+        "investor": {
+            "name": "Epik Investor View",
+            "path": EPIK_DIR / "public" / "investor.html",
+            "url_hint": "http://100.64.161.91:3001/investor",
+        },
+        "proposals": {
+            "name": "Epik Proposals",
+            "path": EPIK_DIR / "public" / "proposals.html",
+            "url_hint": "http://100.64.161.91:3001/proposals",
+        },
+        "leadership": {
+            "name": "Epik Leadership",
+            "path": EPIK_DIR / "public" / "leadership.html",
+            "url_hint": "http://100.64.161.91:3001/leadership",
+        },
+    },
+}
+
+# Aliases so users can type shorthand
+PAGE_ALIASES = {
+    "index": "main",
+    "home": "main",
+    "dash": "main",
+    "dashboard": "main",
+}
+
+# Authorized user chat IDs (populated from .env)
+AUTHORIZED_USERS: dict[str, str] = {}
 
 
 def _load_authorized() -> dict[str, str]:
@@ -33,6 +89,38 @@ def _load_authorized() -> dict[str, str]:
     if scott:
         users[scott] = "Scott"
     return users
+
+
+def _build_help() -> str:
+    lines = ["APEX UI Commander — Available targets:\n"]
+    for bot, pages in DASHBOARDS.items():
+        for page_key, info in pages.items():
+            label = f"  UI {bot}" if page_key == "main" else f"  UI {bot} {page_key}"
+            lines.append(f"{label}\n    {info['name']} ({info['url_hint']})")
+    lines.append('\nExamples:')
+    lines.append('  UI APEX change equity card color to blue')
+    lines.append('  UI EPIK overview add a P&L chart')
+    lines.append('  UI EPIK investor make the table sortable')
+    return "\n".join(lines)
+
+
+def _resolve_target(bot: str, page: str | None) -> tuple[bool, str, dict | None]:
+    """Resolve bot + page to a dashboard entry. Returns (ok, error_msg, entry)."""
+    bot = bot.upper()
+    if bot not in DASHBOARDS:
+        return False, f"Unknown bot '{bot}'. Available: {', '.join(DASHBOARDS.keys())}", None
+
+    pages = DASHBOARDS[bot]
+    if not page or page.lower() in ("main", "index", "home", "dash", "dashboard"):
+        page_key = "main"
+    else:
+        page_key = PAGE_ALIASES.get(page.lower(), page.lower())
+
+    if page_key not in pages:
+        avail = ", ".join(pages.keys())
+        return False, f"Unknown page '{page}' for {bot}. Available: {avail}", None
+
+    return True, "", pages[page_key]
 
 
 class TelegramCommander:
@@ -126,35 +214,72 @@ class TelegramCommander:
                 chat_id,
                 "Only UI changes are supported.\n\n"
                 'Prefix your message with "UI" to modify dashboards.\n'
-                "Example: UI change the equity card color to blue",
+                "Send UI help for available targets.",
             )
             return
 
-        # 3. Extract the UI request (everything after "UI")
-        ui_request = text[2:].strip()
-        if not ui_request:
-            await self._reply(
-                chat_id,
-                "Please include your UI change after the UI prefix.\n"
-                "Example: UI add a daily P&L row to the summary section",
-            )
+        # 3. Parse: UI [BOT] [PAGE] <change>
+        rest = text[2:].strip()
+        if not rest or rest.lower() == "help":
+            await self._reply(chat_id, _build_help())
             return
 
-        # 4. Process the UI change via Claude
-        await self._reply(chat_id, f"Processing UI change: {ui_request[:60]}...")
-        success, summary = await self._apply_ui_change(ui_request, sender_name)
+        tokens = rest.split(None, 2)  # max 3 parts
+        bot_name = tokens[0].upper() if tokens else ""
+
+        # Check if first token is a known bot name
+        if bot_name in DASHBOARDS:
+            page = tokens[1].lower() if len(tokens) >= 3 else None
+            change = tokens[2] if len(tokens) >= 3 else (tokens[1] if len(tokens) == 2 else "")
+            # Edge case: "UI APEX <change>" (no page, just bot + change)
+            if len(tokens) == 2:
+                page = None
+                change = tokens[1]
+        else:
+            # No bot specified — assume APEX for backward compat
+            bot_name = "APEX"
+            page = None
+            change = rest
+
+        # If change is empty after parsing, they just typed a bot name
+        if not change.strip():
+            await self._reply(chat_id, f"Please include your UI change for {bot_name}.\n\n" + _build_help())
+            return
+
+        # 4. Resolve target
+        ok, err, target = _resolve_target(bot_name, page)
+        if not ok or target is None:
+            await self._reply(chat_id, err)
+            return
+
+        # 5. Check file exists
+        target_path: Path = target["path"]
+        if not target_path.exists():
+            await self._reply(chat_id, f"Dashboard file not found: {target_path}\nIs the bot running?")
+            return
+
+        # 6. Process the UI change via Claude
+        label = f"{bot_name}" + (f" {page}" if page else "")
+        await self._reply(chat_id, f"Processing: {label} — {change[:60]}...")
+        success, summary = await self._apply_ui_change(target, change, sender_name)
 
         if success:
-            await self._reply(chat_id, f"✅ Dashboard updated!\n\n{summary}")
+            await self._reply(
+                chat_id,
+                f"✅ {target['name']} updated!\n\n{summary}\n\nView: {target['url_hint']}",
+            )
         else:
-            await self._reply(chat_id, f"❌ Failed to apply change:\n{summary}")
+            await self._reply(chat_id, f"❌ Failed to update {target['name']}:\n{summary}")
 
-    async def _apply_ui_change(self, request: str, requester: str) -> tuple[bool, str]:
+    async def _apply_ui_change(
+        self, target: dict, request: str, requester: str
+    ) -> tuple[bool, str]:
         """Send current HTML + request to Claude, get back modified HTML."""
+        target_path: Path = target["path"]
         try:
-            current_html = DASHBOARD_HTML.read_text()
+            current_html = target_path.read_text()
         except Exception as e:
-            return False, f"Could not read dashboard HTML: {e}"
+            return False, f"Could not read {target_path.name}: {e}"
 
         system_prompt = (
             "You are a dashboard UI editor. You receive the current HTML of a trading "
@@ -169,9 +294,10 @@ class TelegramCommander:
         )
 
         user_msg = (
+            f"Dashboard: {target['name']}\n"
             f"Requested by: {requester}\n"
             f"Change requested: {request}\n\n"
-            f"Current dashboard HTML:\n{current_html}"
+            f"Current HTML:\n{current_html}"
         )
 
         try:
@@ -195,7 +321,6 @@ class TelegramCommander:
                 return False, f"Anthropic API error: {resp.status_code} {resp.text[:200]}"
 
             data = resp.json()
-            # Extract text from response
             content_blocks = data.get("content", [])
             html_text = ""
             for block in content_blocks:
@@ -205,7 +330,6 @@ class TelegramCommander:
             # Strip markdown fences if present
             html_text = html_text.strip()
             if html_text.startswith("```"):
-                # Remove opening fence (possibly ```html)
                 first_newline = html_text.index("\n")
                 html_text = html_text[first_newline + 1:]
             if html_text.endswith("```"):
@@ -216,14 +340,15 @@ class TelegramCommander:
                 return False, "Claude did not return valid HTML. Aborting to protect dashboard."
 
             # Backup current version
-            backup = DASHBOARD_HTML.with_suffix(".html.bak")
+            backup = target_path.with_suffix(".html.bak")
             backup.write_text(current_html)
 
             # Write new version
-            DASHBOARD_HTML.write_text(html_text)
+            target_path.write_text(html_text)
 
             logger.info(
                 "commander.ui_updated",
+                dashboard=target["name"],
                 requester=requester,
                 request=request[:80],
                 size=len(html_text),
@@ -232,7 +357,7 @@ class TelegramCommander:
             usage = data.get("usage", {})
             tokens_in = usage.get("input_tokens", 0)
             tokens_out = usage.get("output_tokens", 0)
-            return True, f"Applied change ({tokens_in + tokens_out} tokens). Backup saved."
+            return True, f"Applied ({tokens_in + tokens_out} tokens). Backup saved."
 
         except Exception as e:
             return False, f"Error calling Claude: {e}"

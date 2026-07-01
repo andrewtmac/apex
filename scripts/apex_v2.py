@@ -1029,7 +1029,7 @@ class ApexV2Trader:
         print(f"  Strategies:  Weather + Crypto + Macro + Sports + Events")
         print(f"  Agents:      Scanner + Analyzer + Learner + Reporter")
         print(f"  Cycle:       every {self.CYCLE_SECONDS}s")
-        print(f"  Dashboard:   http://localhost:8080")
+        print(f"  Dashboard:   http://100.64.161.91:8080")
         print(f"  Telegram:    Hourly updates (Andrew + Scott)")
         print(f"  Commands:    UI changes via Telegram (Andrew & Scott)")
         print(f"  State:       {STATE_FILE}")
@@ -1041,7 +1041,7 @@ class ApexV2Trader:
             f"Paper trading with ${self.bankroll:,.0f}\n"
             f"Target: $1,000,000 in 365 days\n\n"
             f"Strategies: Weather, Crypto, Macro\n"
-            f"Dashboard: http://localhost:8080\n\n"
+            f"Dashboard: http://100.64.161.91:8080\n\n"
             f"Send 'UI <change>' to modify dashboards."
         )
 
