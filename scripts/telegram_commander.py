@@ -129,13 +129,13 @@ class TelegramCommander:
     def __init__(self):
         self.token = os.getenv("TELEGRAM_BOT_TOKEN", "")
         self.authorized = _load_authorized()
-        self.anthropic_key = os.getenv("ANTHROPIC_API_KEY", "")
+        self.mimo_key = os.getenv("MIMO_API_KEY", "")
         self._offset = 0
         self._running = False
 
     @property
     def configured(self) -> bool:
-        return bool(self.token and self.authorized and self.anthropic_key)
+        return bool(self.token and self.authorized and self.mimo_key)
 
     async def run(self):
         """Main polling loop — checks for new Telegram messages every 3s."""
@@ -273,7 +273,7 @@ class TelegramCommander:
     async def _apply_ui_change(
         self, target: dict, request: str, requester: str
     ) -> tuple[bool, str]:
-        """Send current HTML + request to Claude, get back modified HTML."""
+        """Send current HTML + request to MiMo, get back modified HTML."""
         target_path: Path = target["path"]
         try:
             current_html = target_path.read_text()
@@ -299,32 +299,40 @@ class TelegramCommander:
             f"Current HTML:\n{current_html}"
         )
 
+        mimo_key = os.getenv("MIMO_API_KEY", "")
+        mimo_base = os.getenv("MIMO_BASE_URL", "https://token-plan-sgp.xiaomimimo.com/v1")
+        mimo_model = os.getenv("MIMO_MODEL", "mimo-v2.5-pro")
+
+        if not mimo_key:
+            return False, "MIMO_API_KEY not set in .env"
+
         try:
-            async with httpx.AsyncClient(timeout=60) as client:
+            async with httpx.AsyncClient(timeout=90) as client:
                 resp = await client.post(
-                    "https://api.anthropic.com/v1/messages",
+                    f"{mimo_base}/chat/completions",
                     headers={
-                        "x-api-key": self.anthropic_key,
-                        "anthropic-version": "2023-06-01",
-                        "content-type": "application/json",
+                        "Authorization": f"Bearer {mimo_key}",
+                        "Content-Type": "application/json",
                     },
                     json={
-                        "model": "claude-sonnet-4-20250514",
-                        "max_tokens": 16000,
-                        "system": system_prompt,
-                        "messages": [{"role": "user", "content": user_msg}],
+                        "model": mimo_model,
+                        "reasoning_effort": "medium",
+                        "messages": [
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": user_msg},
+                        ],
                     },
                 )
 
             if resp.status_code != 200:
-                return False, f"Anthropic API error: {resp.status_code} {resp.text[:200]}"
+                return False, f"MiMo API error: {resp.status_code} {resp.text[:200]}"
 
             data = resp.json()
-            content_blocks = data.get("content", [])
-            html_text = ""
-            for block in content_blocks:
-                if block.get("type") == "text":
-                    html_text += block["text"]
+            choices = data.get("choices", [])
+            if not choices:
+                return False, "MiMo returned no choices"
+
+            html_text = choices[0].get("message", {}).get("content", "")
 
             # Strip markdown fences if present
             html_text = html_text.strip()
@@ -336,7 +344,7 @@ class TelegramCommander:
 
             # Validate it looks like HTML
             if "<html" not in html_text.lower() and "<!doctype" not in html_text.lower():
-                return False, "Claude did not return valid HTML. Aborting to protect dashboard."
+                return False, "MiMo did not return valid HTML. Aborting to protect dashboard."
 
             # Backup current version
             backup = target_path.with_suffix(".html.bak")
@@ -354,12 +362,11 @@ class TelegramCommander:
             )
 
             usage = data.get("usage", {})
-            tokens_in = usage.get("input_tokens", 0)
-            tokens_out = usage.get("output_tokens", 0)
-            return True, f"Applied ({tokens_in + tokens_out} tokens). Backup saved."
+            total_tokens = usage.get("total_tokens", 0)
+            return True, f"Applied ({total_tokens} tokens). Backup saved."
 
         except Exception as e:
-            return False, f"Error calling Claude: {e}"
+            return False, f"Error calling MiMo: {e}"
 
     async def _reply(self, chat_id: str, text: str):
         """Send a reply to a specific chat."""
