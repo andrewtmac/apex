@@ -258,9 +258,8 @@ class TelegramCommander:
             await self._reply(chat_id, f"Dashboard file not found: {target_path}\nIs the bot running?")
             return
 
-        # 6. Process the UI change via Claude
-        label = f"{bot_name}" + (f" {page}" if page else "")
-        await self._reply(chat_id, f"Processing: {label} — {change[:60]}...")
+        # 6. Immediate ack, then process
+        await self._reply(chat_id, "Received, working on it")
         success, summary = await self._apply_ui_change(target, change, sender_name)
 
         if success:
