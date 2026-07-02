@@ -355,6 +355,8 @@ class ApexV2Trader:
                             "category": category,
                             "series": series,
                             "current_price": price,
+                            "yes_bid": bid,
+                            "yes_ask": ask,
                             "volume_24h": vol_24h,
                             "spread": spread,
                             "end_date": m.get("close_time") or m.get("expiration_time", ""),
@@ -366,6 +368,44 @@ class ApexV2Trader:
 
         logger.debug("v2.kalshi_scan", n_markets=len(active))
         return active
+
+    async def _refresh_signal_price(self, signal: dict) -> None:
+        """Re-fetch the live book just before entry (2026-07-02): fills were
+        using the scan-start snapshot, 10-30s stale — fatal when the alpha
+        half-life is minutes. Fill at the EXECUTABLE side (BUY pays the ask,
+        SELL hits the bid); mark stale if the market ran away >5c."""
+        market_id = signal.get("market_id")
+        if not market_id:
+            return
+        try:
+            async with httpx.AsyncClient(timeout=6) as client:
+                resp = await client.get(
+                    f"https://api.elections.kalshi.com/trade-api/v2/markets/{market_id}"
+                )
+                if resp.status_code != 200:
+                    return
+                m = resp.json().get("market", {})
+                bid = float(m.get("yes_bid_dollars", 0) or 0)
+                ask = float(m.get("yes_ask_dollars", 0) or 0)
+                if signal.get("direction") == "BUY" and ask > 0:
+                    live = ask
+                elif signal.get("direction") == "SELL" and bid > 0:
+                    live = bid
+                elif bid > 0 and ask > 0:
+                    live = (bid + ask) / 2
+                else:
+                    return
+                old = signal.get("market_price", 0)
+                # Adverse move: BUY pays more / SELL receives less than modeled
+                adverse = (live - old) if signal.get("direction") == "BUY" else (old - live)
+                if adverse > 0.05:
+                    signal["_stale_price"] = True
+                    logger.info("v2.stale_signal_skip", market_id=market_id,
+                                scan_price=old, live_price=live)
+                    return
+                signal["market_price"] = live
+        except Exception:
+            return  # fall back to the scan price
 
     # ------------------------------------------------------------------
     # Trade execution
@@ -451,11 +491,25 @@ class ApexV2Trader:
         # Don't group them — ">5 hurricanes" and ">8 hurricanes" are
         # not conflicting. Only block if same exact market_id.
         if strategy == "events":
+            same_series_same_dir = 0
             for pos in self.positions.values():
                 if pos.status != "OPEN":
                     continue
                 if pos.market_id == market_id:
                     return None  # Same exact market, skip
+                if (pos.market_id.split("-")[0] == parts[0]
+                        and pos.direction == signal.get("direction", "BUY")):
+                    same_series_same_dir += 1
+            # Max 2 same-direction buckets per event series (2026-07-02): the
+            # bot once stacked 10 near-exclusive hurricane buckets in one shot,
+            # guaranteeing multiple losers.
+            if same_series_same_dir >= 2:
+                logger.info("v2.bucket_stack_skip", market_id=market_id,
+                            open_same_dir=same_series_same_dir)
+                return None
+            for pos in self.positions.values():
+                if pos.status != "OPEN":
+                    continue
                 # Opposite directions on same series = conflict
                 if pos.market_id.split("-")[0] == parts[0]:
                     if pos.direction != signal.get("direction", "BUY"):
@@ -698,10 +752,24 @@ class ApexV2Trader:
     # Mark-to-market & exits
     # ------------------------------------------------------------------
 
-    def mark_to_market(self, price_map: dict[str, float]):
+    def mark_to_market(self, price_map: dict):
+        """price_map values: float (legacy) or (last, bid, ask) tuples —
+        executable-side marks: SELL exits at the ask, BUY at the bid."""
         for market_id, pos in self.positions.items():
             if market_id in price_map:
-                pos.current_price = price_map[market_id]
+                v = price_map[market_id]
+                if isinstance(v, tuple):
+                    last, bid, ask = v
+                    if pos.direction == "SELL" and ask > 0:
+                        pos.current_price = ask
+                    elif pos.direction == "BUY" and bid > 0:
+                        pos.current_price = bid
+                    elif bid > 0 and ask > 0:
+                        pos.current_price = (bid + ask) / 2
+                    elif last > 0:
+                        pos.current_price = last
+                else:
+                    pos.current_price = v
 
             if pos.direction == "BUY":
                 pos.unrealized_pnl = round(
@@ -1164,7 +1232,10 @@ class ApexV2Trader:
                 markets = await self.scan_kalshi_markets()
 
                 # 2. Mark-to-market
-                price_map = {m["market_id"]: m["current_price"] for m in markets}
+                price_map = {
+                    m["market_id"]: (m["current_price"], m.get("yes_bid", 0), m.get("yes_ask", 0))
+                    for m in markets
+                }
                 self.mark_to_market(price_map)
                 self.breaker.update(equity=self.equity)
 
@@ -1297,6 +1368,9 @@ class ApexV2Trader:
 
                 new_trades = 0
                 for signal in filtered_signals:
+                    await self._refresh_signal_price(signal)
+                    if signal.get("_stale_price"):
+                        continue
                     pos = self.execute_trade(signal)
                     if pos is not None:
                         new_trades += 1
