@@ -52,10 +52,13 @@ def process_request(req_path: Path, tg_token: str) -> dict:
 
     current_html = target_path.read_text()
 
-    # Strip <script> for large files
+    # Strip <script> for large files — use the LAST <script> tag
+    # (preserves small inline scripts like theme toggle)
     html_for_llm = current_html
     script_content = ""
-    script_tag_start = current_html.lower().find("<script")
+    # Find the last <script tag (biggest script block)
+    lower = current_html.lower()
+    script_tag_start = lower.rfind("<script")
     script_tag_end = current_html.rfind("</script>")
     if script_tag_start > 0 and script_tag_end > script_tag_start:
         tag_close = current_html.index(">", script_tag_start) + 1

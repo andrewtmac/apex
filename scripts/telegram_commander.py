@@ -339,9 +339,11 @@ class TelegramCommander:
 
         # For large files, strip the <script> block to reduce token load.
         # MiMo only needs CSS + HTML structure for UI changes.
+        # Use the LAST <script> tag to preserve small inline scripts (theme toggle etc).
         html_for_llm = current_html
         script_content = ""
-        script_tag_start = current_html.lower().find("<script")
+        lower = current_html.lower()
+        script_tag_start = lower.rfind("<script")
         script_tag_end = current_html.rfind("</script>")
         if script_tag_start > 0 and script_tag_end > script_tag_start:
             # Find the closing > of the <script> tag
