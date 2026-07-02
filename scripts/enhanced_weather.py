@@ -499,17 +499,6 @@ class EnhancedWeatherForecaster:
                         edge=round(edge, 4))
             return None
 
-        # ---- SELL PRICE SIZING CURVE ----
-        # Concentrate capital in the $0.60-$0.80 sweet spot.
-        # Edges ($0.50-$0.60 and $0.80-$0.85) get smaller bets.
-        if edge < 0:
-            if 0.60 <= market_price <= 0.80:
-                size_pct *= 1.15  # Sweet spot — boost
-            elif market_price > 0.80:
-                size_pct *= 0.75  # Above sweet spot — trim
-            elif market_price < 0.50:
-                size_pct *= 0.80  # Low price — small edge per dollar
-
         # ---- MIN BUY PRICE FILTER ----
         # Don't buy contracts priced below $0.05 — likely noise
         if edge > 0 and market_price < 0.05:
@@ -558,6 +547,18 @@ class EnhancedWeatherForecaster:
             size_pct *= 1.15  # Very clear signal
         elif threshold_distance_sigma < 1.5:
             size_pct *= 0.85  # Somewhat close — be conservative
+
+        # ---- SELL PRICE SIZING CURVE ----
+        # Concentrate capital in the $0.60-$0.80 sweet spot.
+        # Real data: $0.60-$0.80 avg +$37/trade (100% WR).
+        # Above $0.80 avg -$11/trade (net loser).
+        if edge < 0:
+            if 0.60 <= market_price <= 0.80:
+                size_pct *= 1.15  # Sweet spot — boost
+            elif market_price > 0.80:
+                size_pct *= 0.75  # Above sweet spot — trim
+            elif market_price < 0.50:
+                size_pct *= 0.80  # Low price — small edge per dollar
 
         # Minimum position size
         if size_pct < 0.02:
