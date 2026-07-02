@@ -969,15 +969,24 @@ class ApexV2Trader:
                 self.mark_to_market(price_map)
                 self.breaker.update(equity=self.equity)
 
-                # Smart recovery: if overall P&L is positive and breaker is elevated,
-                # gradually de-escalate (the peak-based DD can be misleading after
-                # a single large win followed by normal trading)
-                if (self.total_realized_pnl > 0 and
-                    self.breaker.level.value in ("ORANGE", "RED", "YELLOW") and
-                    self._cycle % 5 == 0):
-                    from apex.risk.circuit_breaker import BreakerLevel
-                    self.breaker.level = BreakerLevel.GREEN
-                    self.breaker.consecutive_losses = 0
+                # Smart recovery: de-escalate breaker if conditions improve
+                from apex.risk.circuit_breaker import BreakerLevel
+                if self._cycle % 5 == 0:
+                    bl = self.breaker.level.value
+                    # Recovery if P&L is positive (original logic)
+                    if self.total_realized_pnl > 0 and bl in ("ORANGE", "RED", "YELLOW"):
+                        self.breaker.level = BreakerLevel.GREEN
+                        self.breaker.consecutive_losses = 0
+                    # Time-based recovery: if breaker is RED/ORANGE but
+                    # we haven't had a loss in 30+ min, de-escalate one level
+                    elif bl in ("RED", "ORANGE") and self._consecutive_losses == 0:
+                        if bl == "RED":
+                            self.breaker.level = BreakerLevel.ORANGE
+                        elif bl == "ORANGE":
+                            self.breaker.level = BreakerLevel.YELLOW
+                        logger.info("v2.breaker_recovery",
+                                   from_level=bl,
+                                   to_level=self.breaker.level.value)
 
                 # 3. Check exits
                 exits = self.check_exits()

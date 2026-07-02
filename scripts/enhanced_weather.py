@@ -487,6 +487,24 @@ class EnhancedWeatherForecaster:
         if abs(edge) < min_edge:
             return None
 
+        # ---- MAX SELL PRICE FILTER ----
+        # Don't sell contracts priced above $0.95. The risk/reward is
+        # catastrophic: selling at $0.99 risks $1.00 to gain $0.01.
+        # Even with 95% confidence, a 5% miss wipes out 95 wins.
+        # Denver and Chicago each lost $93-$126 from this pattern.
+        MAX_SELL_PRICE = 0.95
+        if edge < 0 and market_price > MAX_SELL_PRICE:
+            logger.debug("weather.max_sell_price_skip",
+                        market_price=market_price,
+                        max=MAX_SELL_PRICE,
+                        edge=round(edge, 4))
+            return None
+
+        # ---- MIN BUY PRICE FILTER ----
+        # Don't buy contracts priced below $0.05 — likely noise
+        if edge > 0 and market_price < 0.05:
+            return None
+
         # ---- EDGE-SCALED POSITION SIZING ----
         # Bigger bets on bigger edges. The first hour showed $22 avg win
         # vs $27 avg loss. To fix this, we size UP on high-edge trades
