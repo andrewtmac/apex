@@ -16,7 +16,10 @@ All other message types are rejected with a polite explanation.
 """
 
 import asyncio
+import json
 import os
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import httpx
@@ -258,17 +261,30 @@ class TelegramCommander:
             await self._reply(chat_id, f"Dashboard file not found: {target_path}\nIs the bot running?")
             return
 
-        # 6. Immediate ack, then process
+        # 6. Immediate ack, then queue for watcher
         await self._reply(chat_id, "Received, working on it")
-        success, summary = await self._apply_ui_change(target, change, sender_name)
+        await self._queue_ui_request(target, change, sender_name, chat_id)
 
-        if success:
-            await self._reply(
-                chat_id,
-                f"✅ {target['name']} updated!\n\n{summary}\n\nView: {target['url_hint']}",
-            )
-        else:
-            await self._reply(chat_id, f"❌ Failed to update {target['name']}:\n{summary}")
+    async def _queue_ui_request(
+        self, target: dict, request: str, requester: str, chat_id: str
+    ):
+        """Write UI request to queue file for the watcher to process."""
+        queue_dir = Path(__file__).parent.parent / "data" / "ui_requests" / "pending"
+        queue_dir.mkdir(parents=True, exist_ok=True)
+
+        ts = int(time.time() * 1000)
+        req_file = queue_dir / f"{ts}.json"
+        req_file.write_text(json.dumps({
+            "target_path": str(target["path"]),
+            "dashboard_name": target["name"],
+            "url_hint": target.get("url_hint", ""),
+            "request": request,
+            "requester": requester,
+            "chat_id": chat_id,
+            "queued_at": datetime.now(timezone.utc).isoformat(),
+        }, indent=2))
+
+        logger.info("commander.queued", dashboard=target["name"], file=req_file.name)
 
     async def _apply_ui_change(
         self, target: dict, request: str, requester: str
@@ -279,6 +295,22 @@ class TelegramCommander:
             current_html = target_path.read_text()
         except Exception as e:
             return False, f"Could not read {target_path.name}: {e}"
+
+        # For large files, strip the <script> block to reduce token load.
+        # MiMo only needs CSS + HTML structure for UI changes.
+        html_for_llm = current_html
+        script_content = ""
+        script_tag_start = current_html.lower().find("<script")
+        script_tag_end = current_html.rfind("</script>")
+        if script_tag_start > 0 and script_tag_end > script_tag_start:
+            # Find the closing > of the <script> tag
+            tag_close = current_html.index(">", script_tag_start) + 1
+            script_content = current_html[script_tag_start:script_tag_end + len("</script>")]
+            html_for_llm = (
+                current_html[:tag_close]
+                + "\n<!-- [SCRIPT SECTION REMOVED FOR SIZE — will be restored after edit] -->\n"
+                + current_html[script_tag_end + len("</script>"):]
+            )
 
         system_prompt = (
             "You are a dashboard UI editor. You receive the current HTML of a trading "
@@ -296,7 +328,7 @@ class TelegramCommander:
             f"Dashboard: {target['name']}\n"
             f"Requested by: {requester}\n"
             f"Change requested: {request}\n\n"
-            f"Current HTML:\n{current_html}"
+            f"Current HTML:\n{html_for_llm}"
         )
 
         mimo_key = os.getenv("MIMO_API_KEY", "")
@@ -306,8 +338,16 @@ class TelegramCommander:
         if not mimo_key:
             return False, "MIMO_API_KEY not set in .env"
 
+        timeout_s = 180 if len(current_html) > 20000 else 90
+
         try:
-            async with httpx.AsyncClient(timeout=90) as client:
+            logger.info(
+                "commander.mimo_call",
+                dashboard=target["name"],
+                html_chars=len(html_for_llm),
+                timeout=timeout_s,
+            )
+            async with httpx.AsyncClient(timeout=timeout_s) as client:
                 resp = await client.post(
                     f"{mimo_base}/chat/completions",
                     headers={
@@ -325,7 +365,7 @@ class TelegramCommander:
                 )
 
             if resp.status_code != 200:
-                return False, f"MiMo API error: {resp.status_code} {resp.text[:200]}"
+                return False, f"MiMo API error {resp.status_code}: {resp.text[:300]}"
 
             data = resp.json()
             choices = data.get("choices", [])
@@ -346,6 +386,17 @@ class TelegramCommander:
             if "<html" not in html_text.lower() and "<!doctype" not in html_text.lower():
                 return False, "MiMo did not return valid HTML. Aborting to protect dashboard."
 
+            # Restore the original script section if it was stripped
+            if script_content:
+                marker = "<!-- [SCRIPT SECTION REMOVED FOR SIZE — will be restored after edit] -->"
+                if marker in html_text:
+                    html_text = html_text.replace(marker, script_content)
+                else:
+                    # MiMo may have rewritten the marker — try to restore before </body>
+                    body_close = html_text.lower().rfind("</body>")
+                    if body_close > 0:
+                        html_text = html_text[:body_close] + script_content + "\n" + html_text[body_close:]
+
             # Backup current version
             backup = target_path.with_suffix(".html.bak")
             backup.write_text(current_html)
@@ -365,8 +416,12 @@ class TelegramCommander:
             total_tokens = usage.get("total_tokens", 0)
             return True, f"Applied ({total_tokens} tokens). Backup saved."
 
+        except httpx.ReadTimeout:
+            return False, f"MiMo timed out after {timeout_s}s. File may be too large."
+        except httpx.ConnectError as e:
+            return False, f"Cannot reach MiMo API: {e}"
         except Exception as e:
-            return False, f"Error calling MiMo: {e}"
+            return False, f"Error ({type(e).__name__}): {e}"
 
     async def _reply(self, chat_id: str, text: str):
         """Send a reply to a specific chat."""
