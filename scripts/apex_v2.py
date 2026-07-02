@@ -134,7 +134,7 @@ class ApexV2Trader:
     MAX_DAILY_TRADES = 20
     COOLDOWN_AFTER_CONSEC_LOSSES = 3
     COOLDOWN_SECONDS = 7200  # 2 hours
-    POSITION_POLL_SECONDS = 10  # Poll open position prices every 10s (Kalshi basic: 10 req/s)
+    POSITION_POLL_SECONDS = 1  # Poll open position prices every 1s (Kalshi basic: 10 req/s)
 
     def __init__(self, bankroll: float = 1000.0):
         self.initial_bankroll = bankroll
@@ -729,13 +729,14 @@ class ApexV2Trader:
 
             try:
                 async with _httpx.AsyncClient(timeout=10) as client:
-                    for market_id, pos in list(self.positions.items()):
+                    # Fetch all open positions concurrently (batches within rate limit)
+                    async def _poll_one(market_id: str, pos):
                         try:
                             resp = await client.get(
                                 f"https://api.elections.kalshi.com/trade-api/v2/markets/{market_id}",
                             )
                             if resp.status_code != 200:
-                                continue
+                                return None
 
                             data = resp.json()
                             market = data.get("market", data)
@@ -764,23 +765,35 @@ class ApexV2Trader:
                                 if roi > pos.peak_pnl_pct:
                                     pos.peak_pnl_pct = roi
 
-                            # Check for resolution on every poll
+                            # Check for resolution
                             status = (market.get("status") or "").lower()
                             if status in ("settled", "finalized", "closed"):
                                 result = (market.get("result") or "").lower()
                                 if result in ("yes", "y"):
-                                    outcome = "YES"
+                                    return (market_id, "YES")
                                 elif result in ("no", "n"):
-                                    outcome = "NO"
-                                else:
-                                    continue
-                                self._resolve_position(pos, outcome)
-                                if market_id in self.positions:
-                                    del self.positions[market_id]
-
+                                    return (market_id, "NO")
                         except Exception as e:
                             logger.debug("v2.position_poll_error",
                                         market=market_id, error=str(e))
+                        return None
+
+                    # Fire all requests concurrently
+                    snapshot = list(self.positions.items())
+                    results = await asyncio.gather(
+                        *[_poll_one(mid, pos) for mid, pos in snapshot],
+                        return_exceptions=True,
+                    )
+
+                    # Handle resolutions
+                    for r in results:
+                        if isinstance(r, tuple):
+                            mid, outcome = r
+                            pos = self.positions.get(mid)
+                            if pos:
+                                self._resolve_position(pos, outcome)
+                                if mid in self.positions:
+                                    del self.positions[mid]
 
                 # Check exits immediately after price update
                 exits = self.check_exits()
