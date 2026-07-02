@@ -27,6 +27,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from dotenv import load_dotenv
 
 from trade_narrator import narrate_close, narrate_entry_thesis, narrate_improvement
+from tt_trader import get_tt_book
 
 load_dotenv(Path(__file__).parent.parent / ".env")
 
@@ -1567,9 +1568,10 @@ class ApexV2Trader:
             @app.get("/api/overview")
             async def api_overview():
                 now = datetime.now(timezone.utc)
-                eq = trader.equity
-                deployed = trader.deployed_capital
-                bankroll = trader.bankroll
+                tt = get_tt_book()
+                eq = trader.equity + tt.equity
+                deployed = trader.deployed_capital + tt.deployed
+                bankroll = trader.bankroll + tt.bankroll
                 total = deployed + bankroll if (deployed + bankroll) > 0 else 1
 
                 # Period P&L
@@ -1594,12 +1596,13 @@ class ApexV2Trader:
                     "bankroll": round(bankroll, 2),
                     "deployed": round(deployed, 2),
                     "initial_bankroll": trader.initial_bankroll,
-                    "realized_pnl": round(trader.total_realized_pnl, 2),
-                    "unrealized_pnl": round(trader.total_unrealized_pnl, 2),
-                    "trades_executed": trader.trades_executed,
-                    "open_positions": len(trader.positions),
-                    "wins": trader.wins,
-                    "losses": trader.losses,
+                    "realized_pnl": round(trader.total_realized_pnl + tt.total_realized_pnl, 2),
+                    "unrealized_pnl": round(trader.total_unrealized_pnl
+                                            + sum(p.unrealized_pnl for p in tt.positions.values()), 2),
+                    "trades_executed": trader.trades_executed + tt.wins + tt.losses,
+                    "open_positions": len(trader.positions) + len(tt.positions),
+                    "wins": trader.wins + tt.wins,
+                    "losses": trader.losses + tt.losses,
                     "win_rate": round(trader.win_rate, 4),
                     "breaker": trader.breaker.level.value,
                     "drawdown_pct": round(trader.breaker.drawdown_pct, 2),
@@ -1614,7 +1617,8 @@ class ApexV2Trader:
             async def api_closed_full(hours: int = Query(default=168)):
                 cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
                 result = []
-                for t in trader.closed_trades:
+                all_closed = list(trader.closed_trades) + list(get_tt_book().closed_trades)
+                for t in all_closed:
                     closed_at = t.get("exit_time", "")
                     if closed_at and closed_at < cutoff:
                         continue
@@ -1693,6 +1697,30 @@ class ApexV2Trader:
                         "peak_pnl_pct": pos.peak_pnl_pct,
                         "mark_fresh": True,
                     })
+                tt = get_tt_book()
+                for pos in tt.positions.values():
+                    roi = pos.unrealized_pnl / pos.cost_basis if pos.cost_basis > 0 else 0
+                    result.append({
+                        "position_id": pos.position_id,
+                        "market_id": pos.symbol,
+                        "question": f"[TT] {pos.symbol} {pos.asset_class} momentum long",
+                        "direction": "BUY",
+                        "strategy": f"tt_{pos.asset_class}_momentum",
+                        "category": "crypto" if pos.asset_class == "crypto" else "finance",
+                        "entry_price": pos.entry_price,
+                        "current_price": pos.current_price,
+                        "cost_basis": pos.cost_basis,
+                        "shares": pos.shares,
+                        "unrealized_pnl": pos.unrealized_pnl,
+                        "edge_at_entry": pos.edge_at_entry,
+                        "entry_time": pos.entry_time,
+                        "expires_at": None,
+                        "roi": round(roi, 4),
+                        "stop_loss": round((pos.stop_price - pos.entry_price) / pos.entry_price, 4),
+                        "take_profit": round((pos.target_price - pos.entry_price) / pos.entry_price, 4),
+                        "peak_pnl_pct": pos.peak_pnl_pct,
+                        "mark_fresh": True,
+                    })
                 return result
 
             # ---- /api/category-breakdown-timed ----
@@ -1705,11 +1733,15 @@ class ApexV2Trader:
                                   "trades": 0, "openPositions": 0, "deployed": 0,
                                   "winRate": 0}
 
-                for t in trader.closed_trades:
+                for t in list(trader.closed_trades) + list(get_tt_book().closed_trades):
                     closed_at = t.get("exit_time", "")
                     if closed_at and closed_at < cutoff:
                         continue
-                    cat = _category_for_strategy(t.get("strategy", ""))
+                    strat = t.get("strategy", "")
+                    if strat.startswith("tt_"):
+                        cat = "crypto" if "crypto" in strat else "finance"
+                    else:
+                        cat = _category_for_strategy(strat)
                     if cat not in cats:
                         cat = "other"
                     c = cats[cat]
@@ -1724,6 +1756,10 @@ class ApexV2Trader:
                     cat = _category_for_strategy(pos.strategy)
                     if cat not in cats:
                         cat = "other"
+                    cats[cat]["openPositions"] += 1
+                    cats[cat]["deployed"] += pos.cost_basis
+                for pos in get_tt_book().positions.values():
+                    cat = "crypto" if pos.asset_class == "crypto" else "finance"
                     cats[cat]["openPositions"] += 1
                     cats[cat]["deployed"] += pos.cost_basis
 
@@ -1756,6 +1792,16 @@ class ApexV2Trader:
                         "status": status,
                         "signals10m": trader.get_signal_count(cat),
                     }
+                # TastyTrade book: stocks/bonds -> finance, crypto stays crypto
+                tt = get_tt_book()
+                tt_active = len(tt.positions) > 0 or (tt.wins + tt.losses) > 0
+                if tt_active or True:  # book runs continuously once started
+                    if result.get("finance", {}).get("status") != "LIVE":
+                        result["finance"] = {"status": "LIVE",
+                                             "signals10m": result.get("finance", {}).get("signals10m", 0)}
+                    if result.get("crypto", {}).get("status") != "LIVE":
+                        result["crypto"] = {"status": "LIVE",
+                                            "signals10m": result.get("crypto", {}).get("signals10m", 0)}
                 return result
 
             # ---- /api/strategy-breakdown-timed ----
@@ -1838,8 +1884,8 @@ class ApexV2Trader:
                             },
                         }
 
-                # Search closed trades
-                for t in trader.closed_trades:
+                # Search closed trades (both books)
+                for t in list(trader.closed_trades) + list(get_tt_book().closed_trades):
                     if t.get("position_id") == trade_id:
                         # v3 flywheel: on ?narrate=1, generate the on-demand
                         # narratives once and cache them on the trade record
@@ -1964,6 +2010,11 @@ class ApexV2Trader:
             f"Send 'UI <change>' to modify dashboards."
         )
 
+        # TastyTrade paper book (stocks/bonds/crypto) — separate position
+        # model, same process/dashboard. Narration reuses the flywheel.
+        tt_book = get_tt_book()
+        tt_book._narrate = self._spawn_close_narration
+
         try:
             await asyncio.gather(
                 self.trading_loop(),
@@ -1972,6 +2023,7 @@ class ApexV2Trader:
                 self.reporting_loop(),
                 self.learning_loop(),
                 self.commander.run(),
+                tt_book.run_loop(),
             )
         except asyncio.CancelledError:
             logger.info("v2.shutdown")

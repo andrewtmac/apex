@@ -52,3 +52,4 @@ logs/*.pid
 data/
 paper_state.json
 paper_state*.json*
+tt_state_v2.json
