@@ -399,27 +399,39 @@ h1,h2,h3,h4,h5 { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-w
   <h2 class="section-title"><span class="icon">💡</span> What's Worth Discussing</h2>
   <div id="discussionGrid" class="discussion-grid"></div>
 
-  <!-- SECTION 4: Right Now + Recently Closed -->
-  <div class="two-col">
-    <div class="col-card">
-      <h3>🔴 Right Now</h3>
-      <div id="rightNowContent">
-        <div class="skeleton skeleton-text" style="width:80%"></div>
-        <div class="skeleton skeleton-text" style="width:60%"></div>
-        <div class="skeleton skeleton-text" style="width:70%"></div>
-      </div>
-    </div>
-    <div class="col-card">
-      <h3>📋 Recently Closed</h3>
-      <div id="recentClosedContent">
-        <div class="skeleton skeleton-text" style="width:80%"></div>
-        <div class="skeleton skeleton-text" style="width:60%"></div>
-        <div class="skeleton skeleton-text" style="width:70%"></div>
-      </div>
+  <!-- SECTION 4: Right Now -->
+  <div class="card" style="margin-bottom:24px;">
+    <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:14px;">🔴 Right Now</h3>
+    <div id="rightNowContent">
+      <div class="skeleton skeleton-text" style="width:80%"></div>
+      <div class="skeleton skeleton-text" style="width:60%"></div>
     </div>
   </div>
 
-  <!-- SECTION 5: Open Positions -->
+  <!-- SECTION 5: Recently Closed Trades -->
+  <h2 class="section-title"><span class="icon">📋</span> Recently Closed <span id="closedCount" style="font-size:0.75rem;color:var(--text-dim);font-weight:400;margin-left:auto;"></span></h2>
+  <div class="positions-table-wrap">
+    <table class="positions-table" id="closedTable">
+      <thead>
+        <tr>
+          <th>Market</th>
+          <th>Dir</th>
+          <th>Strategy</th>
+          <th data-sort="entry_price">Entry <span class="sort-arrow"></span></th>
+          <th data-sort="exit_price">Exit <span class="sort-arrow"></span></th>
+          <th data-sort="pnl">P&L <span class="sort-arrow"></span></th>
+          <th data-sort="roi">ROI <span class="sort-arrow"></span></th>
+          <th>Hold</th>
+          <th>Closed</th>
+        </tr>
+      </thead>
+      <tbody id="closedBody">
+        <tr><td colspan="9" class="empty-state">Loading closed trades...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 6: Open Positions -->
   <h2 class="section-title"><span class="icon">📊</span> Open Positions <span style="font-size:0.75rem;color:var(--text-dim);font-weight:400;margin-left:auto;">Live · 5s refresh</span></h2>
   <div class="positions-table-wrap">
     <table class="positions-table" id="positionsTable">
@@ -513,6 +525,8 @@ const state = {
   posSortKey: 'unrealized_pnl',
   posSortDir: 'desc',
   stratSortKey: 'pnl',
+  closedSortKey: 'pnl',
+  closedSortDir: 'desc',
   stratSortDir: 'desc',
 };
 
@@ -780,22 +794,40 @@ function renderTwoCol() {
   rnHtml += `<div style="margin-top:12px;font-size:0.78rem;color:var(--text-dim)">Total signals: ${totalSignals}/10m · Cycle ${o.cycle}</div>`;
   rn.innerHTML = rnHtml;
 
-  // Recently Closed
-  const rc = $('#recentClosedContent');
-  const closed = state.closedTrades.slice(0, 8);
+  // Recently Closed — render as table
+  let closed = [...state.closedTrades];
+  // Sort
+  closed.sort((a, b) => {
+    let va = a[state.closedSortKey], vb = b[state.closedSortKey];
+    if (typeof va === 'string') { va = va.toLowerCase(); vb = (vb||'').toLowerCase(); }
+    if (va == null) va = 0; if (vb == null) vb = 0;
+    return state.closedSortDir === 'asc' ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
+  });
+  closed = closed.slice(0, 30);
+  const closedCountEl = $('#closedCount');
+  const tbody = $('#closedBody');
+  if (closedCountEl) closedCountEl.textContent = closed.length > 0 ? `${closed.length} trades` : '';
+  if (!tbody) return;
   if (closed.length === 0) {
-    rc.innerHTML = '<div style="color:var(--text-dim);font-size:0.85rem;padding:16px 0;">No closed trades in this period</div>';
+    tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No closed trades in this period</td></tr>';
     return;
   }
-  rc.innerHTML = closed.map(t => `
-    <div class="trade-item" onclick="openTradeDetail('${t.ledgerId}')">
-      <div class="trade-left">
-        <div class="trade-market">${t.market || t.market_id || t.ledgerId}</div>
-        <div class="trade-meta">${t.direction} · ${t.strategy} · ${holdFmt(t.holdHours)} · ${t.closeReason || '—'}</div>
-      </div>
-      <div class="trade-pnl ${pnlClass(t.pnl)}">${fmt$(t.pnl)}</div>
-    </div>
-  `).join('');
+  tbody.innerHTML = closed.map(t => {
+    const meta = CAT_META[t.category] || CAT_META.other;
+    const dirClass = t.direction === 'BUY' ? 'direction-buy' : 'direction-sell';
+    const closedAgo = t.closedAt ? timeAgo(new Date(t.closedAt)) : '—';
+    return `<tr onclick="openTradeDetail('${t.ledgerId}')" style="cursor:pointer">
+      <td><span class="position-question">${t.market || t.market_id || t.ledgerId}</span></td>
+      <td><span class="direction-pill ${dirClass}">${t.direction}</span></td>
+      <td><span style="color:${meta.color}">${meta.icon} ${meta.label}</span></td>
+      <td class="mono">${t.entry_price?.toFixed(2) ?? '—'}</td>
+      <td class="mono">${t.exit_price?.toFixed(2) ?? '—'}</td>
+      <td class="mono ${pnlClass(t.pnl)}">${fmt$(t.pnl)}</td>
+      <td class="mono ${pnlClass(t.roi)}">${(t.roi * 100).toFixed(1)}%</td>
+      <td>${holdFmt(t.holdHours)}</td>
+      <td style="font-size:0.78rem;color:var(--text-dim)">${closedAgo}</td>
+    </tr>`;
+  }).join('');
 }
 
 // ─── RENDER: OPEN POSITIONS TABLE ───
@@ -1105,6 +1137,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Setup table sorting
   setupTableSort('positionsTable', 'pos', renderPositions);
   setupTableSort('strategyTable', 'strat', renderStrategies);
+  setupTableSort('closedTable', 'closed', renderTwoCol);
 
   // Detail panel close
   $('#detailClose').addEventListener('click', closeTradeDetail);
@@ -1121,6 +1154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchOverview();
     fetchMode();
     fetchEquity(state.chartHours);
+    fetchClosed(state.chartHours);
     fetchCategoryBreakdown(state.categoryHours);
     fetchCategoryStatus();
     fetchStrategies(state.strategyHours);
