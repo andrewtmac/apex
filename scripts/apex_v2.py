@@ -389,6 +389,9 @@ class ApexV2Trader:
         if market_id in self.positions:
             return None
 
+        # Extract strategy early for conflict check
+        strategy = signal.get("strategy", "other")
+
         # CONFLICT CHECK: Allow multiple positions on the same event
         # (e.g. same city, same day), but block conflicting open
         # positions. Conflicts are:
@@ -469,7 +472,6 @@ class ApexV2Trader:
             return None
 
         # Calculate position size
-        strategy = signal.get("strategy", "other")
         learner_config = self.learner.get_strategy_config(strategy)
         max_size_pct = learner_config.get("max_size_pct", 0.05)
 
