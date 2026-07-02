@@ -173,6 +173,9 @@ class ApexV2Trader:
         self._event_cooldowns: dict[str, float] = {}
         self.EVENT_COOLDOWN_SECONDS = 300  # 5 min cooldown after stop-loss
 
+        # Signal counters (rolling 10-min window for dashboard)
+        self._signal_counts: dict[str, list[float]] = {}
+
         # Regime
         self.regime = "NORMAL"
 
@@ -1005,6 +1008,8 @@ class ApexV2Trader:
                     for s in w_signals:
                         s["size_usd"] = self.bankroll * s.get("size_pct", 0.05)
                     all_signals.extend(w_signals)
+                    for _ in w_signals:
+                        self.record_signal("weather")
 
                 # Crypto signals
                 if crypto_markets:
@@ -1012,6 +1017,8 @@ class ApexV2Trader:
                     for s in c_signals:
                         s["size_usd"] = self.bankroll * s.get("size_pct", 0.05)
                     all_signals.extend(c_signals)
+                    for _ in c_signals:
+                        self.record_signal("crypto")
 
                 # Macro signals (CPI, FED, GDP)
                 if macro_markets and self.macro:
@@ -1020,6 +1027,8 @@ class ApexV2Trader:
                         for s in m_signals:
                             s["size_usd"] = self.bankroll * s.get("size_pct", 0.05)
                         all_signals.extend(m_signals)
+                        for _ in m_signals:
+                            self.record_signal("finance")
                     except Exception as e:
                         logger.warning("v2.macro_error", error=str(e))
 
@@ -1030,6 +1039,8 @@ class ApexV2Trader:
                         for s in sp_signals:
                             s["size_usd"] = self.bankroll * s.get("size_pct", 0.05)
                         all_signals.extend(sp_signals)
+                        for _ in sp_signals:
+                            self.record_signal("sports")
                     except Exception as e:
                         logger.warning("v2.sports_error", error=str(e))
 
@@ -1040,6 +1051,8 @@ class ApexV2Trader:
                         for s in e_signals:
                             s["size_usd"] = self.bankroll * s.get("size_pct", 0.05)
                         all_signals.extend(e_signals)
+                        for _ in e_signals:
+                            self.record_signal("events")
                     except Exception as e:
                         logger.warning("v2.events_error", error=str(e))
 
@@ -1166,47 +1179,118 @@ class ApexV2Trader:
     # Dashboard
     # ------------------------------------------------------------------
 
+    # Signal count rolling window
+    SIGNAL_WINDOW_SECONDS = 600  # 10 minutes
+
+    def record_signal(self, category: str):
+        """Record a signal for the rolling signal counter."""
+        now = time.time()
+        if category not in self._signal_counts:
+            self._signal_counts[category] = []
+        self._signal_counts[category].append(now)
+        # Prune old entries
+        cutoff = now - self.SIGNAL_WINDOW_SECONDS
+        self._signal_counts[category] = [
+            t for t in self._signal_counts[category] if t > cutoff
+        ]
+
+    def get_signal_count(self, category: str) -> int:
+        """Get rolling 10-min signal count for a category."""
+        now = time.time()
+        cutoff = now - self.SIGNAL_WINDOW_SECONDS
+        entries = self._signal_counts.get(category, [])
+        return sum(1 for t in entries if t > cutoff)
+
     async def run_dashboard(self):
-        """Start the monitoring dashboard on port 8080."""
+        """Start the investor dashboard on port 8080."""
         try:
             import uvicorn
-            from fastapi import FastAPI
+            from fastapi import FastAPI, Query
             from fastapi.responses import FileResponse, JSONResponse
+            from fastapi.middleware.cors import CORSMiddleware
 
-            app = FastAPI(title="APEX V2 Dashboard")
+            app = FastAPI(title="APEX V2 Investor Dashboard")
+            app.add_middleware(CORSMiddleware, allow_origins=["*"],
+                             allow_methods=["*"], allow_headers=["*"])
             trader = self
 
+            def _period_pnl(hours: int) -> dict:
+                """Compute P&L for a rolling time window."""
+                now = datetime.now(timezone.utc)
+                cutoff = (now - timedelta(hours=hours)).isoformat()
+                ref_eq = trader.initial_bankroll
+                for entry in trader.equity_history:
+                    if entry["ts"] <= cutoff:
+                        ref_eq = entry["equity"]
+                change = trader.equity - ref_eq
+                pct = (change / ref_eq * 100) if ref_eq > 0 else 0
+                return {"pnl": round(change, 2), "pct": round(pct, 1)}
+
+            def _worst_dip(days: int = 30) -> float:
+                """Compute worst peak-to-trough drawdown in equity history."""
+                cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+                eqs = [e["equity"] for e in trader.equity_history if e["ts"] > cutoff]
+                if len(eqs) < 2:
+                    return 0.0
+                peak = eqs[0]
+                worst = 0.0
+                for e in eqs:
+                    if e > peak:
+                        peak = e
+                    dd = (peak - e) / peak * 100 if peak > 0 else 0
+                    if dd > worst:
+                        worst = dd
+                return round(-worst, 1)
+
+            def _category_for_strategy(strategy: str) -> str:
+                """Map strategy name to category."""
+                mapping = {
+                    "weather": "weather", "crypto": "crypto",
+                    "macro": "finance", "sports": "sports",
+                    "events": "events",
+                }
+                return mapping.get(strategy, "other")
+
+            # ---- Serve the dashboard HTML ----
             @app.get("/")
             async def dashboard():
                 return FileResponse(DASHBOARD_HTML, media_type="text/html")
 
-            @app.get("/api/dashboard-data")
-            async def dashboard_data():
-                # Thin out equity history
-                hist = trader.equity_history
-                if len(hist) > 500:
-                    step = len(hist) // 500
-                    hist = hist[::step] + [hist[-1]]
+            # ---- /api/mode ----
+            @app.get("/api/mode")
+            async def api_mode():
+                return {"mode": "PAPER"}
 
-                # Period P&L
+            # ---- /api/overview ----
+            @app.get("/api/overview")
+            async def api_overview():
                 now = datetime.now(timezone.utc)
                 eq = trader.equity
-                periods = {}
-                for label, hours in [("today", 24), ("week", 168), ("month", 720)]:
-                    cutoff = (now - timedelta(hours=hours)).isoformat()
-                    ref_eq = trader.initial_bankroll
-                    for entry in trader.equity_history:
-                        if entry["ts"] <= cutoff:
-                            ref_eq = entry["equity"]
-                    change = eq - ref_eq
-                    pct = (change / ref_eq * 100) if ref_eq > 0 else 0
-                    periods[label] = {"pnl": round(change, 2), "pct": round(pct, 1)}
+                deployed = trader.deployed_capital
+                bankroll = trader.bankroll
+                total = deployed + bankroll if (deployed + bankroll) > 0 else 1
+
+                # Period P&L
+                periods = {
+                    "today": _period_pnl(24),
+                    "week": _period_pnl(168),
+                    "month": _period_pnl(720),
+                    "worst_dip_pct": _worst_dip(30),
+                    "last7": _period_pnl(168),
+                    "last30": _period_pnl(720),
+                }
+
+                # Calendar week (Mon-Sun)
+                weekday = now.weekday()
+                mon = now - timedelta(days=weekday)
+                mon = mon.replace(hour=0, minute=0, second=0, microsecond=0)
+                week_hours = max((now - mon).total_seconds() / 3600, 1)
+                periods["cal_week"] = _period_pnl(int(week_hours))
 
                 return {
-                    "timestamp": now.isoformat(),
                     "equity": round(eq, 2),
-                    "bankroll": round(trader.bankroll, 2),
-                    "deployed": round(trader.deployed_capital, 2),
+                    "bankroll": round(bankroll, 2),
+                    "deployed": round(deployed, 2),
                     "initial_bankroll": trader.initial_bankroll,
                     "realized_pnl": round(trader.total_realized_pnl, 2),
                     "unrealized_pnl": round(trader.total_unrealized_pnl, 2),
@@ -1217,16 +1301,285 @@ class ApexV2Trader:
                     "win_rate": round(trader.win_rate, 4),
                     "breaker": trader.breaker.level.value,
                     "drawdown_pct": round(trader.breaker.drawdown_pct, 2),
-                    "signals_generated": trader.signals_generated,
                     "cycle": trader._cycle,
                     "regime": trader.regime,
+                    "timestamp": now.isoformat(),
                     "periods": periods,
-                    "equity_history": hist,
-                    "positions": [asdict(p) for p in trader.positions.values()],
-                    "closed_trades": trader.closed_trades[-50:],
-                    "strategy_weights": trader.learner.weights,
                 }
 
+            # ---- /api/positions/closed-full ----
+            @app.get("/api/positions/closed-full")
+            async def api_closed_full(hours: int = Query(default=168)):
+                cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
+                result = []
+                for t in trader.closed_trades:
+                    closed_at = t.get("exit_time", "")
+                    if closed_at and closed_at < cutoff:
+                        continue
+                    entry = t.get("entry_time", "")
+                    hold_hours = 0
+                    if entry and closed_at:
+                        try:
+                            e = datetime.fromisoformat(entry.replace("Z", "+00:00"))
+                            c = datetime.fromisoformat(closed_at.replace("Z", "+00:00"))
+                            hold_hours = round((c - e).total_seconds() / 3600, 2)
+                        except (ValueError, TypeError):
+                            pass
+
+                    pnl = t.get("realized_pnl", 0)
+                    cost = t.get("cost_basis", 1)
+                    roi = pnl / cost if cost > 0 else 0
+
+                    result.append({
+                        "ledgerId": t.get("position_id", ""),
+                        "market": t.get("question", ""),
+                        "market_id": t.get("market_id", ""),
+                        "strategy": t.get("strategy", ""),
+                        "direction": t.get("direction", ""),
+                        "category": _category_for_strategy(t.get("strategy", "")),
+                        "entry_price": t.get("entry_price", 0),
+                        "exit_price": t.get("exit_price"),
+                        "pnl": round(pnl, 2),
+                        "roi": round(roi, 4),
+                        "openedAt": entry,
+                        "closedAt": closed_at,
+                        "holdHours": hold_hours,
+                        "closeReason": t.get("status", ""),
+                        "closeSummary": "",
+                        "entryThesis": "",
+                        "improvementNote": "",
+                    })
+                return result
+
+            # ---- /api/equity/curve ----
+            @app.get("/api/equity/curve")
+            async def api_equity_curve(days: int = Query(default=7)):
+                cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+                points = []
+                for e in trader.equity_history:
+                    if e["ts"] >= cutoff:
+                        points.append({"date": e["ts"], "equity": e["equity"]})
+                if not points:
+                    points = [{"date": datetime.now(timezone.utc).isoformat(),
+                              "equity": trader.equity}]
+                return points
+
+            # ---- /api/open-positions-live ----
+            @app.get("/api/open-positions-live")
+            async def api_open_live():
+                result = []
+                for pos in trader.positions.values():
+                    roi = pos.unrealized_pnl / pos.cost_basis if pos.cost_basis > 0 else 0
+                    result.append({
+                        "position_id": pos.position_id,
+                        "market_id": pos.market_id,
+                        "question": pos.question,
+                        "direction": pos.direction,
+                        "strategy": pos.strategy,
+                        "category": _category_for_strategy(pos.strategy),
+                        "entry_price": pos.entry_price,
+                        "current_price": pos.current_price,
+                        "cost_basis": pos.cost_basis,
+                        "shares": pos.shares,
+                        "unrealized_pnl": pos.unrealized_pnl,
+                        "edge_at_entry": pos.edge_at_entry,
+                        "entry_time": pos.entry_time,
+                        "expires_at": pos.expires_at,
+                        "roi": round(roi, 4),
+                        "stop_loss": pos.stop_loss,
+                        "take_profit": pos.take_profit,
+                        "peak_pnl_pct": pos.peak_pnl_pct,
+                        "mark_fresh": True,
+                    })
+                return result
+
+            # ---- /api/category-breakdown-timed ----
+            @app.get("/api/category-breakdown-timed")
+            async def api_category_breakdown(hours: int = Query(default=168)):
+                cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
+                cats = {}
+                for name in ["weather", "crypto", "finance", "sports", "events", "other"]:
+                    cats[name] = {"totalPnl": 0, "wins": 0, "losses": 0,
+                                  "trades": 0, "openPositions": 0, "deployed": 0,
+                                  "winRate": 0}
+
+                for t in trader.closed_trades:
+                    closed_at = t.get("exit_time", "")
+                    if closed_at and closed_at < cutoff:
+                        continue
+                    cat = _category_for_strategy(t.get("strategy", ""))
+                    if cat not in cats:
+                        cat = "other"
+                    c = cats[cat]
+                    c["trades"] += 1
+                    c["totalPnl"] += t.get("realized_pnl", 0)
+                    if t.get("realized_pnl", 0) >= 0:
+                        c["wins"] += 1
+                    else:
+                        c["losses"] += 1
+
+                for pos in trader.positions.values():
+                    cat = _category_for_strategy(pos.strategy)
+                    if cat not in cats:
+                        cat = "other"
+                    cats[cat]["openPositions"] += 1
+                    cats[cat]["deployed"] += pos.cost_basis
+
+                for c in cats.values():
+                    if c["trades"] > 0:
+                        c["winRate"] = round(c["wins"] / c["trades"], 4)
+                    c["totalPnl"] = round(c["totalPnl"], 2)
+                    c["deployed"] = round(c["deployed"], 2)
+
+                return cats
+
+            # ---- /api/category-status ----
+            @app.get("/api/category-status")
+            async def api_category_status():
+                result = {}
+                strategies = {"weather": "weather", "crypto": "crypto",
+                             "macro": "finance", "sports": "sports",
+                             "events": "events"}
+                for strat, cat in strategies.items():
+                    cfg = trader.learner.get_strategy_config(strat)
+                    has_activity = cfg.get("total_trades", 0) > 0 or cat in trader._signal_counts
+                    has_positions = any(p.strategy == strat for p in trader.positions.values())
+                    if has_positions:
+                        status = "LIVE"
+                    elif has_activity:
+                        status = "LIVE"
+                    else:
+                        status = "IDLE"
+                    result[cat] = {
+                        "status": status,
+                        "signals10m": trader.get_signal_count(cat),
+                    }
+                return result
+
+            # ---- /api/strategy-breakdown-timed ----
+            @app.get("/api/strategy-breakdown-timed")
+            async def api_strategy_breakdown(hours: int = Query(default=8760)):
+                cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
+                strats = {}
+                for t in trader.closed_trades:
+                    closed_at = t.get("exit_time", "")
+                    if closed_at and closed_at < cutoff:
+                        continue
+                    s = t.get("strategy", "other")
+                    if s not in strats:
+                        strats[s] = {"trades": 0, "wins": 0, "losses": 0,
+                                    "pnl": 0, "hold_minutes": []}
+                    d = strats[s]
+                    d["trades"] += 1
+                    pnl = t.get("realized_pnl", 0)
+                    d["pnl"] += pnl
+                    if pnl >= 0:
+                        d["wins"] += 1
+                    else:
+                        d["losses"] += 1
+                    # Hold time
+                    entry = t.get("entry_time", "")
+                    exit_t = t.get("exit_time", "")
+                    if entry and exit_t:
+                        try:
+                            e = datetime.fromisoformat(entry.replace("Z", "+00:00"))
+                            x = datetime.fromisoformat(exit_t.replace("Z", "+00:00"))
+                            d["hold_minutes"].append((x - e).total_seconds() / 60)
+                        except (ValueError, TypeError):
+                            pass
+
+                result = []
+                for s, d in strats.items():
+                    avg_hold = round(sum(d["hold_minutes"]) / len(d["hold_minutes"])) if d["hold_minutes"] else 0
+                    wr = d["wins"] / d["trades"] if d["trades"] > 0 else 0
+                    result.append({
+                        "strategy": s,
+                        "trades": d["trades"],
+                        "wins": d["wins"],
+                        "losses": d["losses"],
+                        "winRate": round(wr, 4),
+                        "pnl": round(d["pnl"], 2),
+                        "avgHoldMinutes": avg_hold,
+                    })
+                result.sort(key=lambda x: x["pnl"], reverse=True)
+                return result
+
+            # ---- /api/trade-detail/:id ----
+            @app.get("/api/trade-detail/{trade_id}")
+            async def api_trade_detail(trade_id: str):
+                # Search open positions first
+                for pos in trader.positions.values():
+                    if pos.position_id == trade_id:
+                        roi = pos.unrealized_pnl / pos.cost_basis if pos.cost_basis > 0 else 0
+                        return {
+                            "ledgerId": pos.position_id,
+                            "market": pos.question,
+                            "market_id": pos.market_id,
+                            "strategy": pos.strategy,
+                            "direction": pos.direction,
+                            "category": _category_for_strategy(pos.strategy),
+                            "entry_price": pos.entry_price,
+                            "exit_price": None,
+                            "pnl": pos.unrealized_pnl,
+                            "roi": round(roi, 4),
+                            "openedAt": pos.entry_time,
+                            "closedAt": None,
+                            "holdHours": round((datetime.now(timezone.utc) - datetime.fromisoformat(pos.entry_time.replace("Z", "+00:00"))).total_seconds() / 3600, 2),
+                            "closeReason": "OPEN",
+                            "closeSummary": "Position is still open. Close summary will be generated when the position closes.",
+                            "entryThesis": "",
+                            "improvementNote": "",
+                            "decisionInputs": {
+                                "edge": pos.edge_at_entry,
+                                "stop_loss": pos.stop_loss,
+                                "take_profit": pos.take_profit,
+                            },
+                        }
+
+                # Search closed trades
+                for t in trader.closed_trades:
+                    if t.get("position_id") == trade_id:
+                        pnl = t.get("realized_pnl", 0)
+                        cost = t.get("cost_basis", 1)
+                        roi = pnl / cost if cost > 0 else 0
+                        entry = t.get("entry_time", "")
+                        closed = t.get("exit_time", "")
+                        hold_hours = 0
+                        if entry and closed:
+                            try:
+                                e = datetime.fromisoformat(entry.replace("Z", "+00:00"))
+                                c = datetime.fromisoformat(closed.replace("Z", "+00:00"))
+                                hold_hours = round((c - e).total_seconds() / 3600, 2)
+                            except (ValueError, TypeError):
+                                pass
+                        return {
+                            "ledgerId": t.get("position_id", ""),
+                            "market": t.get("question", ""),
+                            "market_id": t.get("market_id", ""),
+                            "strategy": t.get("strategy", ""),
+                            "direction": t.get("direction", ""),
+                            "category": _category_for_strategy(t.get("strategy", "")),
+                            "entry_price": t.get("entry_price", 0),
+                            "exit_price": t.get("exit_price"),
+                            "pnl": round(pnl, 2),
+                            "roi": round(roi, 4),
+                            "openedAt": entry,
+                            "closedAt": closed,
+                            "holdHours": hold_hours,
+                            "closeReason": t.get("status", ""),
+                            "closeSummary": "",
+                            "entryThesis": "",
+                            "improvementNote": "",
+                            "decisionInputs": {
+                                "edge": t.get("edge_at_entry", 0),
+                                "direction": t.get("direction", ""),
+                                "strategy": t.get("strategy", ""),
+                            },
+                        }
+
+                return JSONResponse(status_code=404, content={"error": "Trade not found"})
+
+            # ---- /api/health (keep existing) ----
             @app.get("/api/health")
             async def health():
                 return {
