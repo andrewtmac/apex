@@ -373,19 +373,41 @@ class ApexV2Trader:
         if market_id in self.positions:
             return None
 
-        # EVENT-LEVEL DEDUP: Don't take a second position on the
-        # same underlying event (e.g. Chicago Jul 1 high temp).
+        # CONFLICT CHECK: Allow multiple positions on the same event
+        # (e.g. same city, same day), but block conflicting open
+        # positions. Conflicts are:
+        #   - Opposite directions (BUY vs SELL) on same event
+        #   - Overlapping range buckets on same event
         # Extract event key from market_id (e.g. KXHIGHCHI-26JUL01-B89.5
-        # -> chi_26JUL01) and check existing positions.
+        # -> KXHIGHCHI_26JUL01)
         parts = market_id.split("-")
         if len(parts) >= 2:
-            event_key = f"{parts[0]}_{parts[1]}"  # e.g. KXHIGHCHI_26JUL01
+            event_key = f"{parts[0]}_{parts[1]}"
             for pos in self.positions.values():
+                if pos.status != "OPEN":
+                    continue
                 pos_parts = pos.market_id.split("-")
                 if len(pos_parts) >= 2:
                     pos_event = f"{pos_parts[0]}_{pos_parts[1]}"
                     if pos_event == event_key:
-                        return None
+                        # Same event. Check for conflict:
+                        # 1. Opposite directions = conflict
+                        if pos.direction != signal.get("direction", "BUY"):
+                            logger.info("v2.conflict_skip",
+                                        market_id=market_id,
+                                        existing=pos.market_id,
+                                        reason="opposite_directions")
+                            return None
+                        # 2. Same event, same direction, different bucket
+                        #    on a range market = conflict (ranges are exclusive)
+                        if pos.market_id != market_id:
+                            # Both are different buckets on same event
+                            # Ranges are mutually exclusive outcomes
+                            logger.info("v2.conflict_skip",
+                                        market_id=market_id,
+                                        existing=pos.market_id,
+                                        reason="exclusive_ranges")
+                            return None
 
         if len(self.positions) >= self.MAX_POSITIONS:
             return None

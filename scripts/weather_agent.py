@@ -669,8 +669,9 @@ class WeatherAgent:
     async def generate_signals(self, markets: list[dict]) -> list[dict]:
         """Generate trading signals for Kalshi weather markets.
 
-        CONVERGENCE: One trade per city per day. If multiple buckets
-        have similar edge, skip — we're uncertain.
+        MULTI-TRADE: Can trade the same city multiple times per day.
+        Only filter out signals with edge < 5% (noise). Actual conflict
+        checking (no opposing open positions) is enforced at execution.
         """
         forecasts = await self.fetch_all_forecasts()
         if not forecasts:
@@ -701,41 +702,18 @@ class WeatherAgent:
                 signal["size_usd"] = 0
                 all_signals.append(signal)
 
-        # CONVERGENCE: Group by city + event date, pick best per group
-        from collections import defaultdict
-        event_groups: dict[str, list[dict]] = defaultdict(list)
-        for s in all_signals:
-            city = s.get("city", "unknown")
-            date = s.get("end_date", "")[:10]
-            event_key = f"{city}_{date}"
-            event_groups[event_key].append(s)
-
+        # CONVERGENCE: Allow multiple signals per city per day.
+        # Only filter out signals with near-zero edge (edge_gap < 5% noise).
+        # Actual conflict checking happens at trade execution time based
+        # on currently open positions.
         signals = []
-        for event_key, group in event_groups.items():
-            if len(group) == 1:
-                signals.append(group[0])
-                continue
-
-            group.sort(key=lambda s: abs(s["edge"]), reverse=True)
-            best = group[0]
-            second = group[1]
-
-            edge_gap = abs(abs(best["edge"]) - abs(second["edge"]))
-            if edge_gap < 0.05:
-                logger.info("weather.convergence_skip",
-                            event_key=event_key, n=len(group),
-                            best_edge=best["edge"],
-                            gap=edge_gap)
-                continue
-
-            if best["direction"] != second["direction"]:
-                logger.info("weather.conflict_skip",
-                            event_key=event_key,
-                            best_dir=best["direction"],
-                            second_dir=second["direction"])
-                continue
-
-            signals.append(best)
+        for s in all_signals:
+            if abs(s["edge"]) >= 0.05:
+                signals.append(s)
+            else:
+                logger.info("weather.low_edge_skip",
+                            market_id=s.get("market_id", ""),
+                            edge=s["edge"])
 
         signals.sort(key=lambda s: abs(s["edge"]), reverse=True)
 
