@@ -487,18 +487,28 @@ class EnhancedWeatherForecaster:
         if abs(edge) < min_edge:
             return None
 
-        # ---- MAX SELL PRICE FILTER ----
-        # Don't sell contracts priced above $0.95. The risk/reward is
-        # catastrophic: selling at $0.99 risks $1.00 to gain $0.01.
-        # Even with 95% confidence, a 5% miss wipes out 95 wins.
-        # Denver and Chicago each lost $93-$126 from this pattern.
-        MAX_SELL_PRICE = 0.95
-        if edge < 0 and market_price > MAX_SELL_PRICE:
-            logger.debug("weather.max_sell_price_skip",
+        # ---- SELL PRICE CEILING ----
+        # Hard cap at $0.85. Above this, one loss erases 4+ wins.
+        # Real data: $0.60-$0.80 avg +$37/trade (sweet spot).
+        # Above $0.80 avg -$11/trade (net loser).
+        SELL_CEILING = 0.85
+        if edge < 0 and market_price > SELL_CEILING:
+            logger.debug("weather.sell_ceiling_skip",
                         market_price=market_price,
-                        max=MAX_SELL_PRICE,
+                        ceiling=SELL_CEILING,
                         edge=round(edge, 4))
             return None
+
+        # ---- SELL PRICE SIZING CURVE ----
+        # Concentrate capital in the $0.60-$0.80 sweet spot.
+        # Edges ($0.50-$0.60 and $0.80-$0.85) get smaller bets.
+        if edge < 0:
+            if 0.60 <= market_price <= 0.80:
+                size_pct *= 1.15  # Sweet spot — boost
+            elif market_price > 0.80:
+                size_pct *= 0.75  # Above sweet spot — trim
+            elif market_price < 0.50:
+                size_pct *= 0.80  # Low price — small edge per dollar
 
         # ---- MIN BUY PRICE FILTER ----
         # Don't buy contracts priced below $0.05 — likely noise
