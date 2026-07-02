@@ -433,6 +433,7 @@ class EnhancedWeatherForecaster:
         2. Confidence > minimum
         3. Not in VOLATILE regime (unless edge is huge)
         4. At least 2 forecast sources available
+        5. Forecast not in noise zone near threshold (Chicago trap)
         """
         # Minimum edge scales with confidence
         # High confidence: min edge = 0.05
@@ -447,6 +448,35 @@ class EnhancedWeatherForecaster:
         if forecast.n_models < 2:
             return None
 
+        # ---- PROXIMITY FILTER (Chicago trap avoidance) ----
+        # If the forecast is too close to the threshold, skip.
+        # When the ensemble mean is within ~1 sigma of the threshold,
+        # the trade is essentially a coin flip — the model can't
+        # confidently say which side the outcome will land on.
+        # This is exactly what killed us on Chicago (5 trades, -$47).
+        sigma = forecast.calibrated_sigma
+        dist_from_threshold = abs(forecast.ensemble_mean_f - threshold)
+        threshold_distance_sigma = dist_from_threshold / max(sigma, 0.5)
+
+        # For range markets, use distance from range center
+        if direction == "range" and range_high > range_low:
+            range_mid = (range_low + range_high) / 2
+            dist_from_threshold = abs(forecast.ensemble_mean_f - range_mid)
+            threshold_distance_sigma = dist_from_threshold / max(sigma, 0.5)
+
+        # Skip if forecast is in the noise zone (< 1.0 sigma from threshold)
+        # and the regime is anything less than STABLE
+        if threshold_distance_sigma < 1.0:
+            if forecast.regime != "STABLE":
+                logger.debug("weather.proximity_skip",
+                            ensemble=forecast.ensemble_mean_f,
+                            threshold=threshold,
+                            dist_sigma=round(threshold_distance_sigma, 2),
+                            regime=forecast.regime)
+                return None
+            # STABLE regime but very close — raise min edge
+            min_edge = max(min_edge, 0.12)
+
         # Estimate true probability
         true_prob = self.estimate_probability(
             forecast, threshold, direction, range_low, range_high
@@ -457,7 +487,10 @@ class EnhancedWeatherForecaster:
         if abs(edge) < min_edge:
             return None
 
-        # Kelly criterion for position sizing (fractional Kelly = 0.25)
+        # ---- EDGE-SCALED POSITION SIZING ----
+        # Bigger bets on bigger edges. The first hour showed $22 avg win
+        # vs $27 avg loss. To fix this, we size UP on high-edge trades
+        # (which have higher WR) and size DOWN on marginal trades.
         kelly = 0.25
         if edge > 0:
             # BUY: edge / (1/price - 1) simplified
@@ -477,6 +510,26 @@ class EnhancedWeatherForecaster:
             size_pct *= 1.15
         elif forecast.ensemble_std_f > 5:
             size_pct *= 0.6
+
+        # ---- EDGE MAGNITUDE SCALING ----
+        # High-edge trades (>15%) get a size boost — these are the
+        # Austin/Denver type trades that made us $50-94 each.
+        # Low-edge trades (5-10%) get trimmed — these are the marginal
+        # trades that gave us -$30 losses.
+        abs_edge = abs(edge)
+        if abs_edge >= 0.20:
+            size_pct *= 1.4   # Huge edge — max confidence
+        elif abs_edge >= 0.15:
+            size_pct *= 1.2   # Strong edge — boost
+        elif abs_edge <= 0.07:
+            size_pct *= 0.7   # Marginal edge — trim
+
+        # ---- PROXIMITY SCALING ----
+        # Trades where forecast is far from threshold are more reliable
+        if threshold_distance_sigma >= 2.5:
+            size_pct *= 1.15  # Very clear signal
+        elif threshold_distance_sigma < 1.5:
+            size_pct *= 0.85  # Somewhat close — be conservative
 
         # Minimum position size
         if size_pct < 0.02:
@@ -498,6 +551,8 @@ class EnhancedWeatherForecaster:
             "n_models": forecast.n_models,
             "source_weights": forecast.source_weights,
             "climatology_mean": forecast.climatology_mean,
+            "threshold_distance_sigma": round(threshold_distance_sigma, 2),
+            "abs_edge": round(abs_edge, 4),
             "reason": (
                 f"Ensemble {forecast.ensemble_mean_f}°F "
                 f"(σ={forecast.calibrated_sigma:.1f}) "

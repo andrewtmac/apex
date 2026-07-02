@@ -167,6 +167,12 @@ class ApexV2Trader:
         self.commander = TelegramCommander()
         self.breaker = CircuitBreaker(initial_equity=bankroll, auto_recovery=True)
 
+        # Per-event cooldown after stop-losses
+        # Tracks {event_key: cooldown_expires_timestamp}
+        # Prevents immediately re-entering a losing city/threshold
+        self._event_cooldowns: dict[str, float] = {}
+        self.EVENT_COOLDOWN_SECONDS = 300  # 5 min cooldown after stop-loss
+
         # Regime
         self.regime = "NORMAL"
 
@@ -225,6 +231,9 @@ class ApexV2Trader:
             if "breaker" in state:
                 self.breaker = CircuitBreaker.from_state_dict(state["breaker"])
 
+            if "event_cooldowns" in state:
+                self._event_cooldowns = state["event_cooldowns"]
+
             logger.info(
                 "v2.state_restored",
                 bankroll=f"${self.bankroll:.0f}",
@@ -252,6 +261,7 @@ class ApexV2Trader:
             "closed_trades": self.closed_trades[-500:],
             "equity_history": self.equity_history[-5000:],
             "breaker": self.breaker.state_dict(),
+            "event_cooldowns": self._event_cooldowns,
             "saved_at": datetime.now(timezone.utc).isoformat(),
         }
         tmp = STATE_FILE.with_suffix(".tmp")
@@ -410,6 +420,20 @@ class ApexV2Trader:
                                         reason="exclusive_ranges")
                             return None
 
+        # PER-EVENT COOLDOWN: after a stop-loss, don't re-enter same event
+        # for EVENT_COOLDOWN_SECONDS. Prevents chasing losses on the same
+        # city/threshold (like Chicago: 5 trades, -$47).
+        now = time.time()
+        if parts and len(parts) >= 2:
+            event_key = f"{parts[0]}_{parts[1]}"
+            cooldown_until = self._event_cooldowns.get(event_key, 0)
+            if now < cooldown_until:
+                remaining = int(cooldown_until - now)
+                logger.info("v2.event_cooldown",
+                           event_key=event_key,
+                           remaining_s=remaining)
+                return None
+
         if len(self.positions) >= self.MAX_POSITIONS:
             return None
 
@@ -430,6 +454,12 @@ class ApexV2Trader:
         size_pct = min(signal.get("size_pct", 0.05), max_size_pct)
         size_pct *= self.breaker.sizing_multiplier()
 
+        # Per-city multiplier from learner (hot cities get bigger bets)
+        if strategy == "weather":
+            city = signal.get("city", "unknown")
+            city_mult = self.learner.get_city_multiplier(strategy, city)
+            size_pct *= city_mult
+
         cost = self.bankroll * size_pct
         if cost < self.MIN_POSITION_USD:
             return None
@@ -448,6 +478,40 @@ class ApexV2Trader:
         else:
             shares = cost / max(1.0 - entry_price, 0.01)
 
+        # Weather-specific exit tuning based on entry quality
+        base_sl = learner_config.get("stop_loss", -0.25)
+        base_tp = learner_config.get("take_profit", 0.20)
+
+        if strategy == "weather":
+            confidence = signal.get("confidence", 0.5)
+            abs_edge = abs(signal.get("edge", 0))
+            dist_sigma = signal.get("threshold_distance_sigma", 2.0)
+
+            if signal["direction"] == "SELL":
+                # SELL trades: prices should decay toward 0
+                # Wider take profit — let winners run
+                base_tp = 0.30
+                # Tighter stop — cut losers faster
+                base_sl = -0.20
+                # High-confidence entries get even wider TP
+                if confidence >= 0.8 and abs_edge >= 0.15:
+                    base_tp = 0.40
+                    base_sl = -0.18
+            else:
+                # BUY trades: prices should rise toward 1
+                # Standard TP, but tighter stop
+                base_tp = 0.25
+                base_sl = -0.18
+                if confidence >= 0.8 and abs_edge >= 0.15:
+                    base_tp = 0.35
+
+            # Edge quality adjustment — high-edge trades get more room
+            if abs_edge >= 0.20:
+                base_tp *= 1.2
+            elif abs_edge <= 0.07:
+                base_tp *= 0.8
+                base_sl *= 0.8  # Tighter for marginal trades
+
         pos = PaperPosition(
             position_id=uuid.uuid4().hex[:8],
             market_id=market_id,
@@ -461,8 +525,8 @@ class ApexV2Trader:
             strategy=strategy,
             current_price=entry_price,
             edge_at_entry=signal["edge"],
-            stop_loss=learner_config.get("stop_loss", -0.25),
-            take_profit=learner_config.get("take_profit", 0.20),
+            stop_loss=base_sl,
+            take_profit=base_tp,
             expires_at=signal.get("end_date"),
         )
 
@@ -528,10 +592,23 @@ class ApexV2Trader:
                 exit_ids.append(market_id)
                 continue
 
-            # Trailing stop
-            if pos.peak_pnl_pct >= 0.15:
+            # Trailing stop (strategy-aware)
+            # Weather SELLs: tighter trail after lower peak
+            # Weather BUYs: standard trail
+            # Other strategies: standard trail
+            trail_peak = 0.15
+            trail_giveback = 0.08
+            if pos.strategy == "weather" and pos.direction == "SELL":
+                # SELLs should decay toward 0 — trail tighter
+                trail_peak = 0.10
+                trail_giveback = 0.06
+            elif pos.strategy == "weather" and pos.direction == "BUY":
+                trail_peak = 0.12
+                trail_giveback = 0.07
+
+            if pos.peak_pnl_pct >= trail_peak:
                 giveback = pos.peak_pnl_pct - roi
-                if giveback >= 0.08:
+                if giveback >= trail_giveback:
                     self._close_position(pos, "TRAILING_STOP")
                     exit_ids.append(market_id)
                     continue
@@ -568,6 +645,26 @@ class ApexV2Trader:
 
             if self._consecutive_losses >= self.COOLDOWN_AFTER_CONSEC_LOSSES:
                 self._cooldown_until = time.time() + self.COOLDOWN_SECONDS
+
+            # PER-EVENT COOLDOWN: set cooldown for this event on stop-loss
+            # Prevents immediately re-entering a losing city/threshold
+            if reason == "STOP_LOSS" and pos.strategy == "weather":
+                parts = pos.market_id.split("-")
+                if len(parts) >= 2:
+                    event_key = f"{parts[0]}_{parts[1]}"
+                    self._event_cooldowns[event_key] = (
+                        time.time() + self.EVENT_COOLDOWN_SECONDS
+                    )
+                    logger.info("v2.event_cooldown_set",
+                               event_key=event_key,
+                               cooldown_s=self.EVENT_COOLDOWN_SECONDS)
+
+        # Prune old cooldowns (keep dict small)
+        if len(self._event_cooldowns) > 50:
+            now = time.time()
+            self._event_cooldowns = {
+                k: v for k, v in self._event_cooldowns.items() if v > now
+            }
 
         self.breaker.update(equity=self.equity, trade_result=pnl)
 

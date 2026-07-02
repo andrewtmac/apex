@@ -122,7 +122,83 @@ class LearnerAgent:
                     (win_rate * avg_win) / max(abs(avg_loss), 0.01) * np.sqrt(252), 2
                 )
 
+        # ---- PER-CITY TRACKING (weather only) ----
+        if strategy == "weather":
+            city = trade.get("city", "unknown")
+            if city and city != "unknown":
+                if "cities" not in w:
+                    w["cities"] = {}
+                if city not in w["cities"]:
+                    w["cities"][city] = {
+                        "trades": 0, "wins": 0, "losses": 0,
+                        "pnl": 0.0, "avg_edge": 0.0,
+                        "hot": False,  # True when WR > 65% on 5+ trades
+                    }
+                c = w["cities"][city]
+                c["trades"] += 1
+                c["pnl"] += pnl
+                # Running average edge
+                edge = abs(trade.get("edge_at_entry", 0))
+                c["avg_edge"] = round(
+                    (c["avg_edge"] * (c["trades"] - 1) + edge) / c["trades"], 4
+                )
+                if pnl >= 0:
+                    c["wins"] += 1
+                else:
+                    c["losses"] += 1
+                # Update hot status
+                if c["trades"] >= 5:
+                    wr = c["wins"] / c["trades"]
+                    c["hot"] = wr >= 0.65
+
+            # Track direction performance
+            direction = trade.get("direction", "BUY")
+            dir_key = f"dir_{direction.lower()}"
+            if dir_key not in w:
+                w[dir_key] = {"trades": 0, "wins": 0, "losses": 0, "pnl": 0.0}
+            d = w[dir_key]
+            d["trades"] += 1
+            d["pnl"] += pnl
+            if pnl >= 0:
+                d["wins"] += 1
+            else:
+                d["losses"] += 1
+
         self._save_weights()
+
+    def get_city_multiplier(self, strategy: str, city: str) -> float:
+        """Get position size multiplier for a city based on historical performance.
+
+        Returns 1.0 for neutral, >1.0 for hot cities, <1.0 for cold cities.
+        """
+        if strategy != "weather":
+            return 1.0
+
+        w = self.weights.get("weather", {})
+        cities = w.get("cities", {})
+        if city not in cities:
+            return 1.0  # No data — neutral
+
+        c = cities[city]
+        if c["trades"] < 3:
+            return 1.0  # Not enough data
+
+        wr = c["wins"] / c["trades"]
+
+        if wr >= 0.70 and c["trades"] >= 5:
+            return 1.25  # Hot city — boost
+        elif wr >= 0.60:
+            return 1.10  # Warm
+        elif wr <= 0.35 and c["trades"] >= 5:
+            return 0.65  # Cold city — reduce
+        elif wr <= 0.45:
+            return 0.85  # Cool
+        return 1.0  # Neutral
+
+    def get_city_stats(self, strategy: str) -> dict:
+        """Return per-city stats for a strategy (for reporting)."""
+        w = self.weights.get(strategy, {})
+        return w.get("cities", {})
 
     def adjust_weights(self):
         samples = {}
@@ -224,6 +300,30 @@ class LearnerAgent:
                 f"{w['wins']}W-{w['losses']}L ({wr:.0f}%), "
                 f"P&L ${w['total_pnl']:+.0f}"
             )
+            # Show city stats for weather
+            if name == "weather" and "cities" in w:
+                for city, c in sorted(w["cities"].items(),
+                                      key=lambda x: x[1]["pnl"], reverse=True):
+                    if c["trades"] >= 2:
+                        cwr = c["wins"] / c["trades"] * 100
+                        hot = " HOT" if c.get("hot") else ""
+                        lines.append(
+                            f"    {city}: {c['wins']}W-{c['losses']}L "
+                            f"({cwr:.0f}%), P&L ${c['pnl']:+.0f}, "
+                            f"avg_edge {c['avg_edge']:.1%}{hot}"
+                        )
+            # Show direction stats for weather
+            if name == "weather":
+                for dkey in ["dir_sell", "dir_buy"]:
+                    if dkey in w:
+                        d = w[dkey]
+                        if d["trades"] > 0:
+                            dwr = d["wins"] / d["trades"] * 100
+                            lines.append(
+                                f"    {dkey.replace('dir_', '').upper()}: "
+                                f"{d['wins']}W-{d['losses']}L ({dwr:.0f}%), "
+                                f"P&L ${d['pnl']:+.0f}"
+                            )
         return "\n".join(lines)
 
     async def daily_update(self):
