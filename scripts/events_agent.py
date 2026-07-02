@@ -321,11 +321,12 @@ class EventsAgent:
                     if signal:
                         all_signals.append(signal)
 
-        # Convergence: one trade per event
+        # Convergence: one trade per unique market
+        # Hurricane thresholds (">2" vs ">8") are independent events
         event_groups: dict[str, list[dict]] = defaultdict(list)
         for s in all_signals:
-            close = s.get("end_date", "")[:10]
-            event_key = f"events_{close}"
+            # Group by market_id (each threshold is a separate event)
+            event_key = s.get("market_id", "")
             event_groups[event_key].append(s)
 
         signals = []
