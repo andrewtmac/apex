@@ -54,7 +54,7 @@ def _facts_block(t: dict[str, Any]) -> str:
         f"Entry price: {t.get('entry_price')} | Exit price: {t.get('exit_price') if t.get('exit_price') is not None else 'resolution'}",
         f"Size: {t.get('shares')} shares @ cost ${(t.get('cost_basis') or 0):.2f}",
         f"P&L: {'+' if pnl >= 0 else ''}${pnl:.2f} ({'WIN' if pnl >= 0 else 'LOSS'})",
-        f"Model edge claimed at entry: {t.get('edge_at_entry')}",
+        f"Model edge claimed at entry for this trade's side (positive = model favored this trade): {t.get('edge_at_entry')}",
         f"Mechanical close trigger: {t.get('status')}",
         f"Stop loss: {t.get('stop_loss')} | Take profit: {t.get('take_profit')}",
     ]

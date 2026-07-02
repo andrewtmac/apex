@@ -529,7 +529,12 @@ class ApexV2Trader:
             entry_time=datetime.now(timezone.utc).isoformat(),
             strategy=strategy,
             current_price=entry_price,
-            edge_at_entry=signal["edge"],
+            # Direction-aware edge (July 2026 fix): agents emit the BUY-side
+            # edge (model_prob - price) and derive direction from its sign, so
+            # a SELL's edge arrived negative even though the short side's edge
+            # is positive. Store the edge FOR THE SIDE WE TOOK — dashboards and
+            # the trade narrator read this field at face value.
+            edge_at_entry=(signal["edge"] if signal["direction"] == "BUY" else -signal["edge"]),
             stop_loss=base_sl,
             take_profit=base_tp,
             expires_at=signal.get("end_date"),
