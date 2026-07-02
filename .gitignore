@@ -43,3 +43,11 @@ logs/*.log
 # OS
 .DS_Store
 Thumbs.db
+
+# Runtime state
+paper_state*.json
+logs/*.pid
+
+# Runtime data directory
+data/
+paper_state.json

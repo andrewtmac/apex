@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APEX V2 — Autonomous Kalshi Trading</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D0D12;--surface:#16161D;--surface2:#1E1E27;--border:rgba(255,255,255,.06);
+  --text:#E8E8EC;--text2:#8E8E96;--text3:#5A5A62;
+  --green:#3FBE7C;--red:#E2674C;--amber:#D6A24A;--blue:#4D9BEC;--purple:#8B6CEF;
+  --radius:14px;--font:Inter,system-ui,-apple-system,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+html{font-size:14px}
+body{background:var(--bg);color:var(--text);font-family:var(--font);
+  line-height:1.5;-webkit-font-smoothing:antialiased}
+.container{max-width:1280px;margin:0 auto;padding:20px 24px 60px}
+
+/* Header */
+header{display:flex;align-items:center;justify-content:space-between;
+  padding:16px 0 24px;border-bottom:1px solid var(--border);margin-bottom:24px}
+.brand{font-size:22px;font-weight:700;letter-spacing:-.03em}
+.brand span{color:var(--purple)}
+.brand small{font-size:11px;color:var(--text3);font-weight:500;margin-left:8px;
+  letter-spacing:.06em;text-transform:uppercase}
+.header-right{display:flex;align-items:center;gap:16px}
+.badge{font-size:11px;font-weight:500;color:var(--amber);background:rgba(214,162,74,.1);
+  padding:4px 12px;border-radius:20px;border:1px solid rgba(214,162,74,.2)}
+.status{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 6px var(--green);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* Summary */
+.summary{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;
+  gap:12px;margin-bottom:24px}
+.summary .total-value{grid-row:1/3}
+.card{background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;position:relative}
+.metric-value{font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.metric-value.lg{font-size:38px}.metric-value.md{font-size:22px}
+.metric-label{font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500}
+.metric-sub{font-size:13px;color:var(--text2);margin-top:2px;font-variant-numeric:tabular-nums}
+.gain{color:var(--green)}.loss{color:var(--red)}.caution{color:var(--amber)}
+
+/* Goal progress */
+.goal-bar{margin-top:16px}
+.goal-track{height:10px;border-radius:5px;background:var(--surface2);overflow:hidden;margin:8px 0}
+.goal-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--purple),var(--blue));
+  transition:width .6s ease}
+.goal-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--text3)}
+
+/* Split bar */
+.split-bar{margin-top:12px}
+.split-track{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:6px 0 8px}
+.split-fill{transition:width .4s ease}
+
+/* Cards */
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:500;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.04em}
+.card-count{font-size:12px;color:var(--text3)}
+
+/* Strategy weights */
+.strategies{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.strat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.strat-name{font-size:14px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.strat-dot{width:10px;height:10px;border-radius:50%}
+.strat-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.strat-stat .sl{font-size:11px;color:var(--text3)}.strat-stat .sv{font-size:15px;font-weight:600}
+.weight-bar{margin-top:10px}
+.weight-track{height:6px;border-radius:3px;background:var(--surface2);overflow:hidden}
+.weight-fill{height:100%;border-radius:3px;transition:width .4s ease}
+
+/* Chart */
+.chart-section{margin-bottom:24px}
+.chart-wrap{position:relative;height:220px}
+.chart-wrap canvas{width:100%!important;height:100%!important;border-radius:8px}
+.range-toggle{display:flex;gap:2px;background:var(--bg);border-radius:8px;padding:2px}
+.range-btn{font-size:11px;font-weight:500;padding:4px 10px;border:none;
+  border-radius:6px;background:transparent;color:var(--text3);cursor:pointer;
+  transition:all .15s ease;font-family:var(--font)}
+.range-btn:hover{color:var(--text2)}.range-btn.active{background:var(--surface2);color:var(--text)}
+
+/* Two-col */
+.activity{display:grid;grid-template-columns:280px 1fr;gap:12px;margin-bottom:24px}
+.stat-row{display:flex;justify-content:space-between;padding:10px 0;
+  border-bottom:1px solid var(--border)}
+.stat-row:last-child{border:none}
+.stat-label{font-size:13px;color:var(--text2)}
+.stat-val{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+
+/* Trades list */
+.trades-list{max-height:340px;overflow-y:auto}
+.trade-row{display:grid;grid-template-columns:70px 8px 1fr 55px 65px 46px;
+  align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.trade-row:last-child{border:none}
+.trade-time{font-family:var(--mono);color:var(--text3);font-size:10px}
+.trade-dot{width:8px;height:8px;border-radius:50%}
+.trade-market{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trade-pnl{font-family:var(--mono);font-weight:500;text-align:right}
+.trade-chip{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;text-align:center}
+.chip-win{background:rgba(63,190,124,.12);color:var(--green)}
+.chip-loss{background:rgba(226,103,76,.12);color:var(--red)}
+.chip-strategy{font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px;
+  text-transform:uppercase;letter-spacing:.04em}
+
+/* Positions table */
+.pos-table{width:100%;border-collapse:collapse}
+.pos-table th{text-align:left;font-size:11px;font-weight:500;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.04em;padding:8px 10px;border-bottom:1px solid var(--border)}
+.pos-table td{font-size:12px;padding:10px;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums}
+.pos-table tr:last-child td{border:none}
+.pos-table tr:hover{background:rgba(255,255,255,.02)}
+.pos-dir{font-weight:600;font-size:10px;padding:2px 8px;border-radius:4px;display:inline-block}
+.pos-buy{background:rgba(63,190,124,.12);color:var(--green)}
+.pos-sell{background:rgba(226,103,76,.12);color:var(--red)}
+.pos-strategy{font-size:10px;font-weight:500;padding:2px 6px;border-radius:4px;text-transform:uppercase}
+.pos-weather{background:rgba(77,155,236,.12);color:var(--blue)}
+.pos-crypto{background:rgba(139,108,239,.12);color:var(--purple)}
+.pos-macro{background:rgba(214,162,74,.12);color:var(--amber)}
+.pos-sports{background:rgba(255,255,255,.06);color:var(--text2)}
+
+/* Responsive */
+@media(max-width:1000px){.summary{grid-template-columns:1fr 1fr}
+  .summary .total-value{grid-row:auto;grid-column:1/-1}
+  .strategies{grid-template-columns:1fr 1fr}
+  .activity{grid-template-columns:1fr}}
+@media(max-width:600px){.summary{grid-template-columns:1fr}
+  .strategies{grid-template-columns:1fr}html{font-size:13px}}
+
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:3px}
+.empty{text-align:center;padding:32px;color:var(--text3);font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="brand"><span>APEX</span>.V2<small>Autonomous Kalshi Trading</small></div>
+  <div class="header-right">
+    <span class="badge">Paper Trading</span>
+    <div class="status"><span class="dot" id="statusDot"></span>
+      <span id="statusText">Connecting...</span></div>
+  </div>
+</header>
+
+<!-- Summary -->
+<div class="summary" id="summary"></div>
+
+<!-- Strategy Cards -->
+<div class="strategies" id="strategies"></div>
+
+<!-- Chart -->
+<div class="chart-section card" id="chartSection">
+  <div class="card-header">
+    <div>
+      <span class="card-title">Portfolio value</span>
+      <span id="chartValue" style="font-size:18px;font-weight:700;margin-left:12px"></span>
+    </div>
+    <div class="range-toggle" id="chartToggle"></div>
+  </div>
+  <div class="chart-wrap"><canvas id="chartCanvas"></canvas></div>
+</div>
+
+<!-- Right Now + Recent Trades -->
+<div class="activity">
+  <div class="card" id="rightNow">
+    <div class="card-header"><span class="card-title">Right now</span></div>
+    <div id="rightNowStats"></div>
+  </div>
+  <div class="card" id="recentTrades">
+    <div class="card-header">
+      <span class="card-title">Recent trades</span>
+      <span class="card-count" id="tradeCount"></span>
+    </div>
+    <div class="trades-list" id="tradesList"></div>
+  </div>
+</div>
+
+<!-- Positions -->
+<div class="card" id="positionsSection" style="margin-bottom:24px">
+  <div class="card-header">
+    <span class="card-title">Open positions</span>
+    <span class="card-count" id="posCount"></span>
+  </div>
+  <div id="positionsBody"></div>
+</div>
+
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=(n,d=0)=>'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+function signedDollar(n,d=0){const s=n>=0?'+$':'-$';return s+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function pctStr(n){return(n>=0?'+':'')+n.toFixed(1)+'%'}
+function cls(n){return n>=0?'gain':'loss'}
+
+let D={};
+let chartRange='All';
+
+async function fetchData(){
+  try{
+    const r=await fetch('/api/dashboard-data');
+    D=await r.json();
+    render();
+    $('statusDot').style.background='var(--green)';
+    $('statusDot').style.boxShadow='0 0 6px var(--green)';
+    $('statusText').textContent='Updated '+new Date(D.timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  }catch(e){
+    $('statusDot').style.background='var(--red)';
+    $('statusText').textContent='Connection lost';
+  }
+}
+
+function render(){
+  renderSummary();
+  renderStrategies();
+  renderChart();
+  renderRightNow();
+  renderTrades();
+  renderPositions();
+}
+
+function renderSummary(){
+  const p=D.periods||{};
+  const eq=D.equity||0;
+  const dep=D.deployed||0;
+  const cash=D.bankroll||0;
+  const initial=D.initial_bankroll||1000;
+  const roi=((eq-initial)/initial*100);
+  const depPct=eq>0?((dep/eq)*100):0;
+  const cashPct=eq>0?((cash/eq)*100):0;
+
+  // Goal progress (log scale: $1k -> $1M = log10(1000)=3 -> log10(1000000)=6)
+  const logEq=Math.log10(Math.max(eq,1));
+  const logGoal=Math.log10(1000000);
+  const logStart=Math.log10(initial);
+  const goalPct=Math.max(0,Math.min(100,((logEq-logStart)/(logGoal-logStart))*100));
+
+  const cards=[
+    {id:'total',label:'Total value',value:eq>=0?fmt(eq):'-$'+Math.abs(eq).toLocaleString(),
+     cls:cls(roi),goal:true,goalPct,roi,dep,cash,depPct,cashPct},
+    {label:'Today',value:signedDollar((p.today||{}).pnl||0,2),
+     sub:pctStr((p.today||{}).pct||0),cls:cls((p.today||{}).pnl||0)},
+    {label:'This week',value:signedDollar((p.week||{}).pnl||0,2),
+     sub:pctStr((p.week||{}).pct||0),cls:cls((p.week||{}).pnl||0)},
+    {label:'This month',value:signedDollar((p.month||{}).pnl||0,2),
+     sub:pctStr((p.month||{}).pct||0),cls:cls((p.month||{}).pnl||0)},
+    {label:'All time',value:pctStr(roi),cls:cls(roi),sub:'ROI'},
+  ];
+
+  let html='';
+  cards.forEach((c,i)=>{
+    const extra=i===0?'total-value':'';
+    html+=`<div class="card ${extra}">
+      <div class="metric-label">${c.label}</div>
+      <div class="metric-value ${i===0?'lg':'md'} ${c.cls}">${c.value}</div>
+      ${c.sub?`<div class="metric-sub">${c.sub}</div>`:''}`;
+    if(c.goal){
+      html+=`<div class="goal-bar">
+        <div class="goal-track"><div class="goal-fill" style="width:${c.goalPct}%"></div></div>
+        <div class="goal-labels"><span>$${initial.toLocaleString()}</span>
+          <span>${c.goalPct.toFixed(1)}% to $1M</span>
+          <span>$1,000,000</span></div>
+      </div>`;
+      html+=`<div class="split-bar">
+        <div class="split-track">
+          <div class="split-fill" style="width:${c.depPct}%;background:var(--blue)"></div>
+          <div class="split-fill" style="width:${c.cashPct}%;background:var(--surface2)"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px">
+          <span style="color:var(--blue)">Deployed ${fmt(c.dep)} (${c.depPct.toFixed(0)}%)</span>
+          <span>Cash ${fmt(c.cash)} (${c.cashPct.toFixed(0)}%)</span>
+        </div></div>`;
+    }
+    html+=`</div>`;
+  });
+  $('summary').innerHTML=html;
+}
+
+function renderStrategies(){
+  const weights=D.strategy_weights||{};
+  const colors={weather:'var(--blue)',crypto:'var(--purple)',macro:'var(--amber)',sports:'var(--text2)'};
+  const icons={weather:'🌤',crypto:'₿',macro:'📊',sports:'⚽'};
+
+  let html='';
+  for(const[name,w] of Object.entries(weights)){
+    const wr=w.total_trades>0?(w.wins/w.total_trades*100).toFixed(0)+'%':'N/A';
+    const color=colors[name]||'var(--text2)';
+    const icon=icons[name]||'📈';
+    html+=`<div class="strat-card">
+      <div class="strat-name"><span class="strat-dot" style="background:${color}"></span>${icon} ${name}</div>
+      <div class="strat-stats">
+        <div class="strat-stat"><div class="sl">Weight</div><div class="sv">${(w.weight*100).toFixed(0)}%</div></div>
+        <div class="strat-stat"><div class="sl">Win rate</div><div class="sv ${w.wins>=w.losses?'gain':'loss'}">${wr}</div></div>
+        <div class="strat-stat"><div class="sl">Trades</div><div class="sv">${w.total_trades}</div></div>
+        <div class="strat-stat"><div class="sl">P&L</div><div class="sv ${w.total_pnl>=0?'gain':'loss'}">${signedDollar(w.total_pnl,0)}</div></div>
+      </div>
+      <div class="weight-bar"><div class="weight-track"><div class="weight-fill" style="width:${w.weight*100}%;background:${color}"></div></div></div>
+    </div>`;
+  }
+  $('strategies').innerHTML=html;
+}
+
+function renderChart(){
+  const ranges=['1D','7D','30D','All'];
+  let toggleHtml='';
+  ranges.forEach(r=>{
+    toggleHtml+=`<button class="range-btn ${r===chartRange?'active':''}" onclick="chartRange='${r}';renderChart()">${r}</button>`;
+  });
+  $('chartToggle').innerHTML=toggleHtml;
+
+  const hist=D.equity_history||[];
+  if(hist.length<2){$('chartValue').textContent='Awaiting data...';return}
+
+  const now=new Date();
+  const cutoffs={'1D':24,'7D':168,'30D':720,'All':99999};
+  const hours=cutoffs[chartRange]||99999;
+  const cutoff=new Date(now-hours*3600000);
+  const pts=hist.filter(h=>new Date(h.ts)>=cutoff);
+  if(pts.length<1)return;
+
+  const startEq=pts[0].equity;
+  const endEq=pts[pts.length-1].equity;
+  const change=endEq-startEq;
+  const changePct=startEq>0?((change/startEq)*100):0;
+  $('chartValue').innerHTML=`<span class="${cls(change)}">${signedDollar(change,2)} (${pctStr(changePct)})</span>`;
+
+  const canvas=$('chartCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const rect=canvas.parentElement.getBoundingClientRect();
+  canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;
+  ctx.scale(dpr,dpr);
+  const W=rect.width,H=rect.height;
+  ctx.clearRect(0,0,W,H);
+
+  const vals=pts.map(p=>p.equity);
+  const mn=Math.min(...vals)*0.998;
+  const mx=Math.max(...vals)*1.002;
+  const rng=mx-mn||1;
+  const padT=10,padB=20;
+  const cW=W,cH=H-padT-padB;
+
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
+  for(let i=0;i<4;i++){const y=padT+cH*(i/3);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}
+
+  const lineColor=change>=0?'#3FBE7C':'#E2674C';
+  ctx.strokeStyle=lineColor;ctx.lineWidth=2;ctx.lineJoin='round';
+  ctx.beginPath();
+  pts.forEach((p,i)=>{const x=(i/(pts.length-1))*cW;const y=padT+cH*(1-(p.equity-mn)/rng);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
+  ctx.stroke();
+
+  const grad=ctx.createLinearGradient(0,padT,0,H);
+  grad.addColorStop(0,change>=0?'rgba(63,190,124,.15)':'rgba(226,103,76,.15)');
+  grad.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.lineTo(cW,H);ctx.lineTo(0,H);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+
+  const lastX=cW,lastY=padT+cH*(1-(vals[vals.length-1]-mn)/rng);
+  ctx.beginPath();ctx.arc(lastX,lastY,4,0,Math.PI*2);ctx.fillStyle=lineColor;ctx.fill();
+}
+
+function renderRightNow(){
+  const breakerColors={GREEN:'gain',YELLOW:'caution',ORANGE:'caution',RED:'loss',BLACK:'loss'};
+  const stats=[
+    ['Open positions',D.open_positions||0],
+    ['Money deployed',fmt(D.deployed||0)],
+    ['Unrealized P/L',`<span class="${cls(D.unrealized_pnl||0)}">${signedDollar(D.unrealized_pnl||0,2)}</span>`],
+    ['Win rate',D.wins+D.losses>0?(D.win_rate*100).toFixed(0)+'% of '+(D.wins+D.losses):'No resolved'],
+    ['Circuit breaker',`<span class="${breakerColors[D.breaker]||''}">${D.breaker||'—'}</span>`],
+    ['Drawdown',`<span class="${(D.drawdown_pct||0)>5?'loss':'gain'}">${(D.drawdown_pct||0).toFixed(1)}%</span>`],
+    ['Regime',`<span style="color:var(--purple)">${D.regime||'NORMAL'}</span>`],
+    ['Signals',`${(D.signals_generated||0).toLocaleString()}`],
+  ];
+  let html='';
+  stats.forEach(([l,v])=>{html+=`<div class="stat-row"><span class="stat-label">${l}</span><span class="stat-val">${v}</span></div>`});
+  $('rightNowStats').innerHTML=html;
+}
+
+function renderTrades(){
+  const trades=(D.closed_trades||[]).slice(-20).reverse();
+  $('tradeCount').textContent=trades.length+' closed';
+  if(!trades.length){$('tradesList').innerHTML='<div class="empty">No completed trades yet</div>';return}
+  let html='';
+  const stratColors={weather:'var(--blue)',crypto:'var(--purple)',macro:'var(--amber)',sports:'var(--text2)'};
+  trades.forEach(t=>{
+    const d=t.exit_time?new Date(t.exit_time):null;
+    const ts=d?d.toLocaleDateString([],{month:'short',day:'numeric'})+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'—';
+    const pnl=t.realized_pnl||0;
+    const isWin=pnl>=0;
+    const strat=t.strategy||'other';
+    html+=`<div class="trade-row">
+      <span class="trade-time">${ts}</span>
+      <span class="trade-dot" style="background:${stratColors[strat]||'var(--text3)'}" title="${strat}"></span>
+      <span class="trade-market" title="${t.question||''}">${(t.question||'').slice(0,35)}</span>
+      <span class="chip-strategy" style="background:${stratColors[strat]}22;color:${stratColors[strat]}">${strat}</span>
+      <span class="trade-pnl ${cls(pnl)}">${signedDollar(pnl,2)}</span>
+      <span class="trade-chip ${isWin?'chip-win':'chip-loss'}">${isWin?'Win':'Loss'}</span>
+    </div>`;
+  });
+  $('tradesList').innerHTML=html;
+}
+
+function renderPositions(){
+  const positions=D.positions||[];
+  $('posCount').textContent=positions.length+' open';
+  if(!positions.length){$('positionsBody').innerHTML='<div class="empty">No open positions</div>';return}
+  let html='<table class="pos-table"><thead><tr><th>Dir</th><th>Strategy</th><th>Market</th><th>Entry</th><th>Current</th><th>Edge</th><th>P&L</th><th>ROI</th></tr></thead><tbody>';
+  positions.sort((a,b)=>(b.unrealized_pnl||0)-(a.unrealized_pnl||0));
+  positions.forEach(p=>{
+    const roi=p.cost_basis>0?(p.unrealized_pnl/p.cost_basis*100):0;
+    const strat=p.strategy||'other';
+    html+=`<tr>
+      <td><span class="pos-dir ${p.direction==='BUY'?'pos-buy':'pos-sell'}">${p.direction}</span></td>
+      <td><span class="pos-strategy pos-${strat}">${strat}</span></td>
+      <td title="${p.question}">${(p.question||'').slice(0,35)}</td>
+      <td style="font-family:var(--mono)">${p.entry_price?.toFixed(3)}</td>
+      <td style="font-family:var(--mono)">${p.current_price?.toFixed(3)}</td>
+      <td style="font-family:var(--mono)">${(p.edge_at_entry*100).toFixed(1)}%</td>
+      <td class="${cls(p.unrealized_pnl)}" style="font-family:var(--mono)">${signedDollar(p.unrealized_pnl||0,2)}</td>
+      <td class="${cls(roi)}" style="font-family:var(--mono)">${pctStr(roi)}</td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  $('positionsBody').innerHTML=html;
+}
+
+fetchData();
+setInterval(fetchData,30000);
+</script>
+</body>
+</html>
