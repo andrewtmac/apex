@@ -969,7 +969,7 @@ class ApexV2Trader:
                 self.mark_to_market(price_map)
                 self.breaker.update(equity=self.equity)
 
-                # Smart recovery: de-escalate breaker if conditions improve
+                # Smart recovery: de-escalate breaker when bot is stable
                 from apex.risk.circuit_breaker import BreakerLevel
                 if self._cycle % 5 == 0:
                     bl = self.breaker.level.value
@@ -977,16 +977,22 @@ class ApexV2Trader:
                     if self.total_realized_pnl > 0 and bl in ("ORANGE", "RED", "YELLOW"):
                         self.breaker.level = BreakerLevel.GREEN
                         self.breaker.consecutive_losses = 0
-                    # Time-based recovery: if breaker is RED/ORANGE but
-                    # we haven't had a loss in 30+ min, de-escalate one level
+                        self.breaker.peak_equity = self.equity
+                    # Time-based recovery: if breaker is elevated but
+                    # no active losses, de-escalate and reset peak
+                    # (the first-hour peak trap: peak=$1,242 keeps
+                    # drawdown at 23% even though bot is stable at $952)
                     elif bl in ("RED", "ORANGE") and self._consecutive_losses == 0:
                         if bl == "RED":
                             self.breaker.level = BreakerLevel.ORANGE
                         elif bl == "ORANGE":
                             self.breaker.level = BreakerLevel.YELLOW
+                        # Reset peak to current so drawdown recalculates
+                        self.breaker.peak_equity = self.equity
                         logger.info("v2.breaker_recovery",
                                    from_level=bl,
-                                   to_level=self.breaker.level.value)
+                                   to_level=self.breaker.level.value,
+                                   peak_reset=True)
 
                 # 3. Check exits
                 exits = self.check_exits()
