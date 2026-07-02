@@ -394,10 +394,29 @@ class ApexV2Trader:
         # positions. Conflicts are:
         #   - Opposite directions (BUY vs SELL) on same event
         #   - Overlapping range buckets on same event
-        # Extract event key from market_id (e.g. KXHIGHCHI-26JUL01-B89.5
+        # Extract event key from market_id (e.g. KXHIGHCHI-26JUL01-B95.5
         # -> KXHIGHCHI_26JUL01)
         parts = market_id.split("-")
-        if len(parts) >= 2:
+        strategy = signal.get("strategy", "other")
+
+        # Events (hurricanes): each threshold is an independent bet.
+        # Don't group them — ">5 hurricanes" and ">8 hurricanes" are
+        # not conflicting. Only block if same exact market_id.
+        if strategy == "events":
+            for pos in self.positions.values():
+                if pos.status != "OPEN":
+                    continue
+                if pos.market_id == market_id:
+                    return None  # Same exact market, skip
+                # Opposite directions on same series = conflict
+                if pos.market_id.split("-")[0] == parts[0]:
+                    if pos.direction != signal.get("direction", "BUY"):
+                        logger.info("v2.conflict_skip",
+                                    market_id=market_id,
+                                    existing=pos.market_id,
+                                    reason="opposite_directions")
+                        return None
+        elif len(parts) >= 2:
             event_key = f"{parts[0]}_{parts[1]}"
             for pos in self.positions.values():
                 if pos.status != "OPEN":
@@ -417,8 +436,6 @@ class ApexV2Trader:
                         # 2. Same event, same direction, different bucket
                         #    on a range market = conflict (ranges are exclusive)
                         if pos.market_id != market_id:
-                            # Both are different buckets on same event
-                            # Ranges are mutually exclusive outcomes
                             logger.info("v2.conflict_skip",
                                         market_id=market_id,
                                         existing=pos.market_id,
