@@ -51,3 +51,4 @@ logs/*.pid
 # Runtime data directory
 data/
 paper_state.json
+paper_state*.json*
