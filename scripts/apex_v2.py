@@ -133,7 +133,7 @@ class ApexV2Trader:
     STALE_POSITION_HOURS = 48  # 2 days (weather markets are daily)
     EXPIRY_URGENCY_HOURS = 4  # Check every cycle when position is within 4h of expiry
     MAX_DAILY_LOSS_PCT = 0.15
-    MAX_DAILY_TRADES = 20
+    MAX_DAILY_TRADES = 40  # Increased for multi-strategy bot (weather + events)
     COOLDOWN_AFTER_CONSEC_LOSSES = 3
     COOLDOWN_SECONDS = 7200  # 2 hours
     POSITION_POLL_SECONDS = 1  # Poll open position prices every 1s (Kalshi basic: 10 req/s)
@@ -476,11 +476,6 @@ class ApexV2Trader:
         max_size_pct = learner_config.get("max_size_pct", 0.05)
 
         size_pct = min(signal.get("size_pct", 0.05), max_size_pct)
-        # Calculate position size
-        logger.info("v2.execute_trade_check",
-                    market_id=market_id[:30],
-                    strategy=strategy,
-                    positions=len(self.positions))
 
         # Per-city multiplier from learner (hot cities get bigger bets)
         if strategy == "weather":
