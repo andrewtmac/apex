@@ -2375,7 +2375,12 @@ async function openTradePanel(idOrData) {
   // First paint fast without narration, then upgrade with generated narratives
   const quick = adaptDetail(await api(`/api/trade-detail/${encodeURIComponent(idOrData)}`));
   if (!quick) { $('#tp-body').innerHTML = '<div class="empty-state">Trade not found in the durable ledger.</div>'; return; }
-  renderTradePanel(quick); // APEX has no on-demand narration yet — sections show pending states
+  renderTradePanel({ ...quick, _narrating: !(quick.entryThesis && quick.improvementNote) });
+  if (!quick.entryThesis || !quick.improvementNote) {
+    // v3 flywheel: generate + cache the entry thesis and improvement analysis on first open
+    const full = adaptDetail(await api(`/api/trade-detail/${encodeURIComponent(idOrData)}?narrate=1`));
+    if (full && $('#trade-panel').classList.contains('open')) renderTradePanel(full);
+  }
 }
 
 function closeTradePanel(force = false) {

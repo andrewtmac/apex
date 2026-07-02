@@ -26,6 +26,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from dotenv import load_dotenv
 
+from trade_narrator import narrate_close, narrate_entry_thesis, narrate_improvement
+
 load_dotenv(Path(__file__).parent.parent / ".env")
 
 import httpx
@@ -621,6 +623,18 @@ class ApexV2Trader:
 
         return len(exit_ids)
 
+    def _spawn_close_narration(self, trade_record: dict):
+        """v3 flywheel: generate the close summary off the trading path."""
+        async def _run():
+            summary = await narrate_close(trade_record)
+            if summary:
+                trade_record["closeSummary"] = summary
+                self.save_state()
+        try:
+            asyncio.get_running_loop().create_task(_run())
+        except RuntimeError:
+            pass  # no loop (e.g. tests) — narration is best-effort
+
     def _close_position(self, pos: PaperPosition, reason: str):
         """Close a position at current MTM price."""
         if pos.direction == "BUY":
@@ -677,7 +691,9 @@ class ApexV2Trader:
         self.learner.record_trade(trade_record)
         self.learner.generate_insight(trade_record)
 
-        self.closed_trades.append(asdict(pos))
+        record = asdict(pos)
+        self.closed_trades.append(record)
+        self._spawn_close_narration(record)
 
         logger.info(
             "v2.position_closed",
@@ -786,7 +802,9 @@ class ApexV2Trader:
         trade_record["strategy"] = pos.strategy
         self.learner.record_trade(trade_record)
 
-        self.closed_trades.append(asdict(pos))
+        record = asdict(pos)
+        self.closed_trades.append(record)
+        self._spawn_close_narration(record)
 
         logger.info(
             "v2.resolved",
@@ -1360,9 +1378,9 @@ class ApexV2Trader:
                         "closedAt": closed_at,
                         "holdHours": hold_hours,
                         "closeReason": t.get("status", ""),
-                        "closeSummary": "",
-                        "entryThesis": "",
-                        "improvementNote": "",
+                        "closeSummary": t.get("closeSummary", ""),
+                        "entryThesis": t.get("entryThesis", ""),
+                        "improvementNote": t.get("improvementNote", ""),
                     })
                 return result
 
@@ -1521,7 +1539,7 @@ class ApexV2Trader:
 
             # ---- /api/trade-detail/:id ----
             @app.get("/api/trade-detail/{trade_id}")
-            async def api_trade_detail(trade_id: str):
+            async def api_trade_detail(trade_id: str, narrate: int = 0):
                 # Search open positions first
                 for pos in trader.positions.values():
                     if pos.position_id == trade_id:
@@ -1554,6 +1572,28 @@ class ApexV2Trader:
                 # Search closed trades
                 for t in trader.closed_trades:
                     if t.get("position_id") == trade_id:
+                        # v3 flywheel: on ?narrate=1, generate the on-demand
+                        # narratives once and cache them on the trade record
+                        # (persisted by the next save_state).
+                        changed = False
+                        if narrate:
+                            if not t.get("closeSummary"):
+                                s = await narrate_close(t)
+                                if s:
+                                    t["closeSummary"] = s
+                                    changed = True
+                            if not t.get("entryThesis"):
+                                s = await narrate_entry_thesis(t)
+                                if s:
+                                    t["entryThesis"] = s
+                                    changed = True
+                            if not t.get("improvementNote"):
+                                s = await narrate_improvement(t)
+                                if s:
+                                    t["improvementNote"] = s
+                                    changed = True
+                            if changed:
+                                trader.save_state()
                         pnl = t.get("realized_pnl", 0)
                         cost = t.get("cost_basis", 1)
                         roi = pnl / cost if cost > 0 else 0
@@ -1582,9 +1622,9 @@ class ApexV2Trader:
                             "closedAt": closed,
                             "holdHours": hold_hours,
                             "closeReason": t.get("status", ""),
-                            "closeSummary": "",
-                            "entryThesis": "",
-                            "improvementNote": "",
+                            "closeSummary": t.get("closeSummary", ""),
+                            "entryThesis": t.get("entryThesis", ""),
+                            "improvementNote": t.get("improvementNote", ""),
                             "decisionInputs": {
                                 "edge": t.get("edge_at_entry", 0),
                                 "direction": t.get("direction", ""),
