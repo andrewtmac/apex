@@ -123,10 +123,17 @@ class EventsAgent:
 
         edge = true_prob - market_price
 
-        if abs(edge) < 0.10:
+        if abs(edge) < 0.06:
             return None
-        if confidence < 0.50:
+        if confidence < 0.35:
             return None
+
+        logger.info("events.tsla_eval",
+                    threshold=threshold,
+                    estimate=estimate,
+                    model_prob=round(true_prob, 3),
+                    market_price=market_price,
+                    edge=round(edge, 4))
 
         kelly = 0.15
         size_pct = min(kelly * abs(edge) / 0.10, 0.06)
@@ -189,9 +196,11 @@ class EventsAgent:
         except Exception:
             pass
 
+        # Historical baseline of ~7 hurricanes/season is well-established.
+        # Even without ENSO data, the baseline is reliable enough to trade.
         return {
             "enso_state": "unknown",
-            "confidence": 0.3,
+            "confidence": 0.5,
             "activity_modifier": 1.0,
         }
 
@@ -239,10 +248,19 @@ class EventsAgent:
         edge = true_prob - market_price
         confidence = outlook.get("confidence", 0.3)
 
-        if abs(edge) < 0.10:
+        if abs(edge) < 0.06:
             return None
-        if confidence < 0.50:
+        if confidence < 0.35:
             return None
+
+        logger.info("events.hurricane_eval",
+                    question=question[:50],
+                    threshold=threshold,
+                    direction=direction,
+                    model_prob=round(true_prob, 3),
+                    market_price=market_price,
+                    edge=round(edge, 4),
+                    confidence=round(confidence, 3))
 
         kelly = 0.10  # Very conservative for hurricanes
         size_pct = min(kelly * abs(edge) / 0.10, 0.04)

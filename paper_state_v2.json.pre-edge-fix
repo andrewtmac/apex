@@ -1,0 +1,6946 @@
+{
+  "bankroll": 862.54,
+  "trades_executed": 52,
+  "total_realized_pnl": 110.67,
+  "wins": 30,
+  "losses": 18,
+  "signals_generated": 52,
+  "cycle": 1036,
+  "daily_trades": 16,
+  "daily_loss": 52.97,
+  "last_trade_date": "2026-07-02",
+  "consecutive_losses": 4,
+  "positions": [
+    {
+      "position_id": "dcb70292",
+      "market_id": "KXHIGHDEN-26JUL02-T96",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Denver** be >96\u00b0 on Jul 2, 2026?",
+      "direction": "BUY",
+      "entry_price": 0.01,
+      "cost_basis": 26.97766,
+      "shares": 2697.77,
+      "entry_time": "2026-07-02T06:56:18.044296+00:00",
+      "strategy": "weather",
+      "current_price": 0.01,
+      "unrealized_pnl": 0.0,
+      "status": "OPEN",
+      "exit_price": null,
+      "exit_time": null,
+      "realized_pnl": 0.0,
+      "resolution": null,
+      "edge_at_entry": 0.142,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.18,
+      "take_profit": 0.25,
+      "expires_at": "2026-07-03T06:59:00Z"
+    },
+    {
+      "position_id": "62fdd204",
+      "market_id": "KXHIGHCHI-26JUL03-B89.5",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be 89-90\u00b0 on Jul 3, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.35,
+      "cost_basis": 43.295542152192,
+      "shares": 66.61,
+      "entry_time": "2026-07-02T16:40:06.768704+00:00",
+      "strategy": "weather",
+      "current_price": 0.39,
+      "unrealized_pnl": -2.66,
+      "status": "OPEN",
+      "exit_price": null,
+      "exit_time": null,
+      "realized_pnl": 0.0,
+      "resolution": null,
+      "edge_at_entry": -0.34,
+      "peak_pnl_pct": 0.01547503430364317,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-04T05:59:00Z"
+    },
+    {
+      "position_id": "e2325238",
+      "market_id": "KXHIGHAUS-26JUL03-B96.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 96-97\u00b0 on Jul 3, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.49,
+      "cost_basis": 71.75654809109214,
+      "shares": 140.7,
+      "entry_time": "2026-07-02T17:07:08.300327+00:00",
+      "strategy": "weather",
+      "current_price": 0.55,
+      "unrealized_pnl": -8.44,
+      "status": "OPEN",
+      "exit_price": null,
+      "exit_time": null,
+      "realized_pnl": 0.0,
+      "resolution": null,
+      "edge_at_entry": -0.3413,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-04T05:59:00Z"
+    },
+    {
+      "position_id": "72a20b1b",
+      "market_id": "KXHIGHMIA-26JUL03-B92.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Miami** be 92-93\u00b0 on Jul 3, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.53,
+      "cost_basis": 106.11694104208873,
+      "shares": 225.78,
+      "entry_time": "2026-07-02T17:09:30.338504+00:00",
+      "strategy": "weather",
+      "current_price": 0.6,
+      "unrealized_pnl": -15.8,
+      "status": "OPEN",
+      "exit_price": null,
+      "exit_time": null,
+      "realized_pnl": 0.0,
+      "resolution": null,
+      "edge_at_entry": -0.4965,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-04T04:59:00Z"
+    }
+  ],
+  "closed_trades": [
+    {
+      "position_id": "3a15be32",
+      "market_id": "KXHIGHAUS-26JUL01-B97.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 97-98\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.67,
+      "cost_basis": 120.0,
+      "shares": 363.64,
+      "entry_time": "2026-07-01T21:15:37.203079+00:00",
+      "strategy": "weather",
+      "current_price": 0.53,
+      "unrealized_pnl": 50.91,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.53,
+      "exit_time": "2026-07-01T21:17:45.954826+00:00",
+      "realized_pnl": 50.91,
+      "resolution": null,
+      "edge_at_entry": -0.543,
+      "peak_pnl_pct": 0.42424999999999996,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z",
+      "closeSummary": "This trade closed via the take-profit trigger as the price fell from 0.67 to 0.53, securing the intended gain within the weather strategy's parameters.",
+      "entryThesis": "The trade sold the 97-98\u00b0 temperature contract based on a weather strategy claiming the market was overpriced at entry. The model edge of -0.543 indicated the contract's true probability was significantly lower than the 0.67 market price, presenting a valuation gap. The position was quickly closed for a profit via a take-profit trigger at 0.53 after the price moved in the expected direction.",
+      "improvementNote": "The negative model edge at entry indicates the position was entered prematurely based on incomplete data, so waiting for updated forecast consensus could improve timing. Given the very short hold time and take-profit trigger, scaling into a full position over 2-3 price increments rather than immediate full size could capture better average entries. The wide stop-loss relative to the tight take-profit suggests tightening the risk-reward ratio to something like 1:1.5 for these quick scalps."
+    },
+    {
+      "position_id": "e8e95491",
+      "market_id": "KXHIGHCHI-26JUL01-T95",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be <95\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.9,
+      "cost_basis": 74.65216,
+      "shares": 746.52,
+      "entry_time": "2026-07-01T21:15:37.203376+00:00",
+      "strategy": "weather",
+      "current_price": 0.94,
+      "unrealized_pnl": -29.86,
+      "status": "STOP_LOSS",
+      "exit_price": 0.94,
+      "exit_time": "2026-07-01T21:17:45.959558+00:00",
+      "realized_pnl": -29.86,
+      "resolution": null,
+      "edge_at_entry": -0.2809,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z",
+      "closeSummary": "This trade closed due to the stop loss trigger after the market moved against the sell position, resulting in a loss that did not match the strategy's intent for a profitable outcome.",
+      "improvementNote": "The model edge was negative at entry (-0.2809), so the trade should not have been initiated; require a positive edge before entry. For weather trades, incorporate real-time forecast updates into the exit logic to avoid being stopped out by short-term volatility before the event resolves. Adjust stop-loss placement to account for the market's typical intraday range in these contracts, as the 2-minute hold suggests the stop was too tight."
+    },
+    {
+      "position_id": "9ab35c1b",
+      "market_id": "KXHIGHCHI-26JUL01-T95",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be <95\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.94,
+      "cost_basis": 76.4187957437358,
+      "shares": 1273.65,
+      "entry_time": "2026-07-01T21:17:45.996518+00:00",
+      "strategy": "weather",
+      "current_price": 0.91,
+      "unrealized_pnl": 38.21,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.91,
+      "exit_time": "2026-07-01T21:18:50.432664+00:00",
+      "realized_pnl": 38.21,
+      "resolution": null,
+      "edge_at_entry": -0.3209,
+      "peak_pnl_pct": 0.5000078793198223,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z"
+    },
+    {
+      "position_id": "0f0c1614",
+      "market_id": "KXHIGHAUS-26JUL01-B97.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 97-98\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.53,
+      "cost_basis": 108.09901321727999,
+      "shares": 230.0,
+      "entry_time": "2026-07-01T21:17:45.996415+00:00",
+      "strategy": "weather",
+      "current_price": 0.72,
+      "unrealized_pnl": -43.7,
+      "status": "STOP_LOSS",
+      "exit_price": 0.72,
+      "exit_time": "2026-07-01T21:20:58.525321+00:00",
+      "realized_pnl": -43.7,
+      "resolution": null,
+      "edge_at_entry": -0.403,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z"
+    },
+    {
+      "position_id": "8309c60a",
+      "market_id": "KXHIGHDEN-26JUL01-B88.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Denver** be 88-89\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.64,
+      "cost_basis": 105.6,
+      "shares": 293.33,
+      "entry_time": "2026-07-01T21:15:37.203259+00:00",
+      "strategy": "weather",
+      "current_price": 0.48,
+      "unrealized_pnl": 46.93,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.48,
+      "exit_time": "2026-07-01T21:23:09.258227+00:00",
+      "realized_pnl": 46.93,
+      "resolution": null,
+      "edge_at_entry": -0.4867,
+      "peak_pnl_pct": 0.44441287878787883,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T06:59:00Z"
+    },
+    {
+      "position_id": "25bc5958",
+      "market_id": "KXHIGHCHI-26JUL01-T95",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be <95\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.91,
+      "cost_basis": 80.10221123403966,
+      "shares": 890.02,
+      "entry_time": "2026-07-01T21:18:50.454304+00:00",
+      "strategy": "weather",
+      "current_price": 0.88,
+      "unrealized_pnl": 26.7,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.88,
+      "exit_time": "2026-07-01T21:24:15.553788+00:00",
+      "realized_pnl": 26.7,
+      "resolution": null,
+      "edge_at_entry": -0.2909,
+      "peak_pnl_pct": 0.33332413161465585,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z"
+    },
+    {
+      "position_id": "602a4af6",
+      "market_id": "KXHIGHAUS-26JUL01-B97.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 97-98\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.61,
+      "cost_basis": 48.914015396936655,
+      "shares": 125.42,
+      "entry_time": "2026-07-01T21:22:03.061820+00:00",
+      "strategy": "weather",
+      "current_price": 0.53,
+      "unrealized_pnl": 10.03,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.53,
+      "exit_time": "2026-07-01T21:25:20.295604+00:00",
+      "realized_pnl": 10.03,
+      "resolution": null,
+      "edge_at_entry": -0.4829,
+      "peak_pnl_pct": 0.20505370329151407,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z"
+    },
+    {
+      "position_id": "6a9fde6b",
+      "market_id": "KXHIGHDEN-26JUL01-B88.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Denver** be 88-89\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.48,
+      "cost_basis": 71.30288416,
+      "shares": 137.12,
+      "entry_time": "2026-07-01T21:23:12.025327+00:00",
+      "strategy": "weather",
+      "current_price": 0.23,
+      "unrealized_pnl": 34.28,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.23,
+      "exit_time": "2026-07-01T21:25:20.298587+00:00",
+      "realized_pnl": 34.28,
+      "resolution": null,
+      "edge_at_entry": -0.3263,
+      "peak_pnl_pct": 0.4807659662556909,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T06:59:00Z"
+    },
+    {
+      "position_id": "10d58ade",
+      "market_id": "KXHIGHAUS-26JUL01-B97.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 97-98\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.53,
+      "cost_basis": 123.21432397937282,
+      "shares": 262.16,
+      "entry_time": "2026-07-01T21:25:20.327834+00:00",
+      "strategy": "weather",
+      "current_price": 0.42,
+      "unrealized_pnl": 28.84,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.42,
+      "exit_time": "2026-07-01T21:27:28.379164+00:00",
+      "realized_pnl": 28.84,
+      "resolution": null,
+      "edge_at_entry": -0.4029,
+      "peak_pnl_pct": 0.23406369542576944,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z"
+    },
+    {
+      "position_id": "5eebdca3",
+      "market_id": "KXHIGHAUS-26JUL01-B95.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 95-96\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.8,
+      "cost_basis": 117.8922240885984,
+      "shares": 589.46,
+      "entry_time": "2026-07-01T21:27:28.414615+00:00",
+      "strategy": "weather",
+      "current_price": 0.64,
+      "unrealized_pnl": 94.31,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.64,
+      "exit_time": "2026-07-01T21:28:32.720951+00:00",
+      "realized_pnl": 94.31,
+      "resolution": null,
+      "edge_at_entry": -0.5999,
+      "peak_pnl_pct": 0.799967943001263,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z"
+    },
+    {
+      "position_id": "0046e2fa",
+      "market_id": "KXHIGHCHI-26JUL01-T95",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be <95\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.88,
+      "cost_basis": 92.09488267856001,
+      "shares": 767.46,
+      "entry_time": "2026-07-01T21:24:15.583168+00:00",
+      "strategy": "weather",
+      "current_price": 0.95,
+      "unrealized_pnl": -53.72,
+      "status": "STOP_LOSS",
+      "exit_price": 0.95,
+      "exit_time": "2026-07-01T21:29:37.562190+00:00",
+      "realized_pnl": -53.72,
+      "resolution": null,
+      "edge_at_entry": -0.2605,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z"
+    },
+    {
+      "position_id": "207b5fe9",
+      "market_id": "KXHIGHDEN-26JUL01-B90.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Denver** be 90-91\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.5,
+      "cost_basis": 73.18930844374746,
+      "shares": 146.38,
+      "entry_time": "2026-07-01T21:25:20.328012+00:00",
+      "strategy": "weather",
+      "current_price": 0.64,
+      "unrealized_pnl": -20.49,
+      "status": "STOP_LOSS",
+      "exit_price": 0.64,
+      "exit_time": "2026-07-01T21:30:41.505656+00:00",
+      "realized_pnl": -20.49,
+      "resolution": null,
+      "edge_at_entry": -0.3144,
+      "peak_pnl_pct": 0.019948268825659702,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T06:59:00Z"
+    },
+    {
+      "position_id": "cd2d0973",
+      "market_id": "KXHIGHCHI-26JUL01-T95",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be <95\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.95,
+      "cost_basis": 47.61953740191977,
+      "shares": 952.39,
+      "entry_time": "2026-07-01T21:29:37.598370+00:00",
+      "strategy": "weather",
+      "current_price": 0.98,
+      "unrealized_pnl": -28.57,
+      "status": "STOP_LOSS",
+      "exit_price": 0.98,
+      "exit_time": "2026-07-01T21:31:45.692487+00:00",
+      "realized_pnl": -28.57,
+      "resolution": null,
+      "edge_at_entry": -0.3302,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z"
+    },
+    {
+      "position_id": "235f7fdc",
+      "market_id": "KXHIGHDEN-26JUL01-B90.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Denver** be 90-91\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.64,
+      "cost_basis": 59.45934060299012,
+      "shares": 165.16,
+      "entry_time": "2026-07-01T21:30:41.534206+00:00",
+      "strategy": "weather",
+      "current_price": 0.47,
+      "unrealized_pnl": 28.08,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.47,
+      "exit_time": "2026-07-01T21:31:45.694991+00:00",
+      "realized_pnl": 28.08,
+      "resolution": null,
+      "edge_at_entry": -0.4536,
+      "peak_pnl_pct": 0.47225548946951995,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T06:59:00Z"
+    },
+    {
+      "position_id": "feb0395b",
+      "market_id": "KXHIGHAUS-26JUL01-B95.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 95-96\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.64,
+      "cost_basis": 129.2098291979666,
+      "shares": 358.92,
+      "entry_time": "2026-07-01T21:28:33.599387+00:00",
+      "strategy": "weather",
+      "current_price": 0.75,
+      "unrealized_pnl": -39.48,
+      "status": "STOP_LOSS",
+      "exit_price": 0.75,
+      "exit_time": "2026-07-01T21:34:58.367689+00:00",
+      "realized_pnl": -39.48,
+      "resolution": null,
+      "edge_at_entry": -0.4399,
+      "peak_pnl_pct": 0.02778426395487021,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z"
+    },
+    {
+      "position_id": "6b36f4be",
+      "market_id": "KXHIGHNY-26JUL02-T99",
+      "venue": "kalshi",
+      "question": "Will the **high temp in NYC** be <99\u00b0 on Jul 2, 2026?",
+      "direction": "BUY",
+      "entry_price": 0.64,
+      "cost_basis": 14.624729855999998,
+      "shares": 22.85,
+      "entry_time": "2026-07-01T21:15:37.203482+00:00",
+      "strategy": "weather",
+      "current_price": 0.48,
+      "unrealized_pnl": -3.66,
+      "status": "STOP_LOSS",
+      "exit_price": 0.48,
+      "exit_time": "2026-07-01T22:01:46.556260+00:00",
+      "realized_pnl": -3.66,
+      "resolution": null,
+      "edge_at_entry": 0.2567,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-03T04:59:00Z"
+    },
+    {
+      "position_id": "fd1aee79",
+      "market_id": "KXTSLA-26JULDELIV-470000",
+      "venue": "kalshi",
+      "question": "Will Tesla Inc. report above 470000 total deliveries in Q2 2026?",
+      "direction": "SELL",
+      "entry_price": 0.57,
+      "cost_basis": 31.373099999999997,
+      "shares": 72.96,
+      "entry_time": "2026-07-02T00:08:57.782783+00:00",
+      "strategy": "events",
+      "current_price": 0.54,
+      "unrealized_pnl": 2.19,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.54,
+      "exit_time": "2026-07-02T02:08:13.192466+00:00",
+      "realized_pnl": 2.19,
+      "resolution": null,
+      "edge_at_entry": -0.2807,
+      "peak_pnl_pct": 0.18614673079804037,
+      "stop_loss": -0.3,
+      "take_profit": 0.2,
+      "expires_at": "2026-08-21T20:00:00Z"
+    },
+    {
+      "position_id": "4be191d9",
+      "market_id": "KXTSLA-26JULDELIV-480000",
+      "venue": "kalshi",
+      "question": "Will Tesla Inc. report above 480000 total deliveries in Q2 2026?",
+      "direction": "SELL",
+      "entry_price": 0.7,
+      "cost_basis": 26.873493504,
+      "shares": 89.58,
+      "entry_time": "2026-07-02T02:47:26.184418+00:00",
+      "strategy": "events",
+      "current_price": 0.61,
+      "unrealized_pnl": 8.06,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.61,
+      "exit_time": "2026-07-02T02:49:42.787502+00:00",
+      "realized_pnl": 8.06,
+      "resolution": null,
+      "edge_at_entry": -0.4977,
+      "peak_pnl_pct": 0.2999237891716723,
+      "stop_loss": -0.3,
+      "take_profit": 0.2,
+      "expires_at": "2026-08-21T20:00:00Z"
+    },
+    {
+      "position_id": "8416820c",
+      "market_id": "KXTSLA-26JULDELIV-480000",
+      "venue": "kalshi",
+      "question": "Will Tesla Inc. report above 480000 total deliveries in Q2 2026?",
+      "direction": "SELL",
+      "entry_price": 0.67,
+      "cost_basis": 27.11537469888,
+      "shares": 82.17,
+      "entry_time": "2026-07-02T02:59:14.308976+00:00",
+      "strategy": "events",
+      "current_price": 0.51,
+      "unrealized_pnl": 13.15,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.51,
+      "exit_time": "2026-07-02T03:04:15.524915+00:00",
+      "realized_pnl": 13.15,
+      "resolution": null,
+      "edge_at_entry": -0.4677,
+      "peak_pnl_pct": 0.4849647163659944,
+      "stop_loss": -0.3,
+      "take_profit": 0.2,
+      "expires_at": "2026-08-21T20:00:00Z"
+    },
+    {
+      "position_id": "0bff74b5",
+      "market_id": "KXTSLA-26JULDELIV-475000",
+      "venue": "kalshi",
+      "question": "Will Tesla Inc. report above 475000 total deliveries in Q2 2026?",
+      "direction": "SELL",
+      "entry_price": 0.64,
+      "cost_basis": 13.754906228956798,
+      "shares": 38.21,
+      "entry_time": "2026-07-02T03:10:14.977884+00:00",
+      "strategy": "events",
+      "current_price": 0.5,
+      "unrealized_pnl": 5.35,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.5,
+      "exit_time": "2026-07-02T03:17:17.201135+00:00",
+      "realized_pnl": 5.35,
+      "resolution": null,
+      "edge_at_entry": -0.3963,
+      "peak_pnl_pct": 0.38895212449629,
+      "stop_loss": -0.3,
+      "take_profit": 0.2,
+      "expires_at": "2026-08-21T20:00:00Z"
+    },
+    {
+      "position_id": "918b526e",
+      "market_id": "KXHIGHNY-26JUL02-T99",
+      "venue": "kalshi",
+      "question": "Will the **high temp in NYC** be <99\u00b0 on Jul 2, 2026?",
+      "direction": "BUY",
+      "entry_price": 0.5,
+      "cost_basis": 30.02624,
+      "shares": 60.05,
+      "entry_time": "2026-07-02T00:43:33.057947+00:00",
+      "strategy": "weather",
+      "current_price": 0.36,
+      "unrealized_pnl": -8.41,
+      "status": "STOP_LOSS",
+      "exit_price": 0.36,
+      "exit_time": "2026-07-02T03:46:57.916686+00:00",
+      "realized_pnl": -8.41,
+      "resolution": null,
+      "edge_at_entry": 0.1943,
+      "peak_pnl_pct": 0.09991260977065393,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-03T04:59:00Z"
+    },
+    {
+      "position_id": "836f5422",
+      "market_id": "KXHIGHCHI-26JUL02-T93",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be <93\u00b0 on Jul 2, 2026?",
+      "direction": "BUY",
+      "entry_price": 0.18,
+      "cost_basis": 32.368408628695896,
+      "shares": 179.82,
+      "entry_time": "2026-07-02T04:11:23.239746+00:00",
+      "strategy": "weather",
+      "current_price": 0.22,
+      "unrealized_pnl": 7.19,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.22,
+      "exit_time": "2026-07-02T04:12:29.832413+00:00",
+      "realized_pnl": 7.19,
+      "resolution": null,
+      "edge_at_entry": 0.3115,
+      "peak_pnl_pct": 0.22213016656079212,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-03T05:59:00Z"
+    },
+    {
+      "position_id": "f51e4305",
+      "market_id": "KXTSLA-26JULDELIV-470000",
+      "venue": "kalshi",
+      "question": "Will Tesla Inc. report above 470000 total deliveries in Q2 2026?",
+      "direction": "SELL",
+      "entry_price": 0.62,
+      "cost_basis": 13.835157635522448,
+      "shares": 36.41,
+      "entry_time": "2026-07-02T03:17:21.424991+00:00",
+      "strategy": "events",
+      "current_price": 0.54,
+      "unrealized_pnl": 2.91,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.54,
+      "exit_time": "2026-07-02T04:27:56.530683+00:00",
+      "realized_pnl": 2.91,
+      "resolution": null,
+      "edge_at_entry": -0.3307,
+      "peak_pnl_pct": 0.2103337075486897,
+      "stop_loss": -0.3,
+      "take_profit": 0.2,
+      "expires_at": "2026-08-21T20:00:00Z"
+    },
+    {
+      "position_id": "77921ab7",
+      "market_id": "KXHIGHCHI-26JUL02-T93",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be <93\u00b0 on Jul 2, 2026?",
+      "direction": "BUY",
+      "entry_price": 0.21,
+      "cost_basis": 30.306142333420752,
+      "shares": 144.31,
+      "entry_time": "2026-07-02T04:23:14.702854+00:00",
+      "strategy": "weather",
+      "current_price": 0.13,
+      "unrealized_pnl": -11.54,
+      "status": "STOP_LOSS",
+      "exit_price": 0.13,
+      "exit_time": "2026-07-02T04:27:56.534105+00:00",
+      "realized_pnl": -11.55,
+      "resolution": null,
+      "edge_at_entry": 0.2814,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-03T05:59:00Z"
+    },
+    {
+      "position_id": "9cd36869",
+      "market_id": "KXTSLA-26JULDELIV-475000",
+      "venue": "kalshi",
+      "question": "Will Tesla Inc. report above 475000 total deliveries in Q2 2026?",
+      "direction": "SELL",
+      "entry_price": 0.65,
+      "cost_basis": 26.207207944972232,
+      "shares": 74.88,
+      "entry_time": "2026-07-02T04:35:13.047826+00:00",
+      "strategy": "events",
+      "current_price": 0.5,
+      "unrealized_pnl": 11.23,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.5,
+      "exit_time": "2026-07-02T04:47:22.781373+00:00",
+      "realized_pnl": 11.23,
+      "resolution": null,
+      "edge_at_entry": -0.4063,
+      "peak_pnl_pct": 0.4285080663144217,
+      "stop_loss": -0.3,
+      "take_profit": 0.2,
+      "expires_at": "2026-08-21T20:00:00Z"
+    },
+    {
+      "position_id": "a2b3b887",
+      "market_id": "KXTSLA-26JULDELIV-480000",
+      "venue": "kalshi",
+      "question": "Will Tesla Inc. report above 480000 total deliveries in Q2 2026?",
+      "direction": "SELL",
+      "entry_price": 0.66,
+      "cost_basis": 13.272095853311534,
+      "shares": 39.04,
+      "entry_time": "2026-07-02T04:47:27.489893+00:00",
+      "strategy": "events",
+      "current_price": 0.53,
+      "unrealized_pnl": 5.08,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.53,
+      "exit_time": "2026-07-02T04:53:32.490688+00:00",
+      "realized_pnl": 5.08,
+      "resolution": null,
+      "edge_at_entry": -0.4577,
+      "peak_pnl_pct": 0.38275793485416126,
+      "stop_loss": -0.3,
+      "take_profit": 0.2,
+      "expires_at": "2026-08-21T20:00:00Z"
+    },
+    {
+      "position_id": "f4095c19",
+      "market_id": "KXHIGHNY-26JUL02-T99",
+      "venue": "kalshi",
+      "question": "Will the **high temp in NYC** be <99\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.49,
+      "cost_basis": 68.94783560478297,
+      "shares": 135.19,
+      "entry_time": "2026-07-02T04:11:23.239973+00:00",
+      "strategy": "weather",
+      "current_price": 0.47,
+      "unrealized_pnl": 2.7,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.47,
+      "exit_time": "2026-07-02T05:02:15.690986+00:00",
+      "realized_pnl": 2.7,
+      "resolution": null,
+      "edge_at_entry": -0.3107,
+      "peak_pnl_pct": 0.15693023435893624,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-03T04:59:00Z"
+    },
+    {
+      "position_id": "1ca4d95d",
+      "market_id": "KXHIGHCHI-26JUL02-T93",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be <93\u00b0 on Jul 2, 2026?",
+      "direction": "BUY",
+      "entry_price": 0.16,
+      "cost_basis": 15.339003580867251,
+      "shares": 95.87,
+      "entry_time": "2026-07-02T04:47:27.490161+00:00",
+      "strategy": "weather",
+      "current_price": 0.2,
+      "unrealized_pnl": 3.83,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.2,
+      "exit_time": "2026-07-02T05:46:36.119716+00:00",
+      "realized_pnl": 3.83,
+      "resolution": null,
+      "edge_at_entry": 0.3313,
+      "peak_pnl_pct": 0.2496902735440561,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-03T05:59:00Z",
+      "closeSummary": "The trade closed because the price reached the pre-set take profit level of 0.2, and the positive outcome matched the strategy's intent to lock in gains.",
+      "entryThesis": "This weather trade bought a 16% market probability for Chicago's high staying below 93\u00b0 on Jul 2, 2026, based on the model's forecast assigning a 49% true probability to the event, creating a 33.13% edge. The position was exited for profit when the price rose to the 0.20 take-profit target after 59 minutes, likely due to updated weather data or market re-pricing moving toward the model's higher probability estimate.",
+      "improvementNote": "For this weather trade, tighten the stop-loss to -0.15 from -0.25 to improve the risk-reward ratio given the moderate edge. Consider increasing position size when the model edge exceeds 0.3, as the claimed 0.33 edge was not fully capitalized. Use higher-resolution hourly temperature data near entry to time buys more precisely before forecast convergence."
+    },
+    {
+      "position_id": "c882c43e",
+      "market_id": "KXHIGHAUS-26JUL02-B95.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 95-96\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.63,
+      "cost_basis": 122.15224319999999,
+      "shares": 330.14,
+      "entry_time": "2026-07-02T02:23:38.393475+00:00",
+      "strategy": "weather",
+      "current_price": 0.63,
+      "unrealized_pnl": 0.0,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.63,
+      "exit_time": "2026-07-02T06:26:06.154997+00:00",
+      "realized_pnl": -0.0,
+      "resolution": null,
+      "edge_at_entry": -0.468,
+      "peak_pnl_pct": 0.13515920434607298,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-03T05:59:00Z"
+    },
+    {
+      "position_id": "a933026d",
+      "market_id": "KXHIGHMIA-26JUL02-B91.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Miami** be 91-92\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.64,
+      "cost_basis": 110.73974208000001,
+      "shares": 307.61,
+      "entry_time": "2026-07-02T06:26:18.540548+00:00",
+      "strategy": "weather",
+      "current_price": 0.61,
+      "unrealized_pnl": 9.23,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.61,
+      "exit_time": "2026-07-02T09:23:11.295504+00:00",
+      "realized_pnl": 9.23,
+      "resolution": null,
+      "edge_at_entry": -0.5983,
+      "peak_pnl_pct": 0.22223277332740557,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T04:59:00Z"
+    },
+    {
+      "position_id": "d376ebdb",
+      "market_id": "KXHIGHAUS-26JUL02-B95.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 95-96\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.63,
+      "cost_basis": 97.45097303040001,
+      "shares": 263.38,
+      "entry_time": "2026-07-02T06:26:18.540802+00:00",
+      "strategy": "weather",
+      "current_price": 0.7,
+      "unrealized_pnl": -18.44,
+      "status": "STOP_LOSS",
+      "exit_price": 0.7,
+      "exit_time": "2026-07-02T09:49:12.268884+00:00",
+      "realized_pnl": -18.44,
+      "resolution": null,
+      "edge_at_entry": -0.4567,
+      "peak_pnl_pct": 0.08106640451435597,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T05:59:00Z"
+    },
+    {
+      "position_id": "aae9a7fa",
+      "market_id": "KXTSLA-26JULDELIV-500000",
+      "venue": "kalshi",
+      "question": "Will Tesla Inc. report above 500000 total deliveries in Q2 2026?",
+      "direction": "SELL",
+      "entry_price": 0.54,
+      "cost_basis": 14.192921861798851,
+      "shares": 30.85,
+      "entry_time": "2026-07-02T05:04:47.142923+00:00",
+      "strategy": "events",
+      "current_price": 0.35,
+      "unrealized_pnl": 5.86,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.35,
+      "exit_time": "2026-07-02T10:19:01.456949+00:00",
+      "realized_pnl": 5.86,
+      "resolution": null,
+      "edge_at_entry": -0.4576,
+      "peak_pnl_pct": 0.4128818616110726,
+      "stop_loss": -0.3,
+      "take_profit": 0.2,
+      "expires_at": "2026-08-21T20:00:00Z"
+    },
+    {
+      "position_id": "93aecd43",
+      "market_id": "KXHIGHDEN-26JUL01-B88.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Denver** be 88-89\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.99,
+      "cost_basis": 125.84061600000001,
+      "shares": 12584.06,
+      "entry_time": "2026-07-02T06:26:18.540151+00:00",
+      "strategy": "weather",
+      "current_price": 0.99,
+      "unrealized_pnl": 0.0,
+      "status": "RESOLVED_LOSS",
+      "exit_price": 1.0,
+      "exit_time": "2026-07-02T11:06:27.985084+00:00",
+      "realized_pnl": -125.84,
+      "resolution": "YES",
+      "edge_at_entry": -0.9678,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-02T06:59:00Z"
+    },
+    {
+      "position_id": "83140a10",
+      "market_id": "KXHIGHNY-26JUL02-B99.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in NYC** be 99-100\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.4,
+      "cost_basis": 24.651449433060733,
+      "shares": 41.09,
+      "entry_time": "2026-07-02T05:10:52.677318+00:00",
+      "strategy": "weather",
+      "current_price": 0.56,
+      "unrealized_pnl": -6.57,
+      "status": "STOP_LOSS",
+      "exit_price": 0.56,
+      "exit_time": "2026-07-02T11:58:04.590005+00:00",
+      "realized_pnl": -6.57,
+      "resolution": null,
+      "edge_at_entry": -0.3061,
+      "peak_pnl_pct": 0.0831594103854473,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-03T04:59:00Z"
+    },
+    {
+      "position_id": "9b300c6c",
+      "market_id": "KXHIGHCHI-26JUL01-T95",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be <95\u00b0 on Jul 1, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.99,
+      "cost_basis": 93.04077699999999,
+      "shares": 9304.08,
+      "entry_time": "2026-07-02T00:03:47.893031+00:00",
+      "strategy": "weather",
+      "current_price": 0.99,
+      "unrealized_pnl": 0.0,
+      "status": "RESOLVED_LOSS",
+      "exit_price": 1.0,
+      "exit_time": "2026-07-02T12:01:23.244420+00:00",
+      "realized_pnl": -93.04,
+      "resolution": "YES",
+      "edge_at_entry": -0.1964,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.25,
+      "take_profit": 0.2,
+      "expires_at": "2026-07-02T05:59:00Z"
+    },
+    {
+      "position_id": "92acb6b5",
+      "market_id": "KXHIGHMIA-26JUL02-B91.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Miami** be 91-92\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.78,
+      "cost_basis": 110.97359999999999,
+      "shares": 504.43,
+      "entry_time": "2026-07-02T16:40:06.767856+00:00",
+      "strategy": "weather",
+      "current_price": 0.77,
+      "unrealized_pnl": 5.04,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.77,
+      "exit_time": "2026-07-02T16:48:14.393578+00:00",
+      "realized_pnl": 5.05,
+      "resolution": null,
+      "edge_at_entry": -0.7542,
+      "peak_pnl_pct": 0.13633873281573278,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T04:59:00Z",
+      "closeSummary": "This trade closed due to a trailing stop being triggered after the price moved favorably for the sell position, locking in a profit. The winning outcome aligned with the weather strategy's intent to capitalize on the temperature prediction.",
+      "entryThesis": "This trade was taken because the strategy's weather model identified a significant mispricing, claiming the market's probability of Miami hitting 91-92\u00b0 was overstated by roughly 75.4% relative to its own forecast. The core edge was a probability divergence, where selling at 0.78 offered positive expected value against the model's much lower estimated probability. The trailing stop mechanically closed the position for a small win as the price moved in the predicted direction.",
+      "improvementNote": "Improve entry by only proceeding when model edge is positive to avoid low-confidence trades like this one. Adjust the trailing stop to allow more profit capture, as the quick exit limited gains despite the win. Incorporate real-time hourly weather forecasts to time entries more accurately in volatile markets."
+    },
+    {
+      "position_id": "b272814b",
+      "market_id": "KXHIGHMIA-26JUL02-B91.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Miami** be 91-92\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.77,
+      "cost_basis": 74.00746799999999,
+      "shares": 321.77,
+      "entry_time": "2026-07-02T16:48:17.755154+00:00",
+      "strategy": "weather",
+      "current_price": 0.63,
+      "unrealized_pnl": 45.05,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.63,
+      "exit_time": "2026-07-02T16:49:33.458509+00:00",
+      "realized_pnl": 45.05,
+      "resolution": null,
+      "edge_at_entry": -0.7524,
+      "peak_pnl_pct": 0.6087223521820798,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T04:59:00Z"
+    },
+    {
+      "position_id": "c42a5acd",
+      "market_id": "KXHIGHMIA-26JUL02-B91.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Miami** be 91-92\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.71,
+      "cost_basis": 39.706579919999996,
+      "shares": 136.92,
+      "entry_time": "2026-07-02T16:50:35.110754+00:00",
+      "strategy": "weather",
+      "current_price": 0.63,
+      "unrealized_pnl": 10.95,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.63,
+      "exit_time": "2026-07-02T16:55:43.907931+00:00",
+      "realized_pnl": 10.95,
+      "resolution": null,
+      "edge_at_entry": -0.6924,
+      "peak_pnl_pct": 0.3447791279828767,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T04:59:00Z"
+    },
+    {
+      "position_id": "d9dba615",
+      "market_id": "KXHIGHMIA-26JUL02-B91.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Miami** be 91-92\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.63,
+      "cost_basis": 80.72761824959998,
+      "shares": 218.18,
+      "entry_time": "2026-07-02T16:56:24.736352+00:00",
+      "strategy": "weather",
+      "current_price": 0.63,
+      "unrealized_pnl": 0.0,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.63,
+      "exit_time": "2026-07-02T16:58:42.484498+00:00",
+      "realized_pnl": -0.0,
+      "resolution": null,
+      "edge_at_entry": -0.6127,
+      "peak_pnl_pct": 0.1081414290337156,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T04:59:00Z"
+    },
+    {
+      "position_id": "b2a5d9a3",
+      "market_id": "KXHIGHMIA-26JUL02-B91.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Miami** be 91-92\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.63,
+      "cost_basis": 80.72749605964798,
+      "shares": 218.18,
+      "entry_time": "2026-07-02T16:58:46.584349+00:00",
+      "strategy": "weather",
+      "current_price": 0.01,
+      "unrealized_pnl": 135.27,
+      "status": "TAKE_PROFIT",
+      "exit_price": 0.01,
+      "exit_time": "2026-07-02T16:58:54.354116+00:00",
+      "realized_pnl": 135.27,
+      "resolution": null,
+      "edge_at_entry": -0.6127,
+      "peak_pnl_pct": 1.6756372562336337,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T04:59:00Z"
+    },
+    {
+      "position_id": "0d515e77",
+      "market_id": "KXHIGHAUS-26JUL03-B96.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 96-97\u00b0 on Jul 3, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.36,
+      "cost_basis": 19.88671413504016,
+      "shares": 31.07,
+      "entry_time": "2026-07-02T16:40:06.769461+00:00",
+      "strategy": "weather",
+      "current_price": 0.48,
+      "unrealized_pnl": -3.73,
+      "status": "STOP_LOSS",
+      "exit_price": 0.48,
+      "exit_time": "2026-07-02T17:01:25.905711+00:00",
+      "realized_pnl": -3.73,
+      "resolution": null,
+      "edge_at_entry": -0.2129,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-04T05:59:00Z"
+    },
+    {
+      "position_id": "6ab2cc66",
+      "market_id": "KXHIGHCHI-26JUL02-B95.5",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be 95-96\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.53,
+      "cost_basis": 66.32152314288231,
+      "shares": 141.11,
+      "entry_time": "2026-07-02T16:40:06.769014+00:00",
+      "strategy": "weather",
+      "current_price": 0.5,
+      "unrealized_pnl": 4.23,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.5,
+      "exit_time": "2026-07-02T17:01:30.800247+00:00",
+      "realized_pnl": 4.23,
+      "resolution": null,
+      "edge_at_entry": -0.296,
+      "peak_pnl_pct": 0.14897124691654992,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T05:59:00Z"
+    },
+    {
+      "position_id": "5b1c0682",
+      "market_id": "KXHIGHMIA-26JUL03-B92.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Miami** be 92-93\u00b0 on Jul 3, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.54,
+      "cost_basis": 97.65676799999999,
+      "shares": 212.3,
+      "entry_time": "2026-07-02T16:40:06.768275+00:00",
+      "strategy": "weather",
+      "current_price": 0.53,
+      "unrealized_pnl": 2.12,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.53,
+      "exit_time": "2026-07-02T17:08:34.872005+00:00",
+      "realized_pnl": 2.12,
+      "resolution": null,
+      "edge_at_entry": -0.5019,
+      "peak_pnl_pct": 0.10874822316462492,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-04T04:59:00Z"
+    },
+    {
+      "position_id": "471d0706",
+      "market_id": "KXHIGHCHI-26JUL02-B95.5",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be 95-96\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.5,
+      "cost_basis": 38.4278476622538,
+      "shares": 76.86,
+      "entry_time": "2026-07-02T17:02:26.379304+00:00",
+      "strategy": "weather",
+      "current_price": 0.38,
+      "unrealized_pnl": 9.22,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.38,
+      "exit_time": "2026-07-02T17:32:40.885452+00:00",
+      "realized_pnl": 9.23,
+      "resolution": null,
+      "edge_at_entry": -0.2536,
+      "peak_pnl_pct": 0.32008037785789967,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T05:59:00Z"
+    },
+    {
+      "position_id": "ce5e5009",
+      "market_id": "KXHIGHAUS-26JUL02-B95.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 95-96\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.58,
+      "cost_basis": 85.93795584,
+      "shares": 204.61,
+      "entry_time": "2026-07-02T16:40:06.768507+00:00",
+      "strategy": "weather",
+      "current_price": 0.66,
+      "unrealized_pnl": -16.37,
+      "status": "STOP_LOSS",
+      "exit_price": 0.66,
+      "exit_time": "2026-07-02T17:32:46.296719+00:00",
+      "realized_pnl": -16.37,
+      "resolution": null,
+      "edge_at_entry": -0.3564,
+      "peak_pnl_pct": 0.07144689375008527,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T05:59:00Z",
+      "entryThesis": "This trade sold exposure to the specific 95-96\u00b0 temperature range because the model's edge indicated the market was overpricing that outcome, expecting probabilities to be lower than the 58% implied by the entry price. The strategy claimed a negative model edge (-0.3564), suggesting the contract's fair value was below the entry price, making it a candidate to sell. However, the position hit a stop-loss in under an hour, indicating the market moved sharply against this thesis, likely as real-time weather data or forecasts shifted.",
+      "improvementNote": "Do not enter trades when the model edge is negative; require a minimum positive threshold. Widen the stop-loss for weather markets given intraday volatility and consider using ensemble forecasts for higher-confidence entries."
+    },
+    {
+      "position_id": "01b685c3",
+      "market_id": "KXHIGHCHI-26JUL02-B93.5",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be 93-94\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.44,
+      "cost_basis": 54.092729600000006,
+      "shares": 96.59,
+      "entry_time": "2026-07-02T17:32:43.871702+00:00",
+      "strategy": "weather",
+      "current_price": 0.55,
+      "unrealized_pnl": -10.62,
+      "status": "STOP_LOSS",
+      "exit_price": 0.55,
+      "exit_time": "2026-07-02T17:36:38.082949+00:00",
+      "realized_pnl": -10.63,
+      "resolution": null,
+      "edge_at_entry": -0.3079,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T05:59:00Z",
+      "closeSummary": "The trade closed due to the stop loss being hit at -0.18 as the market moved against the short position, resulting in a loss that did not align with the strategy's intent to profit from a downward move.",
+      "entryThesis": "This trade shorted the contract based on a weather model claiming the market overpriced the probability of Chicago reaching 93-94\u00b0F (model edge -0.3079 vs. entry price 0.44). The thesis was that the model's lower probability estimate would prove correct, allowing a profitable exit at a lower price. However, the market moved against the position, hitting the stop loss at 0.55 just minutes after entry.",
+      "improvementNote": "Review hourly forecast data instead of daily highs for more precise entry timing. Use a trailing stop instead of fixed levels to capture favorable volatility in weather markets."
+    },
+    {
+      "position_id": "d306d01c",
+      "market_id": "KXHIGHAUS-26JUL02-B95.5",
+      "venue": "kalshi",
+      "question": "Will the **high temp in Austin** be 95-96\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.65,
+      "cost_basis": 106.17479999999999,
+      "shares": 303.36,
+      "entry_time": "2026-07-02T17:38:01.165216+00:00",
+      "strategy": "weather",
+      "current_price": 0.72,
+      "unrealized_pnl": -21.24,
+      "status": "STOP_LOSS",
+      "exit_price": 0.72,
+      "exit_time": "2026-07-02T17:52:20.313927+00:00",
+      "realized_pnl": -21.23,
+      "resolution": null,
+      "edge_at_entry": -0.4286,
+      "peak_pnl_pct": 0.0,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T05:59:00Z",
+      "closeSummary": "The trade closed automatically via the stop loss after 14 minutes because the market moved against the sell position, and this outcome\u2014accepting a small, predefined loss\u2014was consistent with the strategy's risk management despite the negative model edge at entry."
+    },
+    {
+      "position_id": "cc8eb175",
+      "market_id": "KXHIGHCHI-26JUL02-B93.5",
+      "venue": "kalshi",
+      "question": "Will the high temp in Chicago be 93-94\u00b0 on Jul 2, 2026?",
+      "direction": "SELL",
+      "entry_price": 0.54,
+      "cost_basis": 46.716911999999994,
+      "shares": 101.56,
+      "entry_time": "2026-07-02T17:42:44.212200+00:00",
+      "strategy": "weather",
+      "current_price": 0.55,
+      "unrealized_pnl": -1.02,
+      "status": "TRAILING_STOP",
+      "exit_price": 0.55,
+      "exit_time": "2026-07-02T17:56:37.525606+00:00",
+      "realized_pnl": -1.01,
+      "resolution": null,
+      "edge_at_entry": -0.4081,
+      "peak_pnl_pct": 0.10874006398368113,
+      "stop_loss": -0.18,
+      "take_profit": 0.48,
+      "expires_at": "2026-07-03T05:59:00Z",
+      "closeSummary": "The trade closed via trailing stop after the position turned slightly against the entry, realizing a loss that was consistent with the poor initial model edge."
+    }
+  ],
+  "equity_history": [
+    {
+      "ts": "2026-07-01T21:15:33.339436+00:00",
+      "equity": 1000.0
+    },
+    {
+      "ts": "2026-07-01T21:16:41.726245+00:00",
+      "equity": 992.73
+    },
+    {
+      "ts": "2026-07-01T21:17:45.960449+00:00",
+      "equity": 1021.05
+    },
+    {
+      "ts": "2026-07-01T21:18:50.435205+00:00",
+      "equity": 1062.37
+    },
+    {
+      "ts": "2026-07-01T21:19:54.307789+00:00",
+      "equity": 1051.5
+    },
+    {
+      "ts": "2026-07-01T21:20:58.528420+00:00",
+      "equity": 1006.53
+    },
+    {
+      "ts": "2026-07-01T21:22:03.027867+00:00",
+      "equity": 1006.53
+    },
+    {
+      "ts": "2026-07-01T21:23:09.261832+00:00",
+      "equity": 1059.63
+    },
+    {
+      "ts": "2026-07-01T21:24:15.559207+00:00",
+      "equity": 1100.6
+    },
+    {
+      "ts": "2026-07-01T21:25:20.299729+00:00",
+      "equity": 1125.61
+    },
+    {
+      "ts": "2026-07-01T21:26:24.051997+00:00",
+      "equity": 1122.01
+    },
+    {
+      "ts": "2026-07-01T21:27:28.383429+00:00",
+      "equity": 1155.9
+    },
+    {
+      "ts": "2026-07-01T21:28:32.724635+00:00",
+      "equity": 1242.54
+    },
+    {
+      "ts": "2026-07-01T21:29:37.565106+00:00",
+      "equity": 1194.07
+    },
+    {
+      "ts": "2026-07-01T21:30:41.508348+00:00",
+      "equity": 1182.21
+    },
+    {
+      "ts": "2026-07-01T21:31:45.696810+00:00",
+      "equity": 1185.31
+    },
+    {
+      "ts": "2026-07-01T21:32:49.420667+00:00",
+      "equity": 1181.49
+    },
+    {
+      "ts": "2026-07-01T21:33:53.053417+00:00",
+      "equity": 1156.37
+    },
+    {
+      "ts": "2026-07-01T21:34:58.370623+00:00",
+      "equity": 1142.01
+    },
+    {
+      "ts": "2026-07-01T21:36:02.785041+00:00",
+      "equity": 1142.01
+    },
+    {
+      "ts": "2026-07-01T21:37:07.277220+00:00",
+      "equity": 1142.01
+    },
+    {
+      "ts": "2026-07-01T21:38:11.646839+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:39:16.571196+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:40:21.584122+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:41:25.923022+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:42:30.761576+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:43:34.166343+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:44:38.041252+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:45:42.784645+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:46:46.991900+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:47:51.242104+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:48:55.324038+00:00",
+      "equity": 1141.78
+    },
+    {
+      "ts": "2026-07-01T21:49:59.638327+00:00",
+      "equity": 1142.01
+    },
+    {
+      "ts": "2026-07-01T21:51:04.507495+00:00",
+      "equity": 1141.33
+    },
+    {
+      "ts": "2026-07-01T21:52:08.327178+00:00",
+      "equity": 1141.33
+    },
+    {
+      "ts": "2026-07-01T21:53:12.013376+00:00",
+      "equity": 1141.33
+    },
+    {
+      "ts": "2026-07-01T21:54:17.418898+00:00",
+      "equity": 1141.33
+    },
+    {
+      "ts": "2026-07-01T21:55:20.931266+00:00",
+      "equity": 1141.33
+    },
+    {
+      "ts": "2026-07-01T21:56:25.967221+00:00",
+      "equity": 1140.41
+    },
+    {
+      "ts": "2026-07-01T21:57:30.108545+00:00",
+      "equity": 1139.27
+    },
+    {
+      "ts": "2026-07-01T21:58:34.170648+00:00",
+      "equity": 1139.27
+    },
+    {
+      "ts": "2026-07-01T21:59:38.354482+00:00",
+      "equity": 1139.04
+    },
+    {
+      "ts": "2026-07-01T22:00:41.971825+00:00",
+      "equity": 1139.04
+    },
+    {
+      "ts": "2026-07-01T22:01:46.560457+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:02:50.844302+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:03:54.608390+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:04:57.937167+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:06:01.098259+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:07:05.583916+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:08:09.449434+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:09:13.053601+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:10:17.966617+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:11:21.538500+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:12:26.313137+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:13:29.763081+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:14:33.446546+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:15:37.024106+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:16:40.071179+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:17:44.429578+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:18:47.943843+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:19:52.385440+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:20:56.562596+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:22:00.419254+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:23:04.966298+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:24:08.446534+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:25:13.321436+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:26:19.231333+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:27:23.757081+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:28:28.365404+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:29:32.364611+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:30:36.253934+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:31:40.454090+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:32:44.640445+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:33:49.194683+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:34:52.658820+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:35:56.449778+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:37:01.131193+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:38:04.602826+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:39:08.437448+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:39:48.901859+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:42:00.351177+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:43:09.335549+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:44:19.011932+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:45:28.513323+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:46:38.144063+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:47:46.394526+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:48:53.906091+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:50:01.983724+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:51:10.488400+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:52:20.488423+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:53:29.009790+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:54:38.539690+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:55:47.054952+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:56:58.123759+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:58:08.113970+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T22:59:19.733905+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:00:38.154769+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:02:13.463591+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:03:23.230225+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:04:30.752709+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:05:39.350663+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:06:48.128156+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:07:59.005094+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:09:08.909263+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:10:17.700540+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:11:28.703860+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:12:40.797441+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:13:51.264289+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:15:02.362398+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:16:12.651346+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:17:23.088149+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:18:32.562166+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:19:43.930630+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:20:54.162755+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:22:04.033824+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:23:13.411199+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:24:22.181860+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:25:32.371927+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:26:42.401946+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:27:52.384687+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:29:03.213654+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:30:13.063653+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:31:25.279064+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:32:40.151911+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:33:49.300508+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:35:01.158540+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:36:10.263759+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:37:19.721445+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:38:28.484731+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:39:39.533262+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:40:49.270059+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:41:59.974054+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:43:10.588532+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:44:20.141480+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:45:30.706274+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:46:41.299738+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:47:52.359871+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:49:03.007818+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:50:18.233235+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:51:33.467920+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:52:42.999345+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:53:51.653997+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:55:02.372807+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:56:18.123547+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:57:30.885302+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:58:41.666920+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-01T23:59:51.807464+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:01:00.545936+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:02:33.037884+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:03:43.734454+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:04:53.763648+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:06:02.663295+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:06:31.680151+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:07:44.812609+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:08:53.910124+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:10:03.377554+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:11:12.518595+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:12:21.415971+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:13:32.917224+00:00",
+      "equity": 1139.54
+    },
+    {
+      "ts": "2026-07-02T00:14:42.104478+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:15:50.494814+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:16:59.602991+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:18:10.030261+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:18:38.238264+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:19:50.200851+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:20:59.905472+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:22:10.197014+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:23:20.768388+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:24:31.903895+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:25:41.808090+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:26:50.799368+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:28:01.139646+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:29:10.688997+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:30:20.693972+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:31:39.576108+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T00:32:49.468589+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:34:00.222043+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:35:12.959182+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:36:23.185457+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:37:34.005324+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:38:44.353733+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:39:55.187179+00:00",
+      "equity": 1138.81
+    },
+    {
+      "ts": "2026-07-02T00:41:05.989049+00:00",
+      "equity": 1140.27
+    },
+    {
+      "ts": "2026-07-02T00:42:16.622819+00:00",
+      "equity": 1140.27
+    },
+    {
+      "ts": "2026-07-02T00:43:28.590123+00:00",
+      "equity": 1140.27
+    },
+    {
+      "ts": "2026-07-02T00:44:38.262645+00:00",
+      "equity": 1140.27
+    },
+    {
+      "ts": "2026-07-02T00:45:47.694775+00:00",
+      "equity": 1138.47
+    },
+    {
+      "ts": "2026-07-02T00:46:57.878296+00:00",
+      "equity": 1138.47
+    },
+    {
+      "ts": "2026-07-02T00:48:08.466186+00:00",
+      "equity": 1141.47
+    },
+    {
+      "ts": "2026-07-02T00:49:19.981216+00:00",
+      "equity": 1142.67
+    },
+    {
+      "ts": "2026-07-02T00:50:30.910976+00:00",
+      "equity": 1142.67
+    },
+    {
+      "ts": "2026-07-02T00:51:39.980843+00:00",
+      "equity": 1142.67
+    },
+    {
+      "ts": "2026-07-02T00:52:49.497964+00:00",
+      "equity": 1140.48
+    },
+    {
+      "ts": "2026-07-02T00:53:59.763894+00:00",
+      "equity": 1140.48
+    },
+    {
+      "ts": "2026-07-02T00:55:10.802139+00:00",
+      "equity": 1141.08
+    },
+    {
+      "ts": "2026-07-02T00:56:22.428556+00:00",
+      "equity": 1141.08
+    },
+    {
+      "ts": "2026-07-02T00:57:33.678677+00:00",
+      "equity": 1141.81
+    },
+    {
+      "ts": "2026-07-02T00:58:43.999090+00:00",
+      "equity": 1141.81
+    },
+    {
+      "ts": "2026-07-02T00:59:55.525634+00:00",
+      "equity": 1141.81
+    },
+    {
+      "ts": "2026-07-02T01:01:05.607213+00:00",
+      "equity": 1141.81
+    },
+    {
+      "ts": "2026-07-02T01:02:19.783324+00:00",
+      "equity": 1141.21
+    },
+    {
+      "ts": "2026-07-02T01:03:30.036150+00:00",
+      "equity": 1140.61
+    },
+    {
+      "ts": "2026-07-02T01:04:39.001168+00:00",
+      "equity": 1140.61
+    },
+    {
+      "ts": "2026-07-02T01:05:51.349609+00:00",
+      "equity": 1140.61
+    },
+    {
+      "ts": "2026-07-02T01:07:03.473100+00:00",
+      "equity": 1140.61
+    },
+    {
+      "ts": "2026-07-02T01:08:14.902042+00:00",
+      "equity": 1140.61
+    },
+    {
+      "ts": "2026-07-02T01:09:25.368685+00:00",
+      "equity": 1141.94
+    },
+    {
+      "ts": "2026-07-02T01:10:35.863995+00:00",
+      "equity": 1141.94
+    },
+    {
+      "ts": "2026-07-02T01:11:45.427505+00:00",
+      "equity": 1141.94
+    },
+    {
+      "ts": "2026-07-02T01:12:55.597436+00:00",
+      "equity": 1137.35
+    },
+    {
+      "ts": "2026-07-02T01:14:05.521790+00:00",
+      "equity": 1137.95
+    },
+    {
+      "ts": "2026-07-02T01:15:15.773204+00:00",
+      "equity": 1137.22
+    },
+    {
+      "ts": "2026-07-02T01:16:26.945583+00:00",
+      "equity": 1134.22
+    },
+    {
+      "ts": "2026-07-02T01:17:38.401865+00:00",
+      "equity": 1136.02
+    },
+    {
+      "ts": "2026-07-02T01:18:49.589422+00:00",
+      "equity": 1136.02
+    },
+    {
+      "ts": "2026-07-02T01:20:00.590392+00:00",
+      "equity": 1136.02
+    },
+    {
+      "ts": "2026-07-02T01:21:13.856992+00:00",
+      "equity": 1136.02
+    },
+    {
+      "ts": "2026-07-02T01:22:23.849934+00:00",
+      "equity": 1137.22
+    },
+    {
+      "ts": "2026-07-02T01:23:33.642685+00:00",
+      "equity": 1137.22
+    },
+    {
+      "ts": "2026-07-02T01:24:45.256259+00:00",
+      "equity": 1137.22
+    },
+    {
+      "ts": "2026-07-02T01:25:55.280466+00:00",
+      "equity": 1137.22
+    },
+    {
+      "ts": "2026-07-02T01:27:06.702505+00:00",
+      "equity": 1137.22
+    },
+    {
+      "ts": "2026-07-02T01:28:18.060746+00:00",
+      "equity": 1137.82
+    },
+    {
+      "ts": "2026-07-02T01:29:29.524829+00:00",
+      "equity": 1137.82
+    },
+    {
+      "ts": "2026-07-02T01:30:41.146806+00:00",
+      "equity": 1137.82
+    },
+    {
+      "ts": "2026-07-02T01:31:51.573995+00:00",
+      "equity": 1137.82
+    },
+    {
+      "ts": "2026-07-02T01:33:02.022957+00:00",
+      "equity": 1137.82
+    },
+    {
+      "ts": "2026-07-02T01:34:12.383586+00:00",
+      "equity": 1135.42
+    },
+    {
+      "ts": "2026-07-02T01:35:23.988527+00:00",
+      "equity": 1135.42
+    },
+    {
+      "ts": "2026-07-02T01:36:34.636601+00:00",
+      "equity": 1135.42
+    },
+    {
+      "ts": "2026-07-02T01:37:45.191789+00:00",
+      "equity": 1133.02
+    },
+    {
+      "ts": "2026-07-02T01:38:56.234331+00:00",
+      "equity": 1133.02
+    },
+    {
+      "ts": "2026-07-02T01:40:05.080661+00:00",
+      "equity": 1132.42
+    },
+    {
+      "ts": "2026-07-02T01:41:14.303518+00:00",
+      "equity": 1133.02
+    },
+    {
+      "ts": "2026-07-02T01:42:25.961731+00:00",
+      "equity": 1132.42
+    },
+    {
+      "ts": "2026-07-02T01:43:35.594955+00:00",
+      "equity": 1134.61
+    },
+    {
+      "ts": "2026-07-02T01:44:45.887554+00:00",
+      "equity": 1133.88
+    },
+    {
+      "ts": "2026-07-02T01:45:56.100059+00:00",
+      "equity": 1133.88
+    },
+    {
+      "ts": "2026-07-02T01:47:07.085914+00:00",
+      "equity": 1133.88
+    },
+    {
+      "ts": "2026-07-02T01:48:17.068349+00:00",
+      "equity": 1133.88
+    },
+    {
+      "ts": "2026-07-02T01:49:26.961872+00:00",
+      "equity": 1133.88
+    },
+    {
+      "ts": "2026-07-02T01:50:35.197110+00:00",
+      "equity": 1133.28
+    },
+    {
+      "ts": "2026-07-02T01:51:45.874779+00:00",
+      "equity": 1133.28
+    },
+    {
+      "ts": "2026-07-02T01:52:55.859764+00:00",
+      "equity": 1132.55
+    },
+    {
+      "ts": "2026-07-02T01:54:05.958046+00:00",
+      "equity": 1133.75
+    },
+    {
+      "ts": "2026-07-02T01:55:14.773354+00:00",
+      "equity": 1138.13
+    },
+    {
+      "ts": "2026-07-02T01:56:24.623499+00:00",
+      "equity": 1138.13
+    },
+    {
+      "ts": "2026-07-02T01:57:34.992324+00:00",
+      "equity": 1141.05
+    },
+    {
+      "ts": "2026-07-02T01:58:43.906255+00:00",
+      "equity": 1141.05
+    },
+    {
+      "ts": "2026-07-02T01:59:56.515316+00:00",
+      "equity": 1141.05
+    },
+    {
+      "ts": "2026-07-02T02:01:06.235908+00:00",
+      "equity": 1141.05
+    },
+    {
+      "ts": "2026-07-02T02:02:18.096412+00:00",
+      "equity": 1141.05
+    },
+    {
+      "ts": "2026-07-02T02:03:27.888125+00:00",
+      "equity": 1143.45
+    },
+    {
+      "ts": "2026-07-02T02:04:37.538794+00:00",
+      "equity": 1143.45
+    },
+    {
+      "ts": "2026-07-02T02:05:49.993918+00:00",
+      "equity": 1142.59
+    },
+    {
+      "ts": "2026-07-02T02:07:02.376969+00:00",
+      "equity": 1143.19
+    },
+    {
+      "ts": "2026-07-02T02:08:13.195631+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T02:09:24.068180+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T02:10:34.051236+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T02:11:43.977292+00:00",
+      "equity": 1141.0
+    },
+    {
+      "ts": "2026-07-02T02:12:54.407716+00:00",
+      "equity": 1140.4
+    },
+    {
+      "ts": "2026-07-02T02:14:05.583945+00:00",
+      "equity": 1140.4
+    },
+    {
+      "ts": "2026-07-02T02:15:16.711182+00:00",
+      "equity": 1140.4
+    },
+    {
+      "ts": "2026-07-02T02:16:27.126388+00:00",
+      "equity": 1138.6
+    },
+    {
+      "ts": "2026-07-02T02:17:39.176249+00:00",
+      "equity": 1139.2
+    },
+    {
+      "ts": "2026-07-02T02:18:49.139972+00:00",
+      "equity": 1138.0
+    },
+    {
+      "ts": "2026-07-02T02:19:59.601107+00:00",
+      "equity": 1140.4
+    },
+    {
+      "ts": "2026-07-02T02:21:11.932639+00:00",
+      "equity": 1139.2
+    },
+    {
+      "ts": "2026-07-02T02:22:22.784779+00:00",
+      "equity": 1138.6
+    },
+    {
+      "ts": "2026-07-02T02:23:34.324128+00:00",
+      "equity": 1139.8
+    },
+    {
+      "ts": "2026-07-02T02:24:45.741202+00:00",
+      "equity": 1139.8
+    },
+    {
+      "ts": "2026-07-02T02:25:57.751539+00:00",
+      "equity": 1138.6
+    },
+    {
+      "ts": "2026-07-02T02:27:09.803468+00:00",
+      "equity": 1137.4
+    },
+    {
+      "ts": "2026-07-02T02:28:21.110226+00:00",
+      "equity": 1137.4
+    },
+    {
+      "ts": "2026-07-02T02:29:32.685111+00:00",
+      "equity": 1135.6
+    },
+    {
+      "ts": "2026-07-02T02:30:44.775184+00:00",
+      "equity": 1136.2
+    },
+    {
+      "ts": "2026-07-02T02:31:54.795012+00:00",
+      "equity": 1136.2
+    },
+    {
+      "ts": "2026-07-02T02:33:06.172334+00:00",
+      "equity": 1136.2
+    },
+    {
+      "ts": "2026-07-02T02:34:16.493996+00:00",
+      "equity": 1136.2
+    },
+    {
+      "ts": "2026-07-02T02:35:28.138891+00:00",
+      "equity": 1137.4
+    },
+    {
+      "ts": "2026-07-02T02:36:39.374646+00:00",
+      "equity": 1137.4
+    },
+    {
+      "ts": "2026-07-02T02:37:50.914046+00:00",
+      "equity": 1138.0
+    },
+    {
+      "ts": "2026-07-02T02:39:02.406955+00:00",
+      "equity": 1138.0
+    },
+    {
+      "ts": "2026-07-02T02:40:12.903258+00:00",
+      "equity": 1138.0
+    },
+    {
+      "ts": "2026-07-02T02:41:26.110532+00:00",
+      "equity": 1138.0
+    },
+    {
+      "ts": "2026-07-02T02:42:37.521623+00:00",
+      "equity": 1138.0
+    },
+    {
+      "ts": "2026-07-02T02:43:48.798158+00:00",
+      "equity": 1136.2
+    },
+    {
+      "ts": "2026-07-02T02:44:59.370933+00:00",
+      "equity": 1135.6
+    },
+    {
+      "ts": "2026-07-02T02:46:10.992497+00:00",
+      "equity": 1135.0
+    },
+    {
+      "ts": "2026-07-02T02:47:22.080798+00:00",
+      "equity": 1135.0
+    },
+    {
+      "ts": "2026-07-02T02:48:32.262205+00:00",
+      "equity": 1134.39
+    },
+    {
+      "ts": "2026-07-02T02:49:42.790592+00:00",
+      "equity": 1160.18
+    },
+    {
+      "ts": "2026-07-02T02:50:52.883777+00:00",
+      "equity": 1155.07
+    },
+    {
+      "ts": "2026-07-02T02:52:03.692912+00:00",
+      "equity": 1155.07
+    },
+    {
+      "ts": "2026-07-02T02:53:15.898581+00:00",
+      "equity": 1155.07
+    },
+    {
+      "ts": "2026-07-02T02:54:25.989940+00:00",
+      "equity": 1155.07
+    },
+    {
+      "ts": "2026-07-02T02:55:38.163259+00:00",
+      "equity": 1155.67
+    },
+    {
+      "ts": "2026-07-02T02:56:48.318467+00:00",
+      "equity": 1155.67
+    },
+    {
+      "ts": "2026-07-02T02:57:58.197452+00:00",
+      "equity": 1157.48
+    },
+    {
+      "ts": "2026-07-02T02:59:10.210308+00:00",
+      "equity": 1157.48
+    },
+    {
+      "ts": "2026-07-02T03:00:21.376837+00:00",
+      "equity": 1157.48
+    },
+    {
+      "ts": "2026-07-02T03:01:52.065549+00:00",
+      "equity": 1156.88
+    },
+    {
+      "ts": "2026-07-02T03:03:03.944782+00:00",
+      "equity": 1156.88
+    },
+    {
+      "ts": "2026-07-02T03:04:15.528401+00:00",
+      "equity": 1169.42
+    },
+    {
+      "ts": "2026-07-02T03:05:25.386464+00:00",
+      "equity": 1168.21
+    },
+    {
+      "ts": "2026-07-02T03:06:35.621695+00:00",
+      "equity": 1169.42
+    },
+    {
+      "ts": "2026-07-02T03:07:46.628643+00:00",
+      "equity": 1170.02
+    },
+    {
+      "ts": "2026-07-02T03:08:57.202688+00:00",
+      "equity": 1170.02
+    },
+    {
+      "ts": "2026-07-02T03:10:10.718134+00:00",
+      "equity": 1168.21
+    },
+    {
+      "ts": "2026-07-02T03:11:20.743232+00:00",
+      "equity": 1168.21
+    },
+    {
+      "ts": "2026-07-02T03:12:31.224466+00:00",
+      "equity": 1169.42
+    },
+    {
+      "ts": "2026-07-02T03:13:42.837606+00:00",
+      "equity": 1169.42
+    },
+    {
+      "ts": "2026-07-02T03:14:54.084552+00:00",
+      "equity": 1169.42
+    },
+    {
+      "ts": "2026-07-02T03:16:05.628117+00:00",
+      "equity": 1170.57
+    },
+    {
+      "ts": "2026-07-02T03:17:17.206794+00:00",
+      "equity": 1175.97
+    },
+    {
+      "ts": "2026-07-02T03:18:28.522972+00:00",
+      "equity": 1175.97
+    },
+    {
+      "ts": "2026-07-02T03:19:39.644527+00:00",
+      "equity": 1175.61
+    },
+    {
+      "ts": "2026-07-02T03:20:51.135430+00:00",
+      "equity": 1175.61
+    },
+    {
+      "ts": "2026-07-02T03:22:05.078267+00:00",
+      "equity": 1175.01
+    },
+    {
+      "ts": "2026-07-02T03:23:15.255561+00:00",
+      "equity": 1173.2
+    },
+    {
+      "ts": "2026-07-02T03:24:27.361197+00:00",
+      "equity": 1173.2
+    },
+    {
+      "ts": "2026-07-02T03:25:38.228580+00:00",
+      "equity": 1173.2
+    },
+    {
+      "ts": "2026-07-02T03:26:48.560474+00:00",
+      "equity": 1173.2
+    },
+    {
+      "ts": "2026-07-02T03:27:59.660971+00:00",
+      "equity": 1173.2
+    },
+    {
+      "ts": "2026-07-02T03:29:11.189989+00:00",
+      "equity": 1173.2
+    },
+    {
+      "ts": "2026-07-02T03:30:21.002157+00:00",
+      "equity": 1173.2
+    },
+    {
+      "ts": "2026-07-02T03:31:33.076332+00:00",
+      "equity": 1173.8
+    },
+    {
+      "ts": "2026-07-02T03:32:44.101113+00:00",
+      "equity": 1173.56
+    },
+    {
+      "ts": "2026-07-02T03:33:55.906833+00:00",
+      "equity": 1173.56
+    },
+    {
+      "ts": "2026-07-02T03:35:07.441162+00:00",
+      "equity": 1172.1
+    },
+    {
+      "ts": "2026-07-02T03:36:19.261270+00:00",
+      "equity": 1172.1
+    },
+    {
+      "ts": "2026-07-02T03:37:29.343468+00:00",
+      "equity": 1172.83
+    },
+    {
+      "ts": "2026-07-02T03:38:40.356926+00:00",
+      "equity": 1172.83
+    },
+    {
+      "ts": "2026-07-02T03:39:53.311201+00:00",
+      "equity": 1174.52
+    },
+    {
+      "ts": "2026-07-02T03:41:03.343985+00:00",
+      "equity": 1174.52
+    },
+    {
+      "ts": "2026-07-02T03:42:14.849839+00:00",
+      "equity": 1174.52
+    },
+    {
+      "ts": "2026-07-02T03:43:24.666246+00:00",
+      "equity": 1174.52
+    },
+    {
+      "ts": "2026-07-02T03:44:34.974420+00:00",
+      "equity": 1174.52
+    },
+    {
+      "ts": "2026-07-02T03:45:46.822538+00:00",
+      "equity": 1174.52
+    },
+    {
+      "ts": "2026-07-02T03:46:57.921880+00:00",
+      "equity": 1172.72
+    },
+    {
+      "ts": "2026-07-02T03:48:09.512040+00:00",
+      "equity": 1172.36
+    },
+    {
+      "ts": "2026-07-02T03:49:19.453163+00:00",
+      "equity": 1171.63
+    },
+    {
+      "ts": "2026-07-02T03:50:29.225355+00:00",
+      "equity": 1171.63
+    },
+    {
+      "ts": "2026-07-02T03:51:41.009165+00:00",
+      "equity": 1172.72
+    },
+    {
+      "ts": "2026-07-02T03:52:52.567033+00:00",
+      "equity": 1169.81
+    },
+    {
+      "ts": "2026-07-02T03:54:03.121130+00:00",
+      "equity": 1170.18
+    },
+    {
+      "ts": "2026-07-02T03:55:15.020403+00:00",
+      "equity": 1170.18
+    },
+    {
+      "ts": "2026-07-02T03:56:25.073798+00:00",
+      "equity": 1170.18
+    },
+    {
+      "ts": "2026-07-02T03:57:37.652070+00:00",
+      "equity": 1171.63
+    },
+    {
+      "ts": "2026-07-02T03:58:48.777192+00:00",
+      "equity": 1169.45
+    },
+    {
+      "ts": "2026-07-02T03:59:59.922738+00:00",
+      "equity": 1169.45
+    },
+    {
+      "ts": "2026-07-02T04:01:39.732205+00:00",
+      "equity": 1171.63
+    },
+    {
+      "ts": "2026-07-02T04:02:52.114884+00:00",
+      "equity": 1171.63
+    },
+    {
+      "ts": "2026-07-02T04:04:13.228057+00:00",
+      "equity": 1171.63
+    },
+    {
+      "ts": "2026-07-02T04:05:24.020119+00:00",
+      "equity": 1174.93
+    },
+    {
+      "ts": "2026-07-02T04:06:34.177033+00:00",
+      "equity": 1174.93
+    },
+    {
+      "ts": "2026-07-02T04:07:44.924278+00:00",
+      "equity": 1174.93
+    },
+    {
+      "ts": "2026-07-02T04:08:56.084493+00:00",
+      "equity": 1172.75
+    },
+    {
+      "ts": "2026-07-02T04:10:06.344185+00:00",
+      "equity": 1152.94
+    },
+    {
+      "ts": "2026-07-02T04:11:19.383882+00:00",
+      "equity": 1156.21
+    },
+    {
+      "ts": "2026-07-02T04:12:29.840017+00:00",
+      "equity": 1159.35
+    },
+    {
+      "ts": "2026-07-02T04:13:41.038515+00:00",
+      "equity": 1156.05
+    },
+    {
+      "ts": "2026-07-02T04:14:52.222662+00:00",
+      "equity": 1157.57
+    },
+    {
+      "ts": "2026-07-02T04:16:03.361069+00:00",
+      "equity": 1159.39
+    },
+    {
+      "ts": "2026-07-02T04:17:15.212441+00:00",
+      "equity": 1159.39
+    },
+    {
+      "ts": "2026-07-02T04:18:25.576462+00:00",
+      "equity": 1158.04
+    },
+    {
+      "ts": "2026-07-02T04:19:36.921754+00:00",
+      "equity": 1158.04
+    },
+    {
+      "ts": "2026-07-02T04:20:47.710872+00:00",
+      "equity": 1158.04
+    },
+    {
+      "ts": "2026-07-02T04:21:58.108782+00:00",
+      "equity": 1151.28
+    },
+    {
+      "ts": "2026-07-02T04:23:11.157900+00:00",
+      "equity": 1147.98
+    },
+    {
+      "ts": "2026-07-02T04:24:21.448383+00:00",
+      "equity": 1147.7
+    },
+    {
+      "ts": "2026-07-02T04:25:31.835518+00:00",
+      "equity": 1144.91
+    },
+    {
+      "ts": "2026-07-02T04:26:44.514144+00:00",
+      "equity": 1143.09
+    },
+    {
+      "ts": "2026-07-02T04:27:56.536704+00:00",
+      "equity": 1153.06
+    },
+    {
+      "ts": "2026-07-02T04:29:07.569186+00:00",
+      "equity": 1153.06
+    },
+    {
+      "ts": "2026-07-02T04:30:19.759441+00:00",
+      "equity": 1154.41
+    },
+    {
+      "ts": "2026-07-02T04:31:34.798273+00:00",
+      "equity": 1147.81
+    },
+    {
+      "ts": "2026-07-02T04:32:46.071061+00:00",
+      "equity": 1147.81
+    },
+    {
+      "ts": "2026-07-02T04:33:56.743290+00:00",
+      "equity": 1147.81
+    },
+    {
+      "ts": "2026-07-02T04:35:07.968650+00:00",
+      "equity": 1147.81
+    },
+    {
+      "ts": "2026-07-02T04:36:19.356600+00:00",
+      "equity": 1147.81
+    },
+    {
+      "ts": "2026-07-02T04:37:30.035612+00:00",
+      "equity": 1147.06
+    },
+    {
+      "ts": "2026-07-02T04:38:41.611145+00:00",
+      "equity": 1147.06
+    },
+    {
+      "ts": "2026-07-02T04:39:54.572699+00:00",
+      "equity": 1143.0
+    },
+    {
+      "ts": "2026-07-02T04:41:09.560482+00:00",
+      "equity": 1143.0
+    },
+    {
+      "ts": "2026-07-02T04:42:26.934115+00:00",
+      "equity": 1144.5
+    },
+    {
+      "ts": "2026-07-02T04:43:41.751174+00:00",
+      "equity": 1144.5
+    },
+    {
+      "ts": "2026-07-02T04:44:55.502099+00:00",
+      "equity": 1144.5
+    },
+    {
+      "ts": "2026-07-02T04:46:07.711513+00:00",
+      "equity": 1145.71
+    },
+    {
+      "ts": "2026-07-02T04:47:22.787118+00:00",
+      "equity": 1150.94
+    },
+    {
+      "ts": "2026-07-02T04:48:37.331317+00:00",
+      "equity": 1157.7
+    },
+    {
+      "ts": "2026-07-02T04:49:50.778034+00:00",
+      "equity": 1160.22
+    },
+    {
+      "ts": "2026-07-02T04:51:05.126566+00:00",
+      "equity": 1160.22
+    },
+    {
+      "ts": "2026-07-02T04:52:17.640147+00:00",
+      "equity": 1164.28
+    },
+    {
+      "ts": "2026-07-02T04:53:32.496879+00:00",
+      "equity": 1168.18
+    },
+    {
+      "ts": "2026-07-02T04:54:48.034492+00:00",
+      "equity": 1168.18
+    },
+    {
+      "ts": "2026-07-02T04:56:00.973575+00:00",
+      "equity": 1164.35
+    },
+    {
+      "ts": "2026-07-02T04:57:15.744753+00:00",
+      "equity": 1166.65
+    },
+    {
+      "ts": "2026-07-02T04:58:30.161139+00:00",
+      "equity": 1170.7
+    },
+    {
+      "ts": "2026-07-02T04:59:42.661317+00:00",
+      "equity": 1172.06
+    },
+    {
+      "ts": "2026-07-02T05:00:57.535097+00:00",
+      "equity": 1172.06
+    },
+    {
+      "ts": "2026-07-02T05:02:15.697221+00:00",
+      "equity": 1163.95
+    },
+    {
+      "ts": "2026-07-02T05:03:28.737641+00:00",
+      "equity": 1163.95
+    },
+    {
+      "ts": "2026-07-02T05:04:42.250652+00:00",
+      "equity": 1163.95
+    },
+    {
+      "ts": "2026-07-02T05:05:55.315849+00:00",
+      "equity": 1163.95
+    },
+    {
+      "ts": "2026-07-02T05:07:08.115154+00:00",
+      "equity": 1163.95
+    },
+    {
+      "ts": "2026-07-02T05:08:22.262169+00:00",
+      "equity": 1163.95
+    },
+    {
+      "ts": "2026-07-02T05:09:35.156393+00:00",
+      "equity": 1163.95
+    },
+    {
+      "ts": "2026-07-02T05:10:47.983393+00:00",
+      "equity": 1163.95
+    },
+    {
+      "ts": "2026-07-02T05:12:02.748292+00:00",
+      "equity": 1163.54
+    },
+    {
+      "ts": "2026-07-02T05:13:16.377434+00:00",
+      "equity": 1168.91
+    },
+    {
+      "ts": "2026-07-02T05:14:30.061110+00:00",
+      "equity": 1168.91
+    },
+    {
+      "ts": "2026-07-02T05:15:42.369214+00:00",
+      "equity": 1168.91
+    },
+    {
+      "ts": "2026-07-02T05:16:54.985324+00:00",
+      "equity": 1167.96
+    },
+    {
+      "ts": "2026-07-02T05:18:09.656801+00:00",
+      "equity": 1167.96
+    },
+    {
+      "ts": "2026-07-02T05:19:23.372283+00:00",
+      "equity": 1169.73
+    },
+    {
+      "ts": "2026-07-02T05:20:35.399640+00:00",
+      "equity": 1169.73
+    },
+    {
+      "ts": "2026-07-02T05:21:50.656798+00:00",
+      "equity": 1170.55
+    },
+    {
+      "ts": "2026-07-02T05:23:04.838833+00:00",
+      "equity": 1170.96
+    },
+    {
+      "ts": "2026-07-02T05:24:19.214168+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:25:32.488745+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:26:45.952098+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:28:00.016024+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:29:14.986455+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:30:30.436450+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:31:40.072366+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:32:53.358303+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:34:07.927443+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:35:19.553364+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:36:32.860093+00:00",
+      "equity": 1170.01
+    },
+    {
+      "ts": "2026-07-02T05:37:57.485880+00:00",
+      "equity": 1170.96
+    },
+    {
+      "ts": "2026-07-02T05:39:13.760522+00:00",
+      "equity": 1170.96
+    },
+    {
+      "ts": "2026-07-02T05:40:26.033795+00:00",
+      "equity": 1172.19
+    },
+    {
+      "ts": "2026-07-02T05:41:40.172131+00:00",
+      "equity": 1171.37
+    },
+    {
+      "ts": "2026-07-02T05:42:53.619446+00:00",
+      "equity": 1173.29
+    },
+    {
+      "ts": "2026-07-02T05:44:07.093813+00:00",
+      "equity": 1177.13
+    },
+    {
+      "ts": "2026-07-02T05:45:21.662171+00:00",
+      "equity": 1176.17
+    },
+    {
+      "ts": "2026-07-02T05:46:36.124644+00:00",
+      "equity": 1179.31
+    },
+    {
+      "ts": "2026-07-02T05:47:48.668537+00:00",
+      "equity": 1178.08
+    },
+    {
+      "ts": "2026-07-02T05:49:03.806805+00:00",
+      "equity": 1178.08
+    },
+    {
+      "ts": "2026-07-02T05:50:16.049540+00:00",
+      "equity": 1191.28
+    },
+    {
+      "ts": "2026-07-02T05:51:32.104449+00:00",
+      "equity": 1191.28
+    },
+    {
+      "ts": "2026-07-02T05:52:45.896320+00:00",
+      "equity": 1191.28
+    },
+    {
+      "ts": "2026-07-02T05:54:00.341346+00:00",
+      "equity": 1191.28
+    },
+    {
+      "ts": "2026-07-02T05:55:13.407897+00:00",
+      "equity": 1191.28
+    },
+    {
+      "ts": "2026-07-02T05:56:26.947717+00:00",
+      "equity": 1171.07
+    },
+    {
+      "ts": "2026-07-02T05:57:40.826847+00:00",
+      "equity": 1171.07
+    },
+    {
+      "ts": "2026-07-02T05:58:52.274846+00:00",
+      "equity": 1171.07
+    },
+    {
+      "ts": "2026-07-02T06:00:05.806595+00:00",
+      "equity": 1171.48
+    },
+    {
+      "ts": "2026-07-02T06:01:57.910715+00:00",
+      "equity": 1171.48
+    },
+    {
+      "ts": "2026-07-02T06:03:16.801300+00:00",
+      "equity": 1171.48
+    },
+    {
+      "ts": "2026-07-02T06:04:29.214275+00:00",
+      "equity": 1171.48
+    },
+    {
+      "ts": "2026-07-02T06:05:43.545891+00:00",
+      "equity": 1175.19
+    },
+    {
+      "ts": "2026-07-02T06:07:16.063712+00:00",
+      "equity": 1175.19
+    },
+    {
+      "ts": "2026-07-02T06:08:53.191390+00:00",
+      "equity": 1174.37
+    },
+    {
+      "ts": "2026-07-02T06:10:05.489425+00:00",
+      "equity": 1171.07
+    },
+    {
+      "ts": "2026-07-02T06:11:30.511386+00:00",
+      "equity": 1172.71
+    },
+    {
+      "ts": "2026-07-02T06:12:42.275763+00:00",
+      "equity": 1172.71
+    },
+    {
+      "ts": "2026-07-02T06:13:54.135119+00:00",
+      "equity": 1192.51
+    },
+    {
+      "ts": "2026-07-02T06:15:07.848019+00:00",
+      "equity": 1156.2
+    },
+    {
+      "ts": "2026-07-02T06:16:21.619580+00:00",
+      "equity": 1156.2
+    },
+    {
+      "ts": "2026-07-02T06:17:33.932678+00:00",
+      "equity": 1156.2
+    },
+    {
+      "ts": "2026-07-02T06:18:47.750135+00:00",
+      "equity": 1155.79
+    },
+    {
+      "ts": "2026-07-02T06:20:01.524657+00:00",
+      "equity": 1154.97
+    },
+    {
+      "ts": "2026-07-02T06:21:16.014130+00:00",
+      "equity": 1153.33
+    },
+    {
+      "ts": "2026-07-02T06:22:33.620482+00:00",
+      "equity": 1153.33
+    },
+    {
+      "ts": "2026-07-02T06:23:51.738825+00:00",
+      "equity": 1153.33
+    },
+    {
+      "ts": "2026-07-02T06:25:06.958835+00:00",
+      "equity": 1178.09
+    },
+    {
+      "ts": "2026-07-02T06:26:11.808231+00:00",
+      "equity": 1178.09
+    },
+    {
+      "ts": "2026-07-02T06:27:25.411068+00:00",
+      "equity": 1178.51
+    },
+    {
+      "ts": "2026-07-02T06:28:35.346478+00:00",
+      "equity": 1177.68
+    },
+    {
+      "ts": "2026-07-02T06:29:48.171224+00:00",
+      "equity": 1177.68
+    },
+    {
+      "ts": "2026-07-02T06:31:00.535345+00:00",
+      "equity": 1177.68
+    },
+    {
+      "ts": "2026-07-02T06:32:14.647733+00:00",
+      "equity": 1177.68
+    },
+    {
+      "ts": "2026-07-02T06:33:27.854066+00:00",
+      "equity": 1176.86
+    },
+    {
+      "ts": "2026-07-02T06:34:40.161450+00:00",
+      "equity": 1178.92
+    },
+    {
+      "ts": "2026-07-02T06:35:50.889704+00:00",
+      "equity": 1185.89
+    },
+    {
+      "ts": "2026-07-02T06:36:44.474699+00:00",
+      "equity": 1185.89
+    },
+    {
+      "ts": "2026-07-02T06:37:59.366969+00:00",
+      "equity": 1185.89
+    },
+    {
+      "ts": "2026-07-02T06:39:13.313508+00:00",
+      "equity": 1185.89
+    },
+    {
+      "ts": "2026-07-02T06:40:36.286564+00:00",
+      "equity": 1185.07
+    },
+    {
+      "ts": "2026-07-02T06:42:08.775354+00:00",
+      "equity": 1185.07
+    },
+    {
+      "ts": "2026-07-02T06:43:19.041534+00:00",
+      "equity": 1185.07
+    },
+    {
+      "ts": "2026-07-02T06:44:31.221562+00:00",
+      "equity": 1185.07
+    },
+    {
+      "ts": "2026-07-02T06:45:43.197810+00:00",
+      "equity": 1186.3
+    },
+    {
+      "ts": "2026-07-02T06:46:57.863676+00:00",
+      "equity": 1186.3
+    },
+    {
+      "ts": "2026-07-02T06:48:13.737137+00:00",
+      "equity": 1187.53
+    },
+    {
+      "ts": "2026-07-02T06:49:25.491858+00:00",
+      "equity": 1187.12
+    },
+    {
+      "ts": "2026-07-02T06:51:32.155983+00:00",
+      "equity": 1187.12
+    },
+    {
+      "ts": "2026-07-02T06:52:44.666717+00:00",
+      "equity": 1168.67
+    },
+    {
+      "ts": "2026-07-02T06:53:58.034361+00:00",
+      "equity": 1168.67
+    },
+    {
+      "ts": "2026-07-02T06:56:12.682515+00:00",
+      "equity": 1167.03
+    },
+    {
+      "ts": "2026-07-02T06:57:27.635496+00:00",
+      "equity": 1170.1
+    },
+    {
+      "ts": "2026-07-02T06:58:42.958940+00:00",
+      "equity": 1170.1
+    },
+    {
+      "ts": "2026-07-02T06:59:55.260220+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:01:07.952139+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:02:39.495214+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:03:56.984604+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:05:09.763653+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:06:21.446427+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:07:33.572528+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:08:45.088238+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:09:59.642884+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:11:15.199979+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:12:28.413499+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:13:42.708161+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:14:55.206064+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:16:10.012128+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:17:22.153393+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:18:35.173405+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:19:47.714699+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:21:00.368732+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:22:15.129571+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:23:28.661044+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:24:43.485280+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:25:56.318137+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:27:09.207509+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:28:22.994220+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:29:33.983085+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:30:46.434218+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:31:58.202440+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:33:11.888166+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:34:26.079977+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:35:40.044822+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:36:52.930808+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:38:08.653363+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:39:29.866275+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:40:43.818092+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:42:12.290606+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:43:27.740749+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:44:39.448573+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:45:52.368998+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:47:05.978002+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:48:19.118054+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:49:33.212883+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:50:45.252483+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:51:58.415532+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:53:12.711142+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:54:25.364396+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:55:38.692461+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:56:52.034163+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:58:05.306975+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T07:59:19.053755+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:00:32.276035+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:02:07.108845+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:03:23.639247+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:04:37.922755+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:05:54.667774+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:07:15.842572+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:08:40.615142+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:09:57.976251+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:11:38.614814+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:13:03.683049+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:14:18.544874+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:15:43.570465+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:17:01.558621+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:18:18.988948+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:19:36.828774+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:20:58.463266+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:22:13.375099+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:23:34.071142+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:24:49.473770+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:26:01.904553+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:27:19.015498+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:28:39.972104+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:30:01.187427+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:31:21.845154+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:32:41.300518+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:34:04.858862+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:35:19.258322+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:36:33.990493+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:37:52.625015+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:39:09.833357+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:40:25.802744+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:41:40.292181+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:42:56.745028+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:44:13.359747+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:45:34.056185+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:46:59.783419+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:48:18.948096+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:49:44.005771+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:51:02.069001+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:52:18.216403+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:53:32.317861+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:54:51.520830+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:56:07.260755+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:57:18.890851+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:58:36.641728+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T08:59:58.362724+00:00",
+      "equity": 1159.56
+    },
+    {
+      "ts": "2026-07-02T09:01:22.886562+00:00",
+      "equity": 1184.15
+    },
+    {
+      "ts": "2026-07-02T09:03:11.019872+00:00",
+      "equity": 1184.15
+    },
+    {
+      "ts": "2026-07-02T09:04:26.911115+00:00",
+      "equity": 1186.2
+    },
+    {
+      "ts": "2026-07-02T09:05:46.172378+00:00",
+      "equity": 1186.61
+    },
+    {
+      "ts": "2026-07-02T09:07:00.063019+00:00",
+      "equity": 1185.38
+    },
+    {
+      "ts": "2026-07-02T09:08:15.541586+00:00",
+      "equity": 1183.74
+    },
+    {
+      "ts": "2026-07-02T09:09:28.415603+00:00",
+      "equity": 1182.5
+    },
+    {
+      "ts": "2026-07-02T09:10:49.498109+00:00",
+      "equity": 1183.74
+    },
+    {
+      "ts": "2026-07-02T09:12:10.423722+00:00",
+      "equity": 1183.33
+    },
+    {
+      "ts": "2026-07-02T09:13:22.795658+00:00",
+      "equity": 1183.33
+    },
+    {
+      "ts": "2026-07-02T09:14:36.226380+00:00",
+      "equity": 1189.49
+    },
+    {
+      "ts": "2026-07-02T09:15:49.275793+00:00",
+      "equity": 1189.49
+    },
+    {
+      "ts": "2026-07-02T09:17:03.297880+00:00",
+      "equity": 1189.49
+    },
+    {
+      "ts": "2026-07-02T09:18:31.699204+00:00",
+      "equity": 1189.49
+    },
+    {
+      "ts": "2026-07-02T09:19:44.165474+00:00",
+      "equity": 1189.49
+    },
+    {
+      "ts": "2026-07-02T09:20:57.499219+00:00",
+      "equity": 1189.49
+    },
+    {
+      "ts": "2026-07-02T09:22:08.587551+00:00",
+      "equity": 1189.49
+    },
+    {
+      "ts": "2026-07-02T09:23:22.212441+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:24:34.575780+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:25:48.435959+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:27:02.972763+00:00",
+      "equity": 1195.63
+    },
+    {
+      "ts": "2026-07-02T09:28:14.205845+00:00",
+      "equity": 1195.63
+    },
+    {
+      "ts": "2026-07-02T09:29:28.152763+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:30:41.315726+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:31:52.483820+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:33:05.515867+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:34:17.863374+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:35:28.940836+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:36:40.784312+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:37:52.211181+00:00",
+      "equity": 1194.39
+    },
+    {
+      "ts": "2026-07-02T09:39:02.319485+00:00",
+      "equity": 1194.39
+    },
+    {
+      "ts": "2026-07-02T09:40:12.698738+00:00",
+      "equity": 1194.39
+    },
+    {
+      "ts": "2026-07-02T09:41:24.776530+00:00",
+      "equity": 1194.39
+    },
+    {
+      "ts": "2026-07-02T09:42:36.886561+00:00",
+      "equity": 1194.39
+    },
+    {
+      "ts": "2026-07-02T09:43:48.700546+00:00",
+      "equity": 1195.63
+    },
+    {
+      "ts": "2026-07-02T09:44:59.418215+00:00",
+      "equity": 1196.04
+    },
+    {
+      "ts": "2026-07-02T09:46:13.821637+00:00",
+      "equity": 1194.39
+    },
+    {
+      "ts": "2026-07-02T09:47:25.472238+00:00",
+      "equity": 1195.63
+    },
+    {
+      "ts": "2026-07-02T09:48:39.181445+00:00",
+      "equity": 1197.27
+    },
+    {
+      "ts": "2026-07-02T09:49:51.891649+00:00",
+      "equity": 1170.94
+    },
+    {
+      "ts": "2026-07-02T09:51:04.950965+00:00",
+      "equity": 1171.76
+    },
+    {
+      "ts": "2026-07-02T09:52:47.715801+00:00",
+      "equity": 1169.3
+    },
+    {
+      "ts": "2026-07-02T09:54:01.442160+00:00",
+      "equity": 1168.88
+    },
+    {
+      "ts": "2026-07-02T09:55:13.142131+00:00",
+      "equity": 1168.88
+    },
+    {
+      "ts": "2026-07-02T09:56:25.751745+00:00",
+      "equity": 1170.12
+    },
+    {
+      "ts": "2026-07-02T09:57:37.282718+00:00",
+      "equity": 1169.3
+    },
+    {
+      "ts": "2026-07-02T09:58:51.289082+00:00",
+      "equity": 1168.47
+    },
+    {
+      "ts": "2026-07-02T10:00:04.931995+00:00",
+      "equity": 1169.3
+    },
+    {
+      "ts": "2026-07-02T10:01:43.845711+00:00",
+      "equity": 1170.53
+    },
+    {
+      "ts": "2026-07-02T10:02:55.777850+00:00",
+      "equity": 1169.3
+    },
+    {
+      "ts": "2026-07-02T10:04:09.645817+00:00",
+      "equity": 1171.35
+    },
+    {
+      "ts": "2026-07-02T10:05:23.705093+00:00",
+      "equity": 1169.3
+    },
+    {
+      "ts": "2026-07-02T10:06:34.061476+00:00",
+      "equity": 1169.3
+    },
+    {
+      "ts": "2026-07-02T10:07:45.880173+00:00",
+      "equity": 1168.88
+    },
+    {
+      "ts": "2026-07-02T10:08:58.883601+00:00",
+      "equity": 1168.88
+    },
+    {
+      "ts": "2026-07-02T10:10:12.711896+00:00",
+      "equity": 1168.06
+    },
+    {
+      "ts": "2026-07-02T10:11:24.721404+00:00",
+      "equity": 1168.47
+    },
+    {
+      "ts": "2026-07-02T10:12:36.623729+00:00",
+      "equity": 1168.06
+    },
+    {
+      "ts": "2026-07-02T10:13:47.060289+00:00",
+      "equity": 1169.3
+    },
+    {
+      "ts": "2026-07-02T10:14:58.968437+00:00",
+      "equity": 1169.3
+    },
+    {
+      "ts": "2026-07-02T10:16:11.454152+00:00",
+      "equity": 1169.3
+    },
+    {
+      "ts": "2026-07-02T10:17:23.590800+00:00",
+      "equity": 1169.3
+    },
+    {
+      "ts": "2026-07-02T10:18:34.529784+00:00",
+      "equity": 1168.06
+    },
+    {
+      "ts": "2026-07-02T10:19:44.746410+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:20:55.637333+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:22:06.637469+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:23:18.473789+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:24:28.287329+00:00",
+      "equity": 1175.16
+    },
+    {
+      "ts": "2026-07-02T10:25:39.558143+00:00",
+      "equity": 1175.16
+    },
+    {
+      "ts": "2026-07-02T10:26:52.123799+00:00",
+      "equity": 1175.57
+    },
+    {
+      "ts": "2026-07-02T10:28:03.683782+00:00",
+      "equity": 1175.57
+    },
+    {
+      "ts": "2026-07-02T10:29:15.778919+00:00",
+      "equity": 1173.92
+    },
+    {
+      "ts": "2026-07-02T10:30:29.165211+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:31:39.703185+00:00",
+      "equity": 1173.1
+    },
+    {
+      "ts": "2026-07-02T10:32:50.567850+00:00",
+      "equity": 1173.1
+    },
+    {
+      "ts": "2026-07-02T10:34:01.437383+00:00",
+      "equity": 1173.1
+    },
+    {
+      "ts": "2026-07-02T10:35:14.288599+00:00",
+      "equity": 1173.92
+    },
+    {
+      "ts": "2026-07-02T10:36:26.728185+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:37:38.041188+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:38:49.321474+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:40:01.681478+00:00",
+      "equity": 1176.39
+    },
+    {
+      "ts": "2026-07-02T10:41:15.182568+00:00",
+      "equity": 1176.39
+    },
+    {
+      "ts": "2026-07-02T10:42:24.367923+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:43:35.567431+00:00",
+      "equity": 1175.57
+    },
+    {
+      "ts": "2026-07-02T10:44:47.832214+00:00",
+      "equity": 1175.57
+    },
+    {
+      "ts": "2026-07-02T10:45:58.348356+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:47:13.744033+00:00",
+      "equity": 1173.1
+    },
+    {
+      "ts": "2026-07-02T10:48:24.681820+00:00",
+      "equity": 1175.57
+    },
+    {
+      "ts": "2026-07-02T10:49:37.344295+00:00",
+      "equity": 1175.57
+    },
+    {
+      "ts": "2026-07-02T10:50:49.518623+00:00",
+      "equity": 1175.57
+    },
+    {
+      "ts": "2026-07-02T10:52:04.533812+00:00",
+      "equity": 1175.57
+    },
+    {
+      "ts": "2026-07-02T10:53:16.725568+00:00",
+      "equity": 1173.1
+    },
+    {
+      "ts": "2026-07-02T10:54:26.289004+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:55:37.264007+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:56:48.871695+00:00",
+      "equity": 1173.51
+    },
+    {
+      "ts": "2026-07-02T10:57:59.946467+00:00",
+      "equity": 1173.1
+    },
+    {
+      "ts": "2026-07-02T10:59:13.790902+00:00",
+      "equity": 1173.1
+    },
+    {
+      "ts": "2026-07-02T11:00:23.761833+00:00",
+      "equity": 1173.1
+    },
+    {
+      "ts": "2026-07-02T11:01:56.088726+00:00",
+      "equity": 1174.74
+    },
+    {
+      "ts": "2026-07-02T11:03:08.507177+00:00",
+      "equity": 1174.74
+    },
+    {
+      "ts": "2026-07-02T11:04:22.635502+00:00",
+      "equity": 1175.16
+    },
+    {
+      "ts": "2026-07-02T11:05:34.445400+00:00",
+      "equity": 1175.16
+    },
+    {
+      "ts": "2026-07-02T11:06:47.852697+00:00",
+      "equity": 1048.9
+    },
+    {
+      "ts": "2026-07-02T11:07:59.994865+00:00",
+      "equity": 1048.9
+    },
+    {
+      "ts": "2026-07-02T11:09:15.270258+00:00",
+      "equity": 1049.32
+    },
+    {
+      "ts": "2026-07-02T11:10:27.528516+00:00",
+      "equity": 1048.08
+    },
+    {
+      "ts": "2026-07-02T11:11:39.543909+00:00",
+      "equity": 1049.32
+    },
+    {
+      "ts": "2026-07-02T11:12:49.316707+00:00",
+      "equity": 1046.03
+    },
+    {
+      "ts": "2026-07-02T11:13:59.024280+00:00",
+      "equity": 1046.44
+    },
+    {
+      "ts": "2026-07-02T11:15:11.674363+00:00",
+      "equity": 1046.44
+    },
+    {
+      "ts": "2026-07-02T11:16:22.051011+00:00",
+      "equity": 1046.44
+    },
+    {
+      "ts": "2026-07-02T11:17:32.475814+00:00",
+      "equity": 1046.44
+    },
+    {
+      "ts": "2026-07-02T11:18:43.644245+00:00",
+      "equity": 1046.03
+    },
+    {
+      "ts": "2026-07-02T11:19:55.104555+00:00",
+      "equity": 1046.03
+    },
+    {
+      "ts": "2026-07-02T11:21:08.467370+00:00",
+      "equity": 1047.67
+    },
+    {
+      "ts": "2026-07-02T11:22:21.858243+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:23:35.918589+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:24:46.033892+00:00",
+      "equity": 1045.21
+    },
+    {
+      "ts": "2026-07-02T11:25:57.643949+00:00",
+      "equity": 1045.21
+    },
+    {
+      "ts": "2026-07-02T11:27:09.682988+00:00",
+      "equity": 1045.21
+    },
+    {
+      "ts": "2026-07-02T11:28:24.083628+00:00",
+      "equity": 1045.21
+    },
+    {
+      "ts": "2026-07-02T11:29:36.354786+00:00",
+      "equity": 1045.21
+    },
+    {
+      "ts": "2026-07-02T11:30:48.615874+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:32:00.319525+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:33:13.789496+00:00",
+      "equity": 1045.21
+    },
+    {
+      "ts": "2026-07-02T11:34:27.009427+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:35:40.432151+00:00",
+      "equity": 1045.21
+    },
+    {
+      "ts": "2026-07-02T11:36:52.213706+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:38:03.430392+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:39:16.613921+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:40:27.817140+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:41:40.498554+00:00",
+      "equity": 1047.67
+    },
+    {
+      "ts": "2026-07-02T11:42:52.599857+00:00",
+      "equity": 1047.67
+    },
+    {
+      "ts": "2026-07-02T11:44:03.840943+00:00",
+      "equity": 1047.67
+    },
+    {
+      "ts": "2026-07-02T11:45:16.165765+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:46:28.721624+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:47:41.357843+00:00",
+      "equity": 1045.21
+    },
+    {
+      "ts": "2026-07-02T11:48:53.130687+00:00",
+      "equity": 1045.21
+    },
+    {
+      "ts": "2026-07-02T11:50:05.406586+00:00",
+      "equity": 1046.85
+    },
+    {
+      "ts": "2026-07-02T11:51:17.518897+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:52:28.136807+00:00",
+      "equity": 1047.26
+    },
+    {
+      "ts": "2026-07-02T11:53:40.125164+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:54:51.487810+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:56:04.181616+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:57:17.448246+00:00",
+      "equity": 1045.62
+    },
+    {
+      "ts": "2026-07-02T11:58:29.464896+00:00",
+      "equity": 1044.79
+    },
+    {
+      "ts": "2026-07-02T11:59:43.033757+00:00",
+      "equity": 1044.79
+    },
+    {
+      "ts": "2026-07-02T12:00:54.799589+00:00",
+      "equity": 1044.79
+    },
+    {
+      "ts": "2026-07-02T12:02:38.798705+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:03:50.267290+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:05:03.429449+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:06:15.137196+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:07:25.930325+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:08:38.113656+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:09:51.445611+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:11:04.484050+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:12:15.541535+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:13:25.740561+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:14:36.403472+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:15:48.382687+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:16:59.480953+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:18:09.967672+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:19:20.853017+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:20:31.559091+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:21:43.362482+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:22:53.722673+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:24:07.127969+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:25:18.561148+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:26:31.105618+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:27:44.771998+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:28:57.266288+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:30:07.349191+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:31:22.961076+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:32:32.955440+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:33:45.240659+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:34:58.239433+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:36:12.123964+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:37:23.819244+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:38:33.864458+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:39:45.858010+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:40:56.940772+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:42:11.825354+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:43:22.716623+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:44:32.785904+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:45:46.462173+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:46:56.941366+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:48:07.018555+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:49:16.477666+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:50:26.857421+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:51:38.229628+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:52:50.293635+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:54:01.975413+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:55:12.743874+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:56:24.102050+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:57:38.126220+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:58:49.323838+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T12:59:59.926618+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:01:34.205777+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:02:47.882578+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:04:00.043946+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:05:12.534582+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:06:23.107016+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:07:33.524835+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:08:45.877388+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:09:57.429785+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:11:08.644533+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:12:19.331605+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:13:32.270150+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:14:44.735278+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:15:55.106875+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:17:04.272834+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:18:15.206478+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:19:26.234283+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:20:38.257779+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:21:51.213496+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:23:02.469202+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:24:14.256911+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:25:27.795686+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:26:42.014642+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:27:53.777758+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:29:05.770949+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:30:16.728087+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:31:45.766263+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:33:00.362603+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:34:12.676754+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:35:24.392003+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:36:35.343478+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:37:45.924070+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:38:57.964248+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:40:09.359998+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:41:19.797947+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:42:30.870905+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:43:42.504779+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:44:55.984926+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:46:08.334379+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:47:20.700225+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:48:33.076588+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:49:43.031984+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:50:55.905886+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:52:06.241020+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:53:16.472868+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:54:27.542130+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:55:36.795427+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:56:46.740925+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:57:58.181785+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T13:59:08.884313+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:00:19.626909+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:02:04.754574+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:03:17.302143+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:04:29.496190+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:05:41.200972+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:06:50.645734+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:08:01.072633+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:09:12.754558+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:10:22.723239+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:11:33.110412+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:12:43.362871+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:13:54.080611+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:15:04.823901+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:16:17.112539+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:17:27.134951+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:18:37.330705+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:19:48.754265+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:20:59.501502+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:22:11.992118+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:23:22.012128+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:24:33.590585+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:25:43.360090+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:26:55.363931+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:28:05.619308+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:29:15.309754+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:30:26.639543+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:31:50.842483+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:33:02.273750+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:34:14.436499+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:35:24.725387+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:36:35.403034+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:37:46.529926+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:38:58.971425+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:40:10.647626+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:41:21.061535+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:42:31.673736+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:43:41.584814+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:44:51.386093+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:46:00.263011+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:47:13.527820+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:48:24.396018+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:49:37.096761+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:50:48.995091+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:51:59.013051+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:53:11.310523+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:54:20.298204+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:55:30.279321+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:56:41.875830+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:57:51.201634+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T14:59:01.578550+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:00:11.075478+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:01:49.037570+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:03:01.378170+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:04:11.292273+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:05:19.719826+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:06:29.982280+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:07:40.015339+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:08:50.300080+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:10:03.675305+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:11:15.200325+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:12:24.864650+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:13:37.496537+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:14:49.553664+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:16:00.490492+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:17:11.646984+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:18:23.000778+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:19:35.108584+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:20:46.920727+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:21:58.298667+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:23:08.721566+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:24:20.075631+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:25:30.345674+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:26:42.772130+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:27:54.080206+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:29:04.396889+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:30:13.669047+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:31:38.750375+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:32:49.759079+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:34:02.048577+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:35:14.500583+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:36:24.580728+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:37:34.500101+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:38:47.192176+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:39:57.260476+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:41:06.824110+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:42:17.682585+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:43:27.513941+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:44:40.345758+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:45:51.461793+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:47:02.914947+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:48:14.791931+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:49:26.165783+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:50:37.827447+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:51:48.048448+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:52:57.931967+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:54:08.118784+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:55:17.524776+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:56:28.709546+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:57:40.371123+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T15:58:51.432801+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T16:00:03.281607+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T16:01:46.227950+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T16:02:56.710248+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T16:04:09.889516+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T16:05:22.753507+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T16:06:32.953798+00:00",
+      "equity": 951.75
+    },
+    {
+      "ts": "2026-07-02T16:07:13.355171+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:08:27.616690+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:09:40.367856+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:10:52.070776+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:12:02.724583+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:13:12.030411+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:14:21.109067+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:15:30.820029+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:16:41.291721+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:17:51.681090+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:19:02.212504+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:20:15.490771+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:21:26.695593+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:22:38.521834+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:23:51.385322+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:25:03.693341+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:26:15.610727+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:27:26.580302+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:28:37.591299+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:29:48.675016+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:30:58.972440+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:32:12.102065+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:33:21.148090+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:34:37.172838+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:35:48.623371+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:36:25.771294+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:37:39.827480+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:38:50.799466+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:40:01.721539+00:00",
+      "equity": 951.76
+    },
+    {
+      "ts": "2026-07-02T16:41:12.840587+00:00",
+      "equity": 945.95
+    },
+    {
+      "ts": "2026-07-02T16:42:21.883671+00:00",
+      "equity": 950.21
+    },
+    {
+      "ts": "2026-07-02T16:43:30.654665+00:00",
+      "equity": 945.17
+    },
+    {
+      "ts": "2026-07-02T16:44:44.014908+00:00",
+      "equity": 958.67
+    },
+    {
+      "ts": "2026-07-02T16:47:02.621583+00:00",
+      "equity": 960.79
+    },
+    {
+      "ts": "2026-07-02T16:48:14.397452+00:00",
+      "equity": 965.84
+    },
+    {
+      "ts": "2026-07-02T16:49:22.418608+00:00",
+      "equity": 984.13
+    },
+    {
+      "ts": "2026-07-02T16:50:33.024776+00:00",
+      "equity": 1006.65
+    },
+    {
+      "ts": "2026-07-02T16:51:40.599883+00:00",
+      "equity": 1005.28
+    },
+    {
+      "ts": "2026-07-02T16:52:48.349224+00:00",
+      "equity": 1010.92
+    },
+    {
+      "ts": "2026-07-02T16:54:00.340541+00:00",
+      "equity": 1012.31
+    },
+    {
+      "ts": "2026-07-02T16:55:11.850006+00:00",
+      "equity": 1022.69
+    },
+    {
+      "ts": "2026-07-02T16:56:21.694719+00:00",
+      "equity": 1025.37
+    },
+    {
+      "ts": "2026-07-02T16:57:33.412194+00:00",
+      "equity": 1021.01
+    },
+    {
+      "ts": "2026-07-02T16:58:42.489092+00:00",
+      "equity": 1028.9
+    },
+    {
+      "ts": "2026-07-02T16:59:52.935823+00:00",
+      "equity": 1162.13
+    },
+    {
+      "ts": "2026-07-02T17:01:03.836363+00:00",
+      "equity": 1153.94
+    },
+    {
+      "ts": "2026-07-02T17:02:21.410617+00:00",
+      "equity": 1151.06
+    },
+    {
+      "ts": "2026-07-02T17:03:32.943732+00:00",
+      "equity": 1151.06
+    },
+    {
+      "ts": "2026-07-02T17:04:44.152455+00:00",
+      "equity": 1142.61
+    },
+    {
+      "ts": "2026-07-02T17:05:54.726594+00:00",
+      "equity": 1144.52
+    },
+    {
+      "ts": "2026-07-02T17:07:04.749811+00:00",
+      "equity": 1144.52
+    },
+    {
+      "ts": "2026-07-02T17:08:16.064136+00:00",
+      "equity": 1142.52
+    },
+    {
+      "ts": "2026-07-02T17:09:26.604146+00:00",
+      "equity": 1133.25
+    },
+    {
+      "ts": "2026-07-02T17:10:37.421610+00:00",
+      "equity": 1133.25
+    },
+    {
+      "ts": "2026-07-02T17:11:51.354787+00:00",
+      "equity": 1136.32
+    },
+    {
+      "ts": "2026-07-02T17:13:02.572067+00:00",
+      "equity": 1136.32
+    },
+    {
+      "ts": "2026-07-02T17:14:12.402543+00:00",
+      "equity": 1134.28
+    },
+    {
+      "ts": "2026-07-02T17:15:24.994129+00:00",
+      "equity": 1132.02
+    },
+    {
+      "ts": "2026-07-02T17:16:35.380268+00:00",
+      "equity": 1129.76
+    },
+    {
+      "ts": "2026-07-02T17:17:45.473676+00:00",
+      "equity": 1130.53
+    },
+    {
+      "ts": "2026-07-02T17:18:56.909070+00:00",
+      "equity": 1131.27
+    },
+    {
+      "ts": "2026-07-02T17:20:06.368639+00:00",
+      "equity": 1131.27
+    },
+    {
+      "ts": "2026-07-02T17:21:17.365664+00:00",
+      "equity": 1136.65
+    },
+    {
+      "ts": "2026-07-02T17:22:27.729051+00:00",
+      "equity": 1138.91
+    },
+    {
+      "ts": "2026-07-02T17:23:38.489414+00:00",
+      "equity": 1146.08
+    },
+    {
+      "ts": "2026-07-02T17:24:49.419261+00:00",
+      "equity": 1146.08
+    },
+    {
+      "ts": "2026-07-02T17:25:58.064203+00:00",
+      "equity": 1146.08
+    },
+    {
+      "ts": "2026-07-02T17:27:05.606736+00:00",
+      "equity": 1147.61
+    },
+    {
+      "ts": "2026-07-02T17:28:14.146109+00:00",
+      "equity": 1140.84
+    },
+    {
+      "ts": "2026-07-02T17:29:09.761516+00:00",
+      "equity": 1140.84
+    },
+    {
+      "ts": "2026-07-02T17:30:22.643121+00:00",
+      "equity": 1140.84
+    },
+    {
+      "ts": "2026-07-02T17:31:30.528437+00:00",
+      "equity": 1142.89
+    },
+    {
+      "ts": "2026-07-02T17:32:40.890997+00:00",
+      "equity": 1142.9
+    },
+    {
+      "ts": "2026-07-02T17:33:53.124946+00:00",
+      "equity": 1133.42
+    },
+    {
+      "ts": "2026-07-02T17:35:03.450034+00:00",
+      "equity": 1132.46
+    },
+    {
+      "ts": "2026-07-02T17:36:12.174706+00:00",
+      "equity": 1133.8
+    },
+    {
+      "ts": "2026-07-02T17:37:22.526237+00:00",
+      "equity": 1129.93
+    },
+    {
+      "ts": "2026-07-02T17:37:55.599150+00:00",
+      "equity": 1125.43
+    },
+    {
+      "ts": "2026-07-02T17:39:09.372583+00:00",
+      "equity": 1125.43
+    },
+    {
+      "ts": "2026-07-02T17:40:19.032927+00:00",
+      "equity": 1114.07
+    },
+    {
+      "ts": "2026-07-02T17:41:28.828470+00:00",
+      "equity": 1101.67
+    },
+    {
+      "ts": "2026-07-02T17:42:41.380068+00:00",
+      "equity": 1099.41
+    },
+    {
+      "ts": "2026-07-02T17:43:50.401637+00:00",
+      "equity": 1106.97
+    },
+    {
+      "ts": "2026-07-02T17:45:00.383262+00:00",
+      "equity": 1109.23
+    },
+    {
+      "ts": "2026-07-02T17:46:14.432104+00:00",
+      "equity": 1109.23
+    },
+    {
+      "ts": "2026-07-02T17:47:24.815993+00:00",
+      "equity": 1102.9
+    },
+    {
+      "ts": "2026-07-02T17:48:33.831957+00:00",
+      "equity": 1112.5
+    },
+    {
+      "ts": "2026-07-02T17:49:44.436017+00:00",
+      "equity": 1106.43
+    },
+    {
+      "ts": "2026-07-02T17:50:53.235497+00:00",
+      "equity": 1106.43
+    },
+    {
+      "ts": "2026-07-02T17:52:02.885580+00:00",
+      "equity": 1105.03
+    },
+    {
+      "ts": "2026-07-02T17:53:12.618495+00:00",
+      "equity": 1095.95
+    },
+    {
+      "ts": "2026-07-02T17:54:23.412794+00:00",
+      "equity": 1096.96
+    },
+    {
+      "ts": "2026-07-02T17:55:34.186121+00:00",
+      "equity": 1089.18
+    },
+    {
+      "ts": "2026-07-02T17:56:45.501964+00:00",
+      "equity": 1083.79
+    }
+  ],
+  "breaker": {
+    "level": "GREEN",
+    "consecutive_losses": 2,
+    "peak_equity": 1180.8874912853728,
+    "current_equity": 1083.7877792853728,
+    "auto_recovery": true,
+    "total_trades": 48,
+    "total_losses": 18,
+    "history": [
+      {
+        "timestamp": "2026-07-01T21:18:50.432133+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.14100010349690165,
+        "consecutive_losses": 1,
+        "equity": 1062.3698399999998,
+        "peak": 1236.752
+      },
+      {
+        "timestamp": "2026-07-01T21:18:50.432705+00:00",
+        "from": "YELLOW",
+        "to": "GREEN",
+        "drawdown": 0.04831498958562435,
+        "consecutive_losses": 0,
+        "equity": 1176.9983399999999,
+        "peak": 1236.752
+      },
+      {
+        "timestamp": "2026-07-01T21:19:54.307355+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.14978949356357293,
+        "consecutive_losses": 0,
+        "equity": 1051.499544256264,
+        "peak": 1236.752
+      },
+      {
+        "timestamp": "2026-07-01T21:20:58.524869+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.18615086593248764,
+        "consecutive_losses": 0,
+        "equity": 1006.529544256264,
+        "peak": 1236.752
+      },
+      {
+        "timestamp": "2026-07-01T21:23:09.258273+00:00",
+        "from": "YELLOW",
+        "to": "GREEN",
+        "drawdown": 0.019882275114997794,
+        "consecutive_losses": 0,
+        "equity": 1212.1625564869762,
+        "peak": 1236.752
+      },
+      {
+        "timestamp": "2026-07-01T21:24:15.553107+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.11008629338220088,
+        "consecutive_losses": 0,
+        "equity": 1100.6025564869763,
+        "peak": 1236.752
+      },
+      {
+        "timestamp": "2026-07-01T21:24:15.553836+00:00",
+        "from": "YELLOW",
+        "to": "GREEN",
+        "drawdown": 0.02372912557491208,
+        "consecutive_losses": 0,
+        "equity": 1207.4049564869763,
+        "peak": 1236.752
+      },
+      {
+        "timestamp": "2026-07-01T21:26:24.051603+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.13031753998886586,
+        "consecutive_losses": 0,
+        "equity": 1122.005645696,
+        "peak": 1290.132545252937
+      },
+      {
+        "timestamp": "2026-07-01T21:27:28.379199+00:00",
+        "from": "YELLOW",
+        "to": "GREEN",
+        "drawdown": 0.0,
+        "consecutive_losses": 0,
+        "equity": 1307.9584456960004,
+        "peak": 1307.9584456960004
+      },
+      {
+        "timestamp": "2026-07-01T21:29:37.561565+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.17918822191848802,
+        "consecutive_losses": 0,
+        "equity": 1194.067497628029,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T21:30:41.505713+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.15111109120451938,
+        "consecutive_losses": 1,
+        "equity": 1234.9124149494692,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T21:33:53.052950+00:00",
+        "from": "YELLOW",
+        "to": "ORANGE",
+        "drawdown": 0.20510397067025066,
+        "consecutive_losses": 0,
+        "equity": 1156.3668285008118,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T21:37:07.276743+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21497503487754527,
+        "consecutive_losses": 0,
+        "equity": 1142.006999302845,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T21:42:30.761165+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21513313876139922,
+        "consecutive_losses": 0,
+        "equity": 1141.776999302845,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T21:47:51.241633+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21513313876139922,
+        "consecutive_losses": 0,
+        "equity": 1141.776999302845,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T21:53:12.013031+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21544247244720047,
+        "consecutive_losses": 0,
+        "equity": 1141.326999302845,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T21:58:34.170199+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2168585333199792,
+        "consecutive_losses": 0,
+        "equity": 1139.266999302845,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:03:54.607795+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21717249316391668,
+        "consecutive_losses": 0,
+        "equity": 1138.8102694468453,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:09:13.053069+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21717249316391668,
+        "consecutive_losses": 0,
+        "equity": 1138.8102694468453,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:14:33.446204+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21717249316391668,
+        "consecutive_losses": 0,
+        "equity": 1138.8102694468453,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:19:52.384982+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21717249316391668,
+        "consecutive_losses": 0,
+        "equity": 1138.8102694468453,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:25:13.320997+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21717249316391668,
+        "consecutive_losses": 0,
+        "equity": 1138.8102694468453,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:30:36.253502+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21717249316391668,
+        "consecutive_losses": 0,
+        "equity": 1138.8102694468453,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:35:56.449271+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21717249316391668,
+        "consecutive_losses": 0,
+        "equity": 1138.8102694468453,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:42:00.350516+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:47:46.393931+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:53:29.009398+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T22:59:19.733631+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T23:05:39.349965+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T23:11:28.703022+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T23:17:23.087767+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T23:23:13.410839+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T23:29:03.213176+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T23:35:01.158032+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T23:40:49.269605+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T23:46:41.298998+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T23:52:42.998520+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-01T23:58:41.666433+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T00:04:53.763200+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171726783838851,
+        "consecutive_losses": 0,
+        "equity": 1138.81,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T00:10:03.377030+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21717214426772097,
+        "consecutive_losses": 0,
+        "equity": 1138.810777,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T00:15:50.494335+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21566672033015516,
+        "consecutive_losses": 0,
+        "equity": 1141.000777,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T00:20:59.905261+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.215664589364764,
+        "consecutive_losses": 0,
+        "equity": 1141.003877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T00:26:50.798921+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.215664589364764,
+        "consecutive_losses": 0,
+        "equity": 1141.003877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T00:32:49.468019+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171700133023298,
+        "consecutive_losses": 0,
+        "equity": 1138.813877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T00:38:44.353362+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2171700133023298,
+        "consecutive_losses": 0,
+        "equity": 1138.813877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T00:44:38.262338+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2161663973439526,
+        "consecutive_losses": 0,
+        "equity": 1140.273877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T00:50:30.910567+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21451661768634633,
+        "consecutive_losses": 0,
+        "equity": 1142.673877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T00:56:22.428158+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2156095967095105,
+        "consecutive_losses": 0,
+        "equity": 1141.083877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T01:02:19.782878+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2155202336447234,
+        "consecutive_losses": 0,
+        "equity": 1141.2138770000001,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T01:08:14.901514+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21593267855912507,
+        "consecutive_losses": 0,
+        "equity": 1140.613877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T01:14:05.519500+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21776118434630534,
+        "consecutive_losses": 0,
+        "equity": 1137.9538770000001,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T01:20:00.589969+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21908788215429714,
+        "consecutive_losses": 0,
+        "equity": 1136.023877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T01:25:55.280141+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21826299232549395,
+        "consecutive_losses": 0,
+        "equity": 1137.2238770000001,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T01:31:51.573574+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21785054741109242,
+        "consecutive_losses": 0,
+        "equity": 1137.823877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T01:37:45.191513+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.22115010672630508,
+        "consecutive_losses": 0,
+        "equity": 1133.023877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T01:43:35.593483+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.22005712770314093,
+        "consecutive_losses": 0,
+        "equity": 1134.613877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T01:49:26.961010+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.22055893568232954,
+        "consecutive_losses": 0,
+        "equity": 1133.883877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T01:55:14.772944+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21763745087198497,
+        "consecutive_losses": 0,
+        "equity": 1138.133877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T02:01:06.235558+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21563021895523055,
+        "consecutive_losses": 0,
+        "equity": 1141.053877,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T02:07:02.376724+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21415916542719815,
+        "consecutive_losses": 0,
+        "equity": 1143.1938770000002,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T02:12:54.407359+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21607806539145155,
+        "consecutive_losses": 0,
+        "equity": 1140.4023770000001,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T02:18:49.139490+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21772784504905796,
+        "consecutive_losses": 0,
+        "equity": 1138.002377,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T02:24:45.740728+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21649051030585323,
+        "consecutive_losses": 0,
+        "equity": 1139.802377,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T02:30:44.774714+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21896517979226268,
+        "consecutive_losses": 0,
+        "equity": 1136.202377,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T02:36:39.374270+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2181402899634595,
+        "consecutive_losses": 0,
+        "equity": 1137.4023770000001,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T02:42:37.520925+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21772784504905796,
+        "consecutive_losses": 0,
+        "equity": 1138.002377,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T02:48:32.261763+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2202093886173741,
+        "consecutive_losses": 0,
+        "equity": 1134.3923770000001,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T02:54:25.989544+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20599880084872121,
+        "consecutive_losses": 0,
+        "equity": 1155.065083496,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:00:21.376258+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20434214710920812,
+        "consecutive_losses": 0,
+        "equity": 1157.475083496,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:06:35.621333+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1961290453957132,
+        "consecutive_losses": 0,
+        "equity": 1169.42300879712,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:12:31.224093+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1961290453957132,
+        "consecutive_losses": 0,
+        "equity": 1169.42300879712,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:17:17.201161+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1784935882640921,
+        "consecutive_losses": 0,
+        "equity": 1195.07800879712,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:24:27.360788+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19353057797599996,
+        "consecutive_losses": 0,
+        "equity": 1173.2031025681633,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:30:21.001824+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19353057797599996,
+        "consecutive_losses": 0,
+        "equity": 1173.2031025681633,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:36:19.260861+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1942867269857363,
+        "consecutive_losses": 0,
+        "equity": 1172.1031025681632,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:42:14.849328+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19262319916431653,
+        "consecutive_losses": 0,
+        "equity": 1174.5231025681633,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:46:57.916761+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1790001436416322,
+        "consecutive_losses": 1,
+        "equity": 1194.3411025681633,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:54:03.120390+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19560534087340578,
+        "consecutive_losses": 0,
+        "equity": 1170.1848625681632,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T03:59:59.921659+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1961071488525944,
+        "consecutive_losses": 0,
+        "equity": 1169.4548625681632,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:06:34.176652+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19234015196772655,
+        "consecutive_losses": 0,
+        "equity": 1174.9348625681632,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:10:06.343707+00:00",
+        "from": "YELLOW",
+        "to": "ORANGE",
+        "drawdown": 0.20745625808054466,
+        "consecutive_losses": 0,
+        "equity": 1152.9448625681632,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:12:29.831789+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20305684566026103,
+        "consecutive_losses": 0,
+        "equity": 1159.3448625681633,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:18:25.576088+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20395598150509273,
+        "consecutive_losses": 0,
+        "equity": 1158.0368539394674,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:24:21.447977+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21106378219661362,
+        "consecutive_losses": 0,
+        "equity": 1147.696853939467,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:30:19.759011+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20644604891362453,
+        "consecutive_losses": 0,
+        "equity": 1154.4144539705242,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:36:19.356203+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21098294297204206,
+        "consecutive_losses": 0,
+        "equity": 1147.814453970524,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:42:26.933784+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.21325826408315746,
+        "consecutive_losses": 0,
+        "equity": 1144.504453970524,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:47:22.781412+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.18310166675849482,
+        "consecutive_losses": 0,
+        "equity": 1188.3744539705242,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:48:37.330923+00:00",
+        "from": "YELLOW",
+        "to": "ORANGE",
+        "drawdown": 0.2041894307667343,
+        "consecutive_losses": 0,
+        "equity": 1157.697246025552,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T04:53:32.490715+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.18436540343766042,
+        "consecutive_losses": 0,
+        "equity": 1186.5360460255517,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:00:57.534677+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19431364066337803,
+        "consecutive_losses": 0,
+        "equity": 1172.0639501722403,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:07:08.114683+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19989342616287917,
+        "consecutive_losses": 0,
+        "equity": 1163.9468145674575,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:12:02.747681+00:00",
+        "from": "YELLOW",
+        "to": "ORANGE",
+        "drawdown": 0.20017526352105364,
+        "consecutive_losses": 0,
+        "equity": 1163.5368145674574,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:13:16.377027+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19648388153715937,
+        "consecutive_losses": 0,
+        "equity": 1168.9068145674576,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:19:23.371878+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1959202068208106,
+        "consecutive_losses": 0,
+        "equity": 1169.7268145674575,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:25:32.488379+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1957277325274232,
+        "consecutive_losses": 0,
+        "equity": 1170.0068145674575,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:31:40.071974+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1957277325274232,
+        "consecutive_losses": 0,
+        "equity": 1170.0068145674575,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:37:57.485498+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19507469474628733,
+        "consecutive_losses": 0,
+        "equity": 1170.9568145674575,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:44:07.093428+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19083338620985765,
+        "consecutive_losses": 0,
+        "equity": 1177.1268145674576,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:50:16.049151+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1811031257324513,
+        "consecutive_losses": 0,
+        "equity": 1191.28181098659,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T05:56:26.947326+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19499564526587804,
+        "consecutive_losses": 0,
+        "equity": 1171.07181098659,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:03:16.800965+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19471380790770357,
+        "consecutive_losses": 0,
+        "equity": 1171.48181098659,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:10:05.489063+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19499564526587804,
+        "consecutive_losses": 0,
+        "equity": 1171.07181098659,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:15:07.847633+00:00",
+        "from": "YELLOW",
+        "to": "ORANGE",
+        "drawdown": 0.20521740506113056,
+        "consecutive_losses": 0,
+        "equity": 1156.20181098659,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:16:21.619110+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20521740506113056,
+        "consecutive_losses": 0,
+        "equity": 1156.20181098659,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:22:33.620087+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20719026656835157,
+        "consecutive_losses": 0,
+        "equity": 1153.33181098659,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:27:25.410039+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.18988467098142245,
+        "consecutive_losses": 0,
+        "equity": 1178.5069482948597,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:33:27.853318+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19101889449602688,
+        "consecutive_losses": 0,
+        "equity": 1176.8569482948596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:39:13.311770+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.18481192085283468,
+        "consecutive_losses": 0,
+        "equity": 1185.8864794052595,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:45:43.197366+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1845300834946602,
+        "consecutive_losses": 0,
+        "equity": 1186.2964794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:52:44.666125+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1966490898961602,
+        "consecutive_losses": 0,
+        "equity": 1168.6664794052595,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T06:59:55.259780+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T07:06:21.446100+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T07:12:28.412987+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T07:18:35.172843+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T07:24:43.484806+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T07:30:46.433750+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T07:36:52.930194+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T07:43:27.740453+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T07:49:33.212439+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T07:55:38.691973+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T08:02:07.108311+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T08:08:40.614636+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T08:15:43.569901+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T08:22:13.374454+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T08:28:39.971639+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T08:35:19.257907+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T08:41:40.291751+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T08:48:18.947550+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T08:54:51.520403+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.20291137851315752,
+        "consecutive_losses": 0,
+        "equity": 1159.5564794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T09:01:22.886024+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1860080111045993,
+        "consecutive_losses": 0,
+        "equity": 1184.1464794052595,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T09:08:15.540810+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1862898484627736,
+        "consecutive_losses": 0,
+        "equity": 1183.7364794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T09:14:36.225841+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1823372513664251,
+        "consecutive_losses": 0,
+        "equity": 1189.4864794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T09:20:57.498790+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1823372513664251,
+        "consecutive_losses": 0,
+        "equity": 1189.4864794052596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T09:27:02.972285+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.17811095725468878,
+        "consecutive_losses": 0,
+        "equity": 1195.6346373252595,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T09:33:05.515304+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.17782911989651431,
+        "consecutive_losses": 0,
+        "equity": 1196.0446373252596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T09:39:02.318860+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.17896334341111872,
+        "consecutive_losses": 0,
+        "equity": 1194.3946373252595,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T09:44:59.417685+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.17782911989651431,
+        "consecutive_losses": 0,
+        "equity": 1196.0446373252596,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T09:51:04.950475+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1945241840841759,
+        "consecutive_losses": 0,
+        "equity": 1171.7576642948595,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T09:57:37.282190+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19621520823322244,
+        "consecutive_losses": 0,
+        "equity": 1169.2976642948595,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T10:04:09.645329+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19480602144235037,
+        "consecutive_losses": 0,
+        "equity": 1171.3476642948594,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T10:10:12.711331+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19706759438965238,
+        "consecutive_losses": 0,
+        "equity": 1168.0576642948595,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T10:16:11.453684+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19621520823322244,
+        "consecutive_losses": 0,
+        "equity": 1169.2976642948595,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T10:22:06.637028+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19332150974176038,
+        "consecutive_losses": 0,
+        "equity": 1173.5072424330608,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T10:28:03.683242+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19190544886898164,
+        "consecutive_losses": 0,
+        "equity": 1175.5672424330608,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T10:34:01.436848+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1936033470999347,
+        "consecutive_losses": 0,
+        "equity": 1173.097242433061,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T10:40:01.681039+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1913417741526327,
+        "consecutive_losses": 0,
+        "equity": 1176.387242433061,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T10:45:58.347719+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19332150974176038,
+        "consecutive_losses": 0,
+        "equity": 1173.5072424330608,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T10:52:04.533281+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19190544886898164,
+        "consecutive_losses": 0,
+        "equity": 1175.5672424330608,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T10:57:59.945910+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.1936033470999347,
+        "consecutive_losses": 0,
+        "equity": 1173.097242433061,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:04:22.634961+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.19218728622715597,
+        "consecutive_losses": 0,
+        "equity": 1175.157242433061,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:06:47.852282+00:00",
+        "from": "YELLOW",
+        "to": "ORANGE",
+        "drawdown": 0.27897986782450845,
+        "consecutive_losses": 1,
+        "equity": 1048.8966264330606,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:10:27.527968+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2795435425408572,
+        "consecutive_losses": 0,
+        "equity": 1048.0766264330607,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:16:22.050479+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.280670891973555,
+        "consecutive_losses": 0,
+        "equity": 1046.4366264330606,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:22:21.857916+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.28123456668990376,
+        "consecutive_losses": 0,
+        "equity": 1045.6166264330607,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:28:24.083106+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.28151640404807826,
+        "consecutive_losses": 0,
+        "equity": 1045.2066264330606,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:34:27.009072+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.28123456668990376,
+        "consecutive_losses": 0,
+        "equity": 1045.6166264330607,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:40:27.816638+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.28123456668990376,
+        "consecutive_losses": 0,
+        "equity": 1045.6166264330607,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:46:28.721078+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.28123456668990376,
+        "consecutive_losses": 0,
+        "equity": 1045.6166264330607,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:52:28.136247+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.28010721725720605,
+        "consecutive_losses": 0,
+        "equity": 1047.2566264330608,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T11:58:04.591901+00:00",
+        "from": "GREEN",
+        "to": "ORANGE",
+        "drawdown": 0.2693701762822277,
+        "consecutive_losses": 1,
+        "equity": 1062.8762264330608,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T12:02:38.798221+00:00",
+        "from": "ORANGE",
+        "to": "RED",
+        "drawdown": 0.3457565048977232,
+        "consecutive_losses": 2,
+        "equity": 951.754,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T16:34:37.172232+00:00",
+        "from": "ORANGE",
+        "to": "RED",
+        "drawdown": 0.3457539889837453,
+        "consecutive_losses": 2,
+        "equity": 951.75766,
+        "peak": 1454.7397217166276
+      },
+      {
+        "timestamp": "2026-07-02T16:40:01.721242+00:00",
+        "from": "ORANGE",
+        "to": "GREEN",
+        "drawdown": 0.0,
+        "consecutive_losses": 2,
+        "equity": 951.75766,
+        "peak": 951.75766
+      },
+      {
+        "timestamp": "2026-07-02T16:50:33.024411+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.10576211625074879,
+        "consecutive_losses": 0,
+        "equity": 1006.6524952701143,
+        "peak": 1125.7099632701143
+      },
+      {
+        "timestamp": "2026-07-02T16:59:52.935265+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.15797946874968583,
+        "consecutive_losses": 0,
+        "equity": 1162.1260010408664,
+        "peak": 1380.1634971005142
+      },
+      {
+        "timestamp": "2026-07-02T17:41:28.827636+00:00",
+        "from": "GREEN",
+        "to": "YELLOW",
+        "drawdown": 0.10653711185513737,
+        "consecutive_losses": 2,
+        "equity": 1101.666691285373,
+        "peak": 1233.030163762944
+      }
+    ]
+  },
+  "event_cooldowns": {
+    "KXHIGHAUS_26JUL02": 1783015040.3140008,
+    "KXHIGHNY_26JUL02": 1782993784.590088,
+    "KXHIGHAUS_26JUL03": 1783011985.9057548,
+    "KXHIGHCHI_26JUL02": 1783014098.0830321
+  },
+  "saved_at": "2026-07-02T17:56:48.983968+00:00"
+}
