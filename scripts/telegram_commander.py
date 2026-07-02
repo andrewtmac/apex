@@ -95,15 +95,24 @@ def _load_authorized() -> dict[str, str]:
 
 
 def _build_help() -> str:
-    lines = ["APEX UI Commander — Available targets:\n"]
-    for bot, pages in DASHBOARDS.items():
-        for page_key, info in pages.items():
-            label = f"  UI {bot}" if page_key == "main" else f"  UI {bot} {page_key}"
-            lines.append(f"{label}\n    {info['name']} ({info['url_hint']})")
-    lines.append('\nExamples:')
-    lines.append('  UI APEX change equity card color to blue')
-    lines.append('  UI EPIK overview add a P&L chart')
-    lines.append('  UI EPIK investor make the table sortable')
+    lines = ["APEX Commander — Available commands:\n"]
+    lines.append("  UI <change>")
+    lines.append("    Modify dashboard HTML/CSS")
+    lines.append("  UI APEX <change>  |  UI EPIK <page> <change>")
+    lines.append("    Target specific dashboard")
+    lines.append("")
+    lines.append("  CODE <request>")
+    lines.append("    Modify monitoring/stats/display code (NOT trading logic)")
+    lines.append("")
+    lines.append("Examples:")
+    lines.append("  UI APEX change equity card color to blue")
+    lines.append("  UI EPIK investor make the table sortable")
+    lines.append("  CODE recalculate all P&L stats on epik dashboards")
+    lines.append("  CODE add a 7-day rolling win rate to the apex dashboard")
+    lines.append("")
+    lines.append("Protected (CODE will NOT modify):")
+    lines.append("  Trading logic, risk management, circuit breakers,")
+    lines.append("  position sizing, order execution, signal generation")
     return "\n".join(lines)
 
 
@@ -211,17 +220,23 @@ class TelegramCommander:
         sender_name = self.authorized[chat_id]
         logger.info("commander.message_received", sender=sender_name, text=text[:80])
 
-        # 2. Only "UI" commands are accepted
-        if not text.upper().startswith("UI"):
+        # 2. Route by command type
+        upper = text.upper()
+        if upper.startswith("UI"):
+            await self._handle_ui_command(chat_id, text, sender_name)
+        elif upper.startswith("CODE"):
+            await self._handle_code_command(chat_id, text[4:].strip(), sender_name)
+        else:
             await self._reply(
                 chat_id,
-                "Only UI changes are supported.\n\n"
-                'Prefix your message with "UI" to modify dashboards.\n'
-                "Send UI help for available targets.",
+                "Available commands:\n\n"
+                '"UI <change>" — modify dashboard HTML/CSS\n'
+                '"CODE <request>" — modify monitoring/stats code\n\n'
+                "Send UI help or CODE help for details.",
             )
-            return
 
-        # 3. Parse: UI [BOT] [PAGE] <change>
+    async def _handle_ui_command(self, chat_id: str, text: str, sender_name: str):
+        """Handle UI ... commands."""
         rest = text[2:].strip()
         if not rest or rest.lower() == "help":
             await self._reply(chat_id, _build_help())
@@ -285,6 +300,32 @@ class TelegramCommander:
         }, indent=2))
 
         logger.info("commander.queued", dashboard=target["name"], file=req_file.name)
+
+    async def _handle_code_command(self, chat_id: str, request: str, sender_name: str):
+        """Handle CODE ... commands for monitoring/stats code changes."""
+        if not request or request.lower() == "help":
+            await self._reply(chat_id, _build_help())
+            return
+
+        await self._reply(chat_id, "Received, working on it")
+        await self._queue_code_request(request, sender_name, chat_id)
+
+    async def _queue_code_request(self, request: str, requester: str, chat_id: str):
+        """Write CODE request to queue file for the watcher to process."""
+        queue_dir = Path(__file__).parent.parent / "data" / "code_requests" / "pending"
+        queue_dir.mkdir(parents=True, exist_ok=True)
+
+        ts = int(time.time() * 1000)
+        req_file = queue_dir / f"{ts}.json"
+        req_file.write_text(json.dumps({
+            "type": "code_change",
+            "request": request,
+            "requester": requester,
+            "chat_id": chat_id,
+            "queued_at": datetime.now(timezone.utc).isoformat(),
+        }, indent=2))
+
+        logger.info("commander.code_queued", request=request[:60], file=req_file.name)
 
     async def _apply_ui_change(
         self, target: dict, request: str, requester: str
