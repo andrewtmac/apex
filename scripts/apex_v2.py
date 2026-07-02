@@ -713,97 +713,126 @@ class ApexV2Trader:
         for mid in stale_ids:
             del self.positions[mid]
 
+    # Kalshi basic tier: 10 requests/second
+    KALSHI_RATE_LIMIT_RPS = 10
+    # Minimum delay between batches to stay under rate limit
+    _BATCH_INTERVAL = 1.0 / KALSHI_RATE_LIMIT_RPS  # 0.1s between each request
+
     async def position_monitor_loop(self):
         """Fast loop: poll open position prices every POSITION_POLL_SECONDS.
 
-        Fetches individual market data for open positions only (cheap calls).
-        Updates mark-to-market and checks exits immediately — don't wait
-        for the full 60s cycle to react to price moves.
+        Throttled to Kalshi basic tier rate limit (10 req/s). Positions are
+        fetched in batches; if there are more open positions than the rate
+        limit allows per second, they roll across multiple seconds.
+        Updates mark-to-market and checks exits after each batch.
         """
         import httpx as _httpx
-        while self._running:
-            await asyncio.sleep(self.POSITION_POLL_SECONDS)
 
-            if not self.positions:
-                continue
+        # Persistent client to avoid connection overhead
+        client = _httpx.AsyncClient(timeout=10)
+        try:
+            while self._running:
+                await asyncio.sleep(self.POSITION_POLL_SECONDS)
 
-            try:
-                async with _httpx.AsyncClient(timeout=10) as client:
-                    # Fetch all open positions concurrently (batches within rate limit)
-                    async def _poll_one(market_id: str, pos):
-                        try:
-                            resp = await client.get(
-                                f"https://api.elections.kalshi.com/trade-api/v2/markets/{market_id}",
-                            )
-                            if resp.status_code != 200:
-                                return None
+                if not self.positions:
+                    continue
 
-                            data = resp.json()
-                            market = data.get("market", data)
-
-                            # Update price
-                            price = float(market.get("last_price_dollars", 0) or 0)
-                            bid = float(market.get("yes_bid_dollars", 0) or 0)
-                            ask = float(market.get("yes_ask_dollars", 0) or 0)
-
-                            if price == 0 and bid > 0 and ask > 0:
-                                price = (bid + ask) / 2
-                            elif price == 0 and ask > 0:
-                                price = ask
-
-                            if price > 0:
-                                pos.current_price = price
-                                if pos.direction == "BUY":
-                                    pos.unrealized_pnl = round(
-                                        (pos.current_price - pos.entry_price) * pos.shares, 2
-                                    )
-                                else:
-                                    pos.unrealized_pnl = round(
-                                        (pos.entry_price - pos.current_price) * pos.shares, 2
-                                    )
-                                roi = pos.unrealized_pnl / pos.cost_basis if pos.cost_basis > 0 else 0
-                                if roi > pos.peak_pnl_pct:
-                                    pos.peak_pnl_pct = roi
-
-                            # Check for resolution
-                            status = (market.get("status") or "").lower()
-                            if status in ("settled", "finalized", "closed"):
-                                result = (market.get("result") or "").lower()
-                                if result in ("yes", "y"):
-                                    return (market_id, "YES")
-                                elif result in ("no", "n"):
-                                    return (market_id, "NO")
-                        except Exception as e:
-                            logger.debug("v2.position_poll_error",
-                                        market=market_id, error=str(e))
-                        return None
-
-                    # Fire all requests concurrently
+                try:
                     snapshot = list(self.positions.items())
-                    results = await asyncio.gather(
-                        *[_poll_one(mid, pos) for mid, pos in snapshot],
-                        return_exceptions=True,
-                    )
+                    resolutions = []
+
+                    # Process in batches of KALSHI_RATE_LIMIT_RPS to stay under limit
+                    batch_size = self.KALSHI_RATE_LIMIT_RPS
+                    for i in range(0, len(snapshot), batch_size):
+                        batch = snapshot[i:i + batch_size]
+
+                        async def _poll_one(market_id: str, pos):
+                            try:
+                                resp = await client.get(
+                                    f"https://api.elections.kalshi.com/trade-api/v2/markets/{market_id}",
+                                )
+                                if resp.status_code == 429:
+                                    logger.warning("v2.rate_limited", market=market_id)
+                                    return None
+                                if resp.status_code != 200:
+                                    return None
+
+                                data = resp.json()
+                                market = data.get("market", data)
+
+                                # Update price
+                                price = float(market.get("last_price_dollars", 0) or 0)
+                                bid = float(market.get("yes_bid_dollars", 0) or 0)
+                                ask = float(market.get("yes_ask_dollars", 0) or 0)
+
+                                if price == 0 and bid > 0 and ask > 0:
+                                    price = (bid + ask) / 2
+                                elif price == 0 and ask > 0:
+                                    price = ask
+
+                                if price > 0:
+                                    pos.current_price = price
+                                    if pos.direction == "BUY":
+                                        pos.unrealized_pnl = round(
+                                            (pos.current_price - pos.entry_price) * pos.shares, 2
+                                        )
+                                    else:
+                                        pos.unrealized_pnl = round(
+                                            (pos.entry_price - pos.current_price) * pos.shares, 2
+                                        )
+                                    roi = pos.unrealized_pnl / pos.cost_basis if pos.cost_basis > 0 else 0
+                                    if roi > pos.peak_pnl_pct:
+                                        pos.peak_pnl_pct = roi
+
+                                # Check for resolution
+                                status = (market.get("status") or "").lower()
+                                if status in ("settled", "finalized", "closed"):
+                                    result = (market.get("result") or "").lower()
+                                    if result in ("yes", "y"):
+                                        return (market_id, "YES")
+                                    elif result in ("no", "n"):
+                                        return (market_id, "NO")
+                            except Exception as e:
+                                logger.debug("v2.position_poll_error",
+                                            market=market_id, error=str(e))
+                            return None
+
+                        # Fire batch concurrently
+                        results = await asyncio.gather(
+                            *[_poll_one(mid, pos) for mid, pos in batch],
+                            return_exceptions=True,
+                        )
+
+                        # Collect resolutions
+                        for r in results:
+                            if isinstance(r, tuple):
+                                resolutions.append(r)
+
+                        # Throttle between batches (skip delay after last batch)
+                        if i + batch_size < len(snapshot):
+                            await asyncio.sleep(1.0)
 
                     # Handle resolutions
-                    for r in results:
-                        if isinstance(r, tuple):
-                            mid, outcome = r
-                            pos = self.positions.get(mid)
-                            if pos:
-                                self._resolve_position(pos, outcome)
-                                if mid in self.positions:
-                                    del self.positions[mid]
+                    for mid, outcome in resolutions:
+                        pos = self.positions.get(mid)
+                        if pos:
+                            self._resolve_position(pos, outcome)
+                            if mid in self.positions:
+                                del self.positions[mid]
 
-                # Check exits immediately after price update
-                exits = self.check_exits()
-                if exits > 0:
-                    self.save_state()
-                    logger.info("v2.position_monitor_exit", exits=exits,
-                                open=len(self.positions))
+                    # Check exits after all price updates
+                    exits = self.check_exits()
+                    if exits > 0 or resolutions:
+                        self.save_state()
+                        if exits > 0:
+                            logger.info("v2.position_monitor_exit", exits=exits,
+                                        open=len(self.positions))
 
-            except Exception as e:
-                logger.debug("v2.position_monitor_error", error=str(e))
+                except Exception as e:
+                    logger.debug("v2.position_monitor_error", error=str(e))
+
+        finally:
+            await client.aclose()
 
     def has_urgent_positions(self) -> bool:
         """Check if any position is within EXPIRY_URGENCY_HOURS of expiration.
