@@ -310,8 +310,12 @@ class EventsAgent:
             # Hurricane markets
             hurricane_markets = [m for m in markets
                                 if "HURRICANE" in m.get("market_id", "").upper()]
+            logger.info("events.hurricane_scan",
+                       total_markets=len(markets),
+                       hurricane_markets=len(hurricane_markets))
             if hurricane_markets:
                 outlook = await self.fetch_noaa_outlook(client)
+                logger.info("events.noaa_outlook", **outlook)
                 for market in hurricane_markets:
                     signal = self.evaluate_hurricane_signal(market, outlook)
                     if signal:
@@ -336,8 +340,15 @@ class EventsAgent:
 
             edge_gap = abs(abs(best["edge"]) - abs(second["edge"]))
             if edge_gap < 0.05:
+                logger.info("events.convergence_skip_gap",
+                           event_key=event_key, gap=round(edge_gap, 4),
+                           best_edge=best["edge"])
                 continue
             if best["direction"] != second["direction"]:
+                logger.info("events.convergence_skip_dir",
+                           event_key=event_key,
+                           best_dir=best["direction"],
+                           second_dir=second["direction"])
                 continue
             signals.append(best)
 
