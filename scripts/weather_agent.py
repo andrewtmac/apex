@@ -387,7 +387,7 @@ class WeatherAgent:
         """Fetch ensemble forecasts (NWS + GFS + ECMWF) for all cities."""
         now = time.time()
         # Cache for 15 min (faster than before — catch forecast updates quicker)
-        if not force and (now - self._forecast_cache_ts) < 900:
+        if not force and (now - self._forecast_cache_ts) < 300:  # 2026-07-02: 900s cache ate half the <15m alpha window
             return self.forecasts
 
         async with httpx.AsyncClient(timeout=20) as client:

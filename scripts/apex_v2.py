@@ -95,6 +95,7 @@ class PaperPosition:
     realized_pnl: float = 0.0
     resolution: str | None = None
     edge_at_entry: float = 0.0
+    entry_fee: float = 0.0  # Kalshi taker fee paid at entry (2026-07-02 fee modeling)
     peak_pnl_pct: float = 0.0
     stop_loss: float = -0.25
     take_profit: float = 0.20
@@ -133,9 +134,19 @@ class ApexV2Trader:
     STALE_POSITION_HOURS = 48  # 2 days (weather markets are daily)
     EXPIRY_URGENCY_HOURS = 4  # Check every cycle when position is within 4h of expiry
     MAX_DAILY_LOSS_PCT = 0.15
-    MAX_DAILY_TRADES = 40  # Increased for multi-strategy bot (weather + events)
-    COOLDOWN_AFTER_CONSEC_LOSSES = 3
-    COOLDOWN_SECONDS = 7200  # 2 hours
+    # MAX_DAILY_TRADES removed (2026-07-02, operator directive): the bot trades
+    # continuously — risk is bounded by the daily-loss circuit, the tiered
+    # breaker, consecutive-loss cooldown, and capital caps, all of which scale
+    # with equity. A flat count cap only throttles positive-EV trades on
+    # high-signal days. _daily_trades remains as telemetry.
+    # 2026-07-02 redesign: losses cluster per-strategy/per-event, and the bot's
+    # alpha is in fast reaction — a 2h blanket halt cost ~2 days of target
+    # growth per trigger. Global halt now needs 5 straight losses (1h);
+    # a single strategy cools off for 45min after 3 straight losses.
+    COOLDOWN_AFTER_CONSEC_LOSSES = 5
+    COOLDOWN_SECONDS = 3600
+    STRATEGY_COOLDOWN_LOSSES = 3
+    STRATEGY_COOLDOWN_SECONDS = 2700
     POSITION_POLL_SECONDS = 1  # Poll open position prices every 1s (Kalshi basic: 10 req/s)
 
     def __init__(self, bankroll: float = 1000.0):
@@ -154,9 +165,12 @@ class ApexV2Trader:
         self._running = False
         self._daily_trades = 0
         self._daily_loss = 0.0
+        self._daily_pnl = 0.0
         self._last_trade_date = ""
         self._consecutive_losses = 0
         self._cooldown_until = 0.0
+        self._strategy_consec: dict[str, int] = {}
+        self._strategy_cooldown_until: dict[str, float] = {}
 
         # Agents
         self.weather = WeatherAgent()
@@ -226,6 +240,7 @@ class ApexV2Trader:
             self._cycle = state.get("cycle", 0)
             self._daily_trades = state.get("daily_trades", 0)
             self._daily_loss = state.get("daily_loss", 0.0)
+            self._daily_pnl = state.get("daily_pnl", 0.0)
             self._last_trade_date = state.get("last_trade_date", "")
             self._consecutive_losses = state.get("consecutive_losses", 0)
 
@@ -260,6 +275,7 @@ class ApexV2Trader:
             "cycle": self._cycle,
             "daily_trades": self._daily_trades,
             "daily_loss": round(self._daily_loss, 2),
+            "daily_pnl": round(self._daily_pnl, 2),
             "last_trade_date": self._last_trade_date,
             "consecutive_losses": self._consecutive_losses,
             "positions": [asdict(p) for p in self.positions.values()],
@@ -355,6 +371,34 @@ class ApexV2Trader:
     # Trade execution
     # ------------------------------------------------------------------
 
+    _MONTHS = {"JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6,
+               "JUL": 7, "AUG": 8, "SEP": 9, "OCT": 10, "NOV": 11, "DEC": 12}
+
+    def _parse_ticker_date(self, market_id: str):
+        """Extract the event date from a Kalshi ticker (…-26JUL01-…) if present."""
+        import re as _re
+        m = _re.search(r"-(\d{2})([A-Z]{3})(\d{2})(?:-|$)", market_id or "")
+        if not m:
+            return None
+        yy, mon, dd = m.groups()
+        month = self._MONTHS.get(mon)
+        if month is None:
+            return None
+        try:
+            from datetime import date as _date
+            return _date(2000 + int(yy), month, int(dd))
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _kalshi_fee(shares: float, price: float) -> float:
+        """Kalshi taker fee: 0.07 × C × P × (1−P), rounded up to the cent.
+        Modeled on BOTH sides of every early close (entry + exit); resolutions
+        settle at $0/$1 with no trading fee. Without this, paper P&L overstated
+        live results by ~3-9% ROI per round trip."""
+        import math as _math
+        return _math.ceil(0.07 * shares * price * (1.0 - price) * 100) / 100
+
     def _check_daily_limits(self) -> bool:
         """Check if daily limits allow a new trade."""
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -363,12 +407,13 @@ class ApexV2Trader:
         if today != self._last_trade_date:
             self._daily_trades = 0
             self._daily_loss = 0.0
+            self._daily_pnl = 0.0
             self._last_trade_date = today
 
-        if self._daily_trades >= self.MAX_DAILY_TRADES:
-            return False
-
-        if self._daily_loss >= self.bankroll * self.MAX_DAILY_LOSS_PCT:
+        # Net daily P&L vs equity (2026-07-02): the old check compared GROSS
+        # losses to CASH — a profitable high-turnover day could trip it, and the
+        # budget shrank exactly when capital was deployed.
+        if -self._daily_pnl >= self.equity * self.MAX_DAILY_LOSS_PCT:
             return False
 
         return True
@@ -471,6 +516,58 @@ class ApexV2Trader:
         if not self._check_cooldown():
             return None
 
+        # ── Entry sanity guards (2026-07-02, from the RESOLVED_LOSS forensics) ──
+        # (a) Never trade a market whose event date already passed. Weather
+        # signals carry no end_date, but Kalshi tickers encode it: ...-26JUL01-...
+        # Both -100% disasters were 'JUL01' markets entered on Jul 02 against
+        # stale forecasts.
+        event_date = self._parse_ticker_date(market_id)
+        if event_date is not None:
+            today = datetime.now(timezone.utc).date()
+            if event_date < today:
+                logger.warning("v2.expired_event_skip", market_id=market_id,
+                               event_date=str(event_date))
+                return None
+        end_date = signal.get("end_date")
+        if end_date:
+            try:
+                close_dt = datetime.fromisoformat(str(end_date).replace("Z", "+00:00"))
+                if close_dt <= datetime.now(timezone.utc) + timedelta(minutes=30):
+                    logger.warning("v2.near_close_skip", market_id=market_id)
+                    return None
+            except (ValueError, TypeError):
+                pass
+        # (b) Never enter at informationally-dead prices: a 0.95+ market IS the
+        # resolution signal — a model claiming huge edge against it is almost
+        # always scoring stale data. (SELL at 0.99 = risk 100% to win pennies of
+        # probability that the world is wrong.)
+        px = signal.get("entry_price") or signal.get("market_price") or 0
+        if signal["direction"] == "SELL" and px >= 0.93:
+            logger.warning("v2.dead_price_skip", market_id=market_id, price=px, direction="SELL")
+            return None
+        if signal["direction"] == "BUY" and px <= 0.07:
+            logger.warning("v2.dead_price_skip", market_id=market_id, price=px, direction="BUY")
+            return None
+
+        # Per-strategy cooldown (see COOLDOWN redesign note above)
+        cd = self._strategy_cooldown_until.get(strategy, 0.0)
+        if time.time() < cd:
+            return None
+
+        # Horizon filter (2026-07-02): capital parked in far-dated markets
+        # fights compounding — $130 stuck in Dec-2026 hurricane buckets costs
+        # ~$1,700 of compounded growth at the 1.9%/day target. 7-day max.
+        end_date = signal.get("end_date")
+        if end_date:
+            try:
+                close_dt = datetime.fromisoformat(str(end_date).replace("Z", "+00:00"))
+                if close_dt > datetime.now(timezone.utc) + timedelta(days=7):
+                    logger.warning("v2.horizon_skip", market_id=market_id,
+                                   end_date=str(end_date)[:16])
+                    return None
+            except (ValueError, TypeError):
+                pass
+
         # Calculate position size
         learner_config = self.learner.get_strategy_config(strategy)
         max_size_pct = learner_config.get("max_size_pct", 0.05)
@@ -483,11 +580,12 @@ class ApexV2Trader:
             city_mult = self.learner.get_city_multiplier(strategy, city)
             size_pct *= city_mult
 
-        cost = self.bankroll * size_pct
+        # Size off EQUITY, not cash (2026-07-02): cash-based sizing shrank
+        # positions exactly as capital deployed and broke compounding. Cash
+        # only caps affordability.
+        cost = self.equity * size_pct
+        cost = min(cost, self.bankroll * 0.95)
         if cost < self.MIN_POSITION_USD:
-            return None
-
-        if cost > self.bankroll:
             return None
 
         deployed = self.deployed_capital
@@ -496,10 +594,13 @@ class ApexV2Trader:
 
         entry_price = signal["market_price"]
 
-        if signal["direction"] == "BUY":
-            shares = cost / max(entry_price, 0.01)
-        else:
-            shares = cost / max(1.0 - entry_price, 0.01)
+        # Integer contracts (Kalshi trades whole contracts)
+        cost_per_share = entry_price if signal["direction"] == "BUY" else (1.0 - entry_price)
+        cost_per_share = max(cost_per_share, 0.01)
+        shares = int(cost / cost_per_share)
+        if shares < 1:
+            return None
+        cost = round(shares * cost_per_share, 2)
 
         # Weather-specific exit tuning based on entry quality
         base_sl = learner_config.get("stop_loss", -0.25)
@@ -535,6 +636,19 @@ class ApexV2Trader:
                 base_tp *= 0.8
                 base_sl *= 0.8  # Tighter for marginal trades
 
+        # Tick-aware stop guard (2026-07-02): a % stop must be executable in
+        # PRICE terms. SELL @0.99 with an -18% stop needs a 0.18-cent move —
+        # below Kalshi's 1-cent tick, so the only printable adverse price was
+        # -100% (both RESOLVED_LOSS disasters). Require >= 3 ticks of distance.
+        stop_price_distance = abs(base_sl) * cost_per_share
+        if stop_price_distance < 0.03:
+            logger.warning("v2.stop_unenforceable_skip", market_id=market_id,
+                           price=entry_price, stop=base_sl,
+                           distance=round(stop_price_distance, 4))
+            return None
+
+        entry_fee = self._kalshi_fee(shares, entry_price)
+
         pos = PaperPosition(
             position_id=uuid.uuid4().hex[:8],
             market_id=market_id,
@@ -556,9 +670,10 @@ class ApexV2Trader:
             stop_loss=base_sl,
             take_profit=base_tp,
             expires_at=signal.get("end_date"),
+            entry_fee=entry_fee,
         )
 
-        self.bankroll -= cost
+        self.bankroll -= cost + entry_fee
         self.positions[market_id] = pos
         self.trades_executed += 1
         self._daily_trades += 1
@@ -605,6 +720,7 @@ class ApexV2Trader:
         """Check all positions for exit conditions."""
         exit_ids = []
 
+        now_utc = datetime.now(timezone.utc)
         for market_id, pos in self.positions.items():
             roi = pos.unrealized_pnl / pos.cost_basis if pos.cost_basis > 0 else 0
 
@@ -620,26 +736,35 @@ class ApexV2Trader:
                 exit_ids.append(market_id)
                 continue
 
-            # Trailing stop (strategy-aware)
-            # Weather SELLs: tighter trail after lower peak
-            # Weather BUYs: standard trail
-            # Other strategies: standard trail
-            trail_peak = 0.15
-            trail_giveback = 0.08
-            if pos.strategy == "weather" and pos.direction == "SELL":
-                # SELLs should decay toward 0 — trail tighter
-                trail_peak = 0.10
-                trail_giveback = 0.06
-            elif pos.strategy == "weather" and pos.direction == "BUY":
-                trail_peak = 0.12
-                trail_giveback = 0.07
-
+            # Trailing stop — COHERENT with the take-profit (2026-07-02).
+            # The old fixed 0.10-activation/0.06-giveback trail strangled the
+            # 0.30-0.48 TPs: 12 of 14 trailing exits sat behind a 0.48 TP and
+            # averaged +$4.35 vs the TP's +$30. Now: activate at 60% of TP
+            # (floor 0.10) and give back a third of peak (floor 0.06).
+            trail_peak = max(0.10, 0.6 * pos.take_profit)
             if pos.peak_pnl_pct >= trail_peak:
+                trail_giveback = max(0.06, pos.peak_pnl_pct / 3)
                 giveback = pos.peak_pnl_pct - roi
                 if giveback >= trail_giveback:
                     self._close_position(pos, "TRAILING_STOP")
                     exit_ids.append(market_id)
                     continue
+
+            # Time exits (2026-07-02): empirically all alpha is in the first
+            # 15 minutes; flat-or-losing positions past 90min bleed. Weather
+            # markets settle same-day — hard cap the hold at 4h.
+            try:
+                hold_h = (now_utc - datetime.fromisoformat(pos.entry_time)).total_seconds() / 3600
+            except (ValueError, TypeError):
+                hold_h = 0.0
+            if hold_h >= 1.5 and roi <= 0.02:
+                self._close_position(pos, "TIME_DECAY")
+                exit_ids.append(market_id)
+                continue
+            if hold_h >= 4.0 and pos.strategy == "weather":
+                self._close_position(pos, "TIME_CAP")
+                exit_ids.append(market_id)
+                continue
 
         for mid in exit_ids:
             del self.positions[mid]
@@ -659,13 +784,15 @@ class ApexV2Trader:
             pass  # no loop (e.g. tests) — narration is best-effort
 
     def _close_position(self, pos: PaperPosition, reason: str):
-        """Close a position at current MTM price."""
+        """Close a position at current MTM price (fees modeled both sides)."""
         if pos.direction == "BUY":
             payout = pos.current_price * pos.shares
         else:
             payout = (1.0 - pos.current_price) * pos.shares
 
-        pnl = round(payout - pos.cost_basis, 2)
+        exit_fee = self._kalshi_fee(pos.shares, pos.current_price)
+        payout = max(payout - exit_fee, 0.0)
+        pnl = round(payout - pos.cost_basis - pos.entry_fee, 2)
 
         pos.realized_pnl = pnl
         pos.exit_price = pos.current_price
@@ -675,13 +802,24 @@ class ApexV2Trader:
         self.bankroll += payout
         self.total_realized_pnl += pnl
 
+        self._daily_pnl += pnl
         if pnl >= 0:
             self.wins += 1
             self._consecutive_losses = 0
+            self._strategy_consec[pos.strategy] = 0
         else:
             self.losses += 1
             self._consecutive_losses += 1
             self._daily_loss += abs(pnl)
+            sc = self._strategy_consec.get(pos.strategy, 0) + 1
+            self._strategy_consec[pos.strategy] = sc
+            if sc >= self.STRATEGY_COOLDOWN_LOSSES:
+                self._strategy_cooldown_until[pos.strategy] = (
+                    time.time() + self.STRATEGY_COOLDOWN_SECONDS
+                )
+                self._strategy_consec[pos.strategy] = 0
+                logger.warning("v2.strategy_cooldown", strategy=pos.strategy,
+                               minutes=self.STRATEGY_COOLDOWN_SECONDS // 60)
 
             if self._consecutive_losses >= self.COOLDOWN_AFTER_CONSEC_LOSSES:
                 self._cooldown_until = time.time() + self.COOLDOWN_SECONDS
@@ -811,13 +949,24 @@ class ApexV2Trader:
         self.bankroll += payout
         self.total_realized_pnl += pnl
 
+        self._daily_pnl += pnl
         if pnl >= 0:
             self.wins += 1
             self._consecutive_losses = 0
+            self._strategy_consec[pos.strategy] = 0
         else:
             self.losses += 1
             self._consecutive_losses += 1
             self._daily_loss += abs(pnl)
+            sc = self._strategy_consec.get(pos.strategy, 0) + 1
+            self._strategy_consec[pos.strategy] = sc
+            if sc >= self.STRATEGY_COOLDOWN_LOSSES:
+                self._strategy_cooldown_until[pos.strategy] = (
+                    time.time() + self.STRATEGY_COOLDOWN_SECONDS
+                )
+                self._strategy_consec[pos.strategy] = 0
+                logger.warning("v2.strategy_cooldown", strategy=pos.strategy,
+                               minutes=self.STRATEGY_COOLDOWN_SECONDS // 60)
 
         self.breaker.update(equity=self.equity, trade_result=pnl)
 
@@ -901,15 +1050,24 @@ class ApexV2Trader:
                                 data = resp.json()
                                 market = data.get("market", data)
 
-                                # Update price
-                                price = float(market.get("last_price_dollars", 0) or 0)
+                                # Executable-side mark (2026-07-02): value the
+                                # position at the side you'd actually exit on —
+                                # SELL buys back at the ask, BUY sells at the
+                                # bid. Mid as fallback, last-trade LAST (a
+                                # frozen last-print let two positions ride to
+                                # resolution at -100% with stops never firing).
+                                last = float(market.get("last_price_dollars", 0) or 0)
                                 bid = float(market.get("yes_bid_dollars", 0) or 0)
                                 ask = float(market.get("yes_ask_dollars", 0) or 0)
 
-                                if price == 0 and bid > 0 and ask > 0:
-                                    price = (bid + ask) / 2
-                                elif price == 0 and ask > 0:
+                                if pos.direction == "SELL" and ask > 0:
                                     price = ask
+                                elif pos.direction == "BUY" and bid > 0:
+                                    price = bid
+                                elif bid > 0 and ask > 0:
+                                    price = (bid + ask) / 2
+                                else:
+                                    price = last
 
                                 if price > 0:
                                     pos.current_price = price
@@ -1116,7 +1274,21 @@ class ApexV2Trader:
                 filtered_signals = []
                 for s in all_signals:
                     strategy = s.get("strategy", "other")
+                    # KILL-SWITCH (2026-07-02): the learner never disabled
+                    # anything — crypto went 0W-9L (-$396) and kept trading.
+                    # A strategy at <25% WR over >=8 trades is dead until its
+                    # stats are reset by a human.
+                    w = self.learner.weights.get(strategy, {})
+                    wt = w.get("total_trades", 0)
+                    if wt >= 8 and w.get("wins", 0) / max(wt, 1) < 0.25:
+                        continue
                     min_edge = self.learner.get_min_edge(strategy)
+                    # Empirical floor (53-trade sample, 2026-07-02): weather
+                    # trades below 0.30 edge were net losers; the learner's
+                    # 0.05 default floor is far too permissive. Learner can
+                    # only raise the bar, never lower it below the floor.
+                    if strategy == "weather":
+                        min_edge = max(min_edge, 0.30)
                     if abs(s["edge"]) >= min_edge:
                         filtered_signals.append(s)
 
