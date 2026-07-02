@@ -134,6 +134,7 @@ class ApexV2Trader:
     MAX_DAILY_TRADES = 20
     COOLDOWN_AFTER_CONSEC_LOSSES = 3
     COOLDOWN_SECONDS = 7200  # 2 hours
+    POSITION_POLL_SECONDS = 10  # Poll open position prices every 10s (Kalshi basic: 10 req/s)
 
     def __init__(self, bankroll: float = 1000.0):
         self.initial_bankroll = bankroll
@@ -712,6 +713,85 @@ class ApexV2Trader:
         for mid in stale_ids:
             del self.positions[mid]
 
+    async def position_monitor_loop(self):
+        """Fast loop: poll open position prices every POSITION_POLL_SECONDS.
+
+        Fetches individual market data for open positions only (cheap calls).
+        Updates mark-to-market and checks exits immediately — don't wait
+        for the full 60s cycle to react to price moves.
+        """
+        import httpx as _httpx
+        while self._running:
+            await asyncio.sleep(self.POSITION_POLL_SECONDS)
+
+            if not self.positions:
+                continue
+
+            try:
+                async with _httpx.AsyncClient(timeout=10) as client:
+                    for market_id, pos in list(self.positions.items()):
+                        try:
+                            resp = await client.get(
+                                f"https://api.elections.kalshi.com/trade-api/v2/markets/{market_id}",
+                            )
+                            if resp.status_code != 200:
+                                continue
+
+                            data = resp.json()
+                            market = data.get("market", data)
+
+                            # Update price
+                            price = float(market.get("last_price_dollars", 0) or 0)
+                            bid = float(market.get("yes_bid_dollars", 0) or 0)
+                            ask = float(market.get("yes_ask_dollars", 0) or 0)
+
+                            if price == 0 and bid > 0 and ask > 0:
+                                price = (bid + ask) / 2
+                            elif price == 0 and ask > 0:
+                                price = ask
+
+                            if price > 0:
+                                pos.current_price = price
+                                if pos.direction == "BUY":
+                                    pos.unrealized_pnl = round(
+                                        (pos.current_price - pos.entry_price) * pos.shares, 2
+                                    )
+                                else:
+                                    pos.unrealized_pnl = round(
+                                        (pos.entry_price - pos.current_price) * pos.shares, 2
+                                    )
+                                roi = pos.unrealized_pnl / pos.cost_basis if pos.cost_basis > 0 else 0
+                                if roi > pos.peak_pnl_pct:
+                                    pos.peak_pnl_pct = roi
+
+                            # Check for resolution on every poll
+                            status = (market.get("status") or "").lower()
+                            if status in ("settled", "finalized", "closed"):
+                                result = (market.get("result") or "").lower()
+                                if result in ("yes", "y"):
+                                    outcome = "YES"
+                                elif result in ("no", "n"):
+                                    outcome = "NO"
+                                else:
+                                    continue
+                                self._resolve_position(pos, outcome)
+                                if market_id in self.positions:
+                                    del self.positions[market_id]
+
+                        except Exception as e:
+                            logger.debug("v2.position_poll_error",
+                                        market=market_id, error=str(e))
+
+                # Check exits immediately after price update
+                exits = self.check_exits()
+                if exits > 0:
+                    self.save_state()
+                    logger.info("v2.position_monitor_exit", exits=exits,
+                                open=len(self.positions))
+
+            except Exception as e:
+                logger.debug("v2.position_monitor_error", error=str(e))
+
     def has_urgent_positions(self) -> bool:
         """Check if any position is within EXPIRY_URGENCY_HOURS of expiration.
         Used to increase resolution check frequency."""
@@ -1050,7 +1130,8 @@ class ApexV2Trader:
         print(f"  Breaker:     {self.breaker.level.value}")
         print(f"  Strategies:  Weather + Crypto + Macro + Sports + Events")
         print(f"  Agents:      Scanner + Analyzer + Learner + Reporter")
-        print(f"  Cycle:       every {self.CYCLE_SECONDS}s")
+        print(f"  Cycle:       every {self.CYCLE_SECONDS}s (full scan)")
+        print(f"  Pos Poll:    every {self.POSITION_POLL_SECONDS}s (open positions)")
         print(f"  Dashboard:   http://100.64.161.91:8080")
         print(f"  Telegram:    Hourly updates (Andrew + Scott)")
         print(f"  Commands:    UI changes via Telegram (Andrew & Scott)")
@@ -1070,6 +1151,7 @@ class ApexV2Trader:
         try:
             await asyncio.gather(
                 self.trading_loop(),
+                self.position_monitor_loop(),
                 self.run_dashboard(),
                 self.reporting_loop(),
                 self.learning_loop(),
