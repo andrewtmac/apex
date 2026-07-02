@@ -477,11 +477,10 @@ class ApexV2Trader:
 
         size_pct = min(signal.get("size_pct", 0.05), max_size_pct)
         # Calculate position size
-        logger.debug("v2.execute_trade_check",
-                    market_id=market_id,
+        logger.info("v2.execute_trade_check",
+                    market_id=market_id[:30],
                     strategy=strategy,
-                    positions=len(self.positions),
-                    max=self.MAX_POSITIONS)
+                    positions=len(self.positions))
 
         # Per-city multiplier from learner (hot cities get bigger bets)
         if strategy == "weather":
