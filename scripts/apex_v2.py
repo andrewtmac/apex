@@ -583,6 +583,16 @@ class ApexV2Trader:
                 logger.warning("v2.expired_event_skip", market_id=market_id,
                                event_date=str(event_date))
                 return None
+            # Weather is a SAME-DAY game (2026-07-03 iteration, 80-trade scan):
+            # next-day markets ran 15% WR / -$130 — forecasts drift overnight
+            # and books are thin. Same-day 13-24 UTC ran ~51% WR / +$194.
+            if strategy == "weather":
+                if event_date != today:
+                    logger.info("v2.nextday_weather_skip", market_id=market_id)
+                    return None
+                if datetime.now(timezone.utc).hour < 13:
+                    logger.info("v2.early_weather_skip", market_id=market_id)
+                    return None
         end_date = signal.get("end_date")
         if end_date:
             try:
@@ -635,6 +645,14 @@ class ApexV2Trader:
             city_mult = self.learner.get_city_multiplier(strategy, city)
             size_pct *= city_mult
 
+        # Edge-proportional sizing (2026-07-03, flywheel synthesis): the
+        # >=0.45-edge cohort wins ~80%; the <0.35 cohort is marginal.
+        sig_edge = abs(signal.get("edge", 0))
+        if sig_edge >= 0.45:
+            size_pct *= 1.25
+        elif sig_edge < 0.35:
+            size_pct *= 0.75
+
         # Size off EQUITY, not cash (2026-07-02): cash-based sizing shrank
         # positions exactly as capital deployed and broke compounding. Cash
         # only caps affordability.
@@ -668,19 +686,18 @@ class ApexV2Trader:
 
             if signal["direction"] == "SELL":
                 # SELL trades: prices should decay toward 0
-                # Wider take profit — let winners run
                 base_tp = 0.30
-                # Tighter stop — cut losers faster
-                base_sl = -0.20
-                # High-confidence entries get even wider TP
+                # 2026-07-03: stop widened -0.20 → -0.25. The flywheel's
+                # aggregated post-mortems flagged noise-stops (normal
+                # intraday volatility) as the single largest recurring loss;
+                # 24 stop-outs cost -$577 while TPs ran 100% WR.
+                base_sl = -0.25
                 if confidence >= 0.8 and abs_edge >= 0.15:
                     base_tp = 0.40
-                    base_sl = -0.18
             else:
                 # BUY trades: prices should rise toward 1
-                # Standard TP, but tighter stop
                 base_tp = 0.25
-                base_sl = -0.18
+                base_sl = -0.25
                 if confidence >= 0.8 and abs_edge >= 0.15:
                     base_tp = 0.35
 
@@ -1253,6 +1270,20 @@ class ApexV2Trader:
                     # no active losses, de-escalate and reset peak
                     # (the first-hour peak trap: peak=$1,242 keeps
                     # drawdown at 23% even though bot is stable at $952)
+                    # Deadlock fix (2026-07-03): ORANGE blocks entries, and
+                    # clearing a loss streak requires a WIN, which requires
+                    # trading. With zero open positions and no way to lose
+                    # more, de-escalate on time alone.
+                    elif bl in ("RED", "ORANGE") and len(self.positions) == 0:
+                        self._consecutive_losses = 0
+                        if bl == "RED":
+                            self.breaker.level = BreakerLevel.ORANGE
+                        else:
+                            self.breaker.level = BreakerLevel.YELLOW
+                        self.breaker.peak_equity = self.equity
+                        logger.info("v2.breaker_idle_recovery",
+                                    from_level=bl,
+                                    to_level=self.breaker.level.value)
                     elif bl in ("RED", "ORANGE") and self._consecutive_losses == 0:
                         if bl == "RED":
                             self.breaker.level = BreakerLevel.ORANGE
