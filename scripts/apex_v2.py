@@ -926,10 +926,30 @@ class ApexV2Trader:
         """
         ledger.log_trade(trade_record)
         async def _run():
+            # Full narrative set generates automatically at close (2026-07-03):
+            # close summary + improvement note + entry thesis fallback (normally
+            # written at entry). Not just-in-time on UI click — the learning
+            # loop needs these on every trade, not just the ones a human opened.
+            wrote = False
             summary = await narrate_close(trade_record)
             if summary:
                 trade_record["closeSummary"] = summary
-                self.save_state()
+                wrote = True
+            if not trade_record.get("entryThesis"):
+                thesis = await narrate_entry_thesis(trade_record)
+                if thesis:
+                    trade_record["entryThesis"] = thesis
+                    wrote = True
+            if not trade_record.get("improvementNote"):
+                note = await narrate_improvement(trade_record)
+                if note:
+                    trade_record["improvementNote"] = note
+                    wrote = True
+            if wrote:
+                if trade_record.get("venue") == "tastytrade":
+                    get_tt_book().save_state()
+                else:
+                    self.save_state()
                 ledger.log_trade(trade_record)
         try:
             asyncio.get_running_loop().create_task(_run())
