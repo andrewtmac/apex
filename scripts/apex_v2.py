@@ -26,6 +26,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from dotenv import load_dotenv
 
+import ledger
 from trade_narrator import narrate_close, narrate_entry_thesis, narrate_improvement
 from tt_trader import get_tt_book
 
@@ -468,12 +469,37 @@ class ApexV2Trader:
             self._consecutive_losses = 0
         return True
 
+    def _ledger_signal(self, s: dict, action: str, reason: str | None):
+        """Decision-ledger row for one evaluated signal (fire-and-forget)."""
+        try:
+            ledger.log_signal(
+                "kalshi", s.get("market_id", "?"), s.get("strategy", "other"),
+                action,
+                direction=s.get("direction"),
+                price=s.get("market_price") or s.get("entry_price"),
+                edge=s.get("edge"),
+                market_title=s.get("question"),
+                reject_reason=reason,
+                features={k: s[k] for k in
+                          ("confidence", "size_pct", "end_date", "city",
+                           "threshold_distance_sigma", "model_prob")
+                          if k in s},
+            )
+        except Exception:  # noqa: BLE001 — never let analytics touch trading
+            pass
+
     def execute_trade(self, signal: dict) -> PaperPosition | None:
         """Execute a paper trade from a validated signal."""
         market_id = signal["market_id"]
 
-        if market_id in self.positions:
+        def _rej(reason: str):
+            # Tags the reject reason for the decision ledger; the caller
+            # logs signal["_reject"] when this returns None.
+            signal["_reject"] = reason
             return None
+
+        if market_id in self.positions:
+            return _rej("already_open")
 
         # Extract strategy early for conflict check
         strategy = signal.get("strategy", "other")
@@ -497,7 +523,7 @@ class ApexV2Trader:
                 if pos.status != "OPEN":
                     continue
                 if pos.market_id == market_id:
-                    return None  # Same exact market, skip
+                    return _rej("already_open")  # Same exact market, skip
                 if (pos.market_id.split("-")[0] == parts[0]
                         and pos.direction == signal.get("direction", "BUY")):
                     same_series_same_dir += 1
@@ -507,7 +533,7 @@ class ApexV2Trader:
             if same_series_same_dir >= 2:
                 logger.info("v2.bucket_stack_skip", market_id=market_id,
                             open_same_dir=same_series_same_dir)
-                return None
+                return _rej("bucket_stack")
             for pos in self.positions.values():
                 if pos.status != "OPEN":
                     continue
@@ -518,7 +544,7 @@ class ApexV2Trader:
                                     market_id=market_id,
                                     existing=pos.market_id,
                                     reason="opposite_directions")
-                        return None
+                        return _rej("conflict")
         elif len(parts) >= 2:
             event_key = f"{parts[0]}_{parts[1]}"
             for pos in self.positions.values():
@@ -535,7 +561,7 @@ class ApexV2Trader:
                                         market_id=market_id,
                                         existing=pos.market_id,
                                         reason="opposite_directions")
-                            return None
+                            return _rej("conflict")
                         # 2. Same event, same direction, different bucket
                         #    on a range market = conflict (ranges are exclusive)
                         if pos.market_id != market_id:
@@ -543,7 +569,7 @@ class ApexV2Trader:
                                         market_id=market_id,
                                         existing=pos.market_id,
                                         reason="exclusive_ranges")
-                            return None
+                            return _rej("conflict")
 
         # PER-EVENT COOLDOWN: after a stop-loss, don't re-enter same event
         # for EVENT_COOLDOWN_SECONDS. Prevents chasing losses on the same
@@ -557,19 +583,19 @@ class ApexV2Trader:
                 logger.info("v2.event_cooldown",
                            event_key=event_key,
                            remaining_s=remaining)
-                return None
+                return _rej("event_cooldown")
 
         if len(self.positions) >= self.MAX_POSITIONS:
-            return None
+            return _rej("max_positions")
 
         if not self.breaker.can_open_new_position():
-            return None
+            return _rej("breaker")
 
         if not self._check_daily_limits():
-            return None
+            return _rej("daily_limit")
 
         if not self._check_cooldown():
-            return None
+            return _rej("loss_cooldown")
 
         # ── Entry sanity guards (2026-07-02, from the RESOLVED_LOSS forensics) ──
         # (a) Never trade a market whose event date already passed. Weather
@@ -582,24 +608,24 @@ class ApexV2Trader:
             if event_date < today:
                 logger.warning("v2.expired_event_skip", market_id=market_id,
                                event_date=str(event_date))
-                return None
+                return _rej("expired_event")
             # Weather is a SAME-DAY game (2026-07-03 iteration, 80-trade scan):
             # next-day markets ran 15% WR / -$130 — forecasts drift overnight
             # and books are thin. Same-day 13-24 UTC ran ~51% WR / +$194.
             if strategy == "weather":
                 if event_date != today:
                     logger.info("v2.nextday_weather_skip", market_id=market_id)
-                    return None
+                    return _rej("nextday_weather")
                 if datetime.now(timezone.utc).hour < 13:
                     logger.info("v2.early_weather_skip", market_id=market_id)
-                    return None
+                    return _rej("early_weather")
         end_date = signal.get("end_date")
         if end_date:
             try:
                 close_dt = datetime.fromisoformat(str(end_date).replace("Z", "+00:00"))
                 if close_dt <= datetime.now(timezone.utc) + timedelta(minutes=30):
                     logger.warning("v2.near_close_skip", market_id=market_id)
-                    return None
+                    return _rej("near_close")
             except (ValueError, TypeError):
                 pass
         # (b) Never enter at informationally-dead prices: a 0.95+ market IS the
@@ -609,15 +635,15 @@ class ApexV2Trader:
         px = signal.get("entry_price") or signal.get("market_price") or 0
         if signal["direction"] == "SELL" and px >= 0.93:
             logger.warning("v2.dead_price_skip", market_id=market_id, price=px, direction="SELL")
-            return None
+            return _rej("dead_price")
         if signal["direction"] == "BUY" and px <= 0.07:
             logger.warning("v2.dead_price_skip", market_id=market_id, price=px, direction="BUY")
-            return None
+            return _rej("dead_price")
 
         # Per-strategy cooldown (see COOLDOWN redesign note above)
         cd = self._strategy_cooldown_until.get(strategy, 0.0)
         if time.time() < cd:
-            return None
+            return _rej("strategy_cooldown")
 
         # Horizon filter (2026-07-02): capital parked in far-dated markets
         # fights compounding — $130 stuck in Dec-2026 hurricane buckets costs
@@ -629,7 +655,7 @@ class ApexV2Trader:
                 if close_dt > datetime.now(timezone.utc) + timedelta(days=7):
                     logger.warning("v2.horizon_skip", market_id=market_id,
                                    end_date=str(end_date)[:16])
-                    return None
+                    return _rej("horizon")
             except (ValueError, TypeError):
                 pass
 
@@ -659,11 +685,11 @@ class ApexV2Trader:
         cost = self.equity * size_pct
         cost = min(cost, self.bankroll * 0.95)
         if cost < self.MIN_POSITION_USD:
-            return None
+            return _rej("too_small")
 
         deployed = self.deployed_capital
         if (deployed + cost) > self.equity * self.MAX_DEPLOYED_PCT:
-            return None
+            return _rej("deployed_cap")
 
         entry_price = signal["market_price"]
 
@@ -672,7 +698,7 @@ class ApexV2Trader:
         cost_per_share = max(cost_per_share, 0.01)
         shares = int(cost / cost_per_share)
         if shares < 1:
-            return None
+            return _rej("too_small")
         cost = round(shares * cost_per_share, 2)
 
         # Weather-specific exit tuning based on entry quality
@@ -717,7 +743,7 @@ class ApexV2Trader:
             logger.warning("v2.stop_unenforceable_skip", market_id=market_id,
                            price=entry_price, stop=base_sl,
                            distance=round(stop_price_distance, 4))
-            return None
+            return _rej("stop_unenforceable")
 
         entry_fee = self._kalshi_fee(shares, entry_price)
 
@@ -802,6 +828,11 @@ class ApexV2Trader:
             if roi > pos.peak_pnl_pct:
                 pos.peak_pnl_pct = roi
 
+            # decision ledger: throttled to one row/market/5min inside log_mark
+            ledger.log_mark("kalshi", market_id, pos.current_price,
+                            position_id=pos.position_id,
+                            unrealized_pnl=pos.unrealized_pnl)
+
     def check_exits(self) -> int:
         """Check all positions for exit conditions."""
         exit_ids = []
@@ -858,12 +889,21 @@ class ApexV2Trader:
         return len(exit_ids)
 
     def _spawn_close_narration(self, trade_record: dict):
-        """v3 flywheel: generate the close summary off the trading path."""
+        """v3 flywheel: generate the close summary off the trading path.
+
+        Also the single durable-ledger point for closes: both books (Kalshi
+        PaperPosition and the TT book via its injected _narrate callback)
+        route every close through here, so one log_trade call covers all
+        close paths. The post-narration re-log upserts the summary onto the
+        same row.
+        """
+        ledger.log_trade(trade_record)
         async def _run():
             summary = await narrate_close(trade_record)
             if summary:
                 trade_record["closeSummary"] = summary
                 self.save_state()
+                ledger.log_trade(trade_record)
         try:
             asyncio.get_running_loop().create_task(_run())
         except RuntimeError:
@@ -1384,6 +1424,7 @@ class ApexV2Trader:
                     w = self.learner.weights.get(strategy, {})
                     wt = w.get("total_trades", 0)
                     if wt >= 8 and w.get("wins", 0) / max(wt, 1) < 0.25:
+                        self._ledger_signal(s, "REJECTED", "kill_switch")
                         continue
                     min_edge = self.learner.get_min_edge(strategy)
                     # Empirical floor (53-trade sample, 2026-07-02): weather
@@ -1394,6 +1435,8 @@ class ApexV2Trader:
                         min_edge = max(min_edge, 0.30)
                     if abs(s["edge"]) >= min_edge:
                         filtered_signals.append(s)
+                    else:
+                        self._ledger_signal(s, "REJECTED", "below_min_edge")
 
                 # 8. Sort by edge and execute
                 filtered_signals.sort(key=lambda s: abs(s["edge"]), reverse=True)
@@ -1402,10 +1445,16 @@ class ApexV2Trader:
                 for signal in filtered_signals:
                     await self._refresh_signal_price(signal)
                     if signal.get("_stale_price"):
+                        self._ledger_signal(signal, "REJECTED", "stale_price")
                         continue
                     pos = self.execute_trade(signal)
                     if pos is not None:
                         new_trades += 1
+                        self._ledger_signal(signal, "ENTERED", None)
+                    else:
+                        self._ledger_signal(
+                            signal, "REJECTED",
+                            signal.get("_reject", "risk_gate"))
 
                 # 9. Resolution check (periodic, or every cycle when near expiry)
                 should_check_resolution = (
@@ -2068,6 +2117,11 @@ class ApexV2Trader:
         tt_book = get_tt_book()
         tt_book._narrate = self._spawn_close_narration
 
+        # Decision ledger (fire-and-forget Postgres analytics) + nightly
+        # flywheel job (outcome labeling, calibration, MiMo lesson).
+        ledger.start()
+        from flywheel_job import nightly_loop
+
         try:
             await asyncio.gather(
                 self.trading_loop(),
@@ -2077,6 +2131,7 @@ class ApexV2Trader:
                 self.learning_loop(),
                 self.commander.run(),
                 tt_book.run_loop(),
+                nightly_loop(),
             )
         except asyncio.CancelledError:
             logger.info("v2.shutdown")

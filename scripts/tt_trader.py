@@ -57,6 +57,8 @@ from datetime import datetime, timezone
 import httpx
 import structlog
 
+import ledger
+
 logger = structlog.get_logger("apex.tt")
 
 STATE_FILE = os.path.join(os.path.dirname(__file__), "..", "tt_state_v2.json")
@@ -329,6 +331,15 @@ class TTPaperBook:
                     eligible=len(elig), focus=len(self._focus),
                     risk_on=self._risk_on, secs=round(time.time() - scan_start, 1),
                     top5=self._focus[:5])
+        try:
+            ledger.log_scan(today, risk_on=self._risk_on, universe=len(universe),
+                            eligible=len(elig), focus=self._focus,
+                            top=[{"symbol": s,
+                                  **{k: round(v, 4) for k, v in meta[s].items()
+                                     if isinstance(v, float)}}
+                                 for s in self._focus[:10]])
+        except Exception:  # noqa: BLE001
+            pass
 
     # ── market data (Yahoo, same source epik uses) ─────────────────────
     async def _fetch_bars(self, client: httpx.AsyncClient, symbol: str,
@@ -428,21 +439,22 @@ class TTPaperBook:
         return None
 
     # ── entries ─────────────────────────────────────────────────────────
-    def _try_enter(self, sig: dict):
+    def _try_enter(self, sig: dict) -> str:
+        """Returns 'entered' or the reject reason (for the decision ledger)."""
         symbol = sig["symbol"]
         if symbol in self.positions or len(self.positions) >= MAX_POSITIONS:
-            return
+            return "max_positions"
         if (_asset_class(symbol) == "stocks"
                 and sum(1 for p in self.positions.values()
                         if p.asset_class == "stocks") >= MAX_STOCK_POSITIONS):
-            return
+            return "max_stock_positions"
         if time.time() < self._cooldown_until:
-            return
+            return "loss_cooldown"
         today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
         if today != self._daily_date:
             self._daily_date, self._daily_pnl = today, 0.0
         if -self._daily_pnl >= self.equity * MAX_DAILY_LOSS_PCT:
-            return
+            return "daily_limit"
 
         price, atr = sig["price"], sig["atr"]
         stop_dist = 2.5 * atr
@@ -457,9 +469,9 @@ class TTPaperBook:
             qty = round(qty, 6)
         cost = qty * price
         if qty <= 0 or cost < MIN_POSITION_USD or cost > self.bankroll * 0.95:
-            return
+            return "too_small"
         if self.deployed + cost > self.equity * MAX_DEPLOYED_PCT:
-            return
+            return "deployed_cap"
 
         fill = price * (1 + (CRYPTO_FEE if crypto else STOCK_SLIPPAGE))
         fee = cost * (CRYPTO_FEE if crypto else STOCK_SLIPPAGE)
@@ -488,6 +500,7 @@ class TTPaperBook:
                     entry=pos.entry_price, stop=pos.stop_price,
                     target=pos.target_price, cost=pos.cost_basis,
                     asset=pos.asset_class)
+        return "entered"
 
     # ── exits ───────────────────────────────────────────────────────────
     def _close(self, pos: TTPosition, reason: str):
@@ -599,6 +612,9 @@ class TTPaperBook:
                             r = pos.unrealized_pnl / pos.cost_basis if pos.cost_basis else 0
                             if r > pos.peak_pnl_pct:
                                 pos.peak_pnl_pct = r
+                            ledger.log_mark("tastytrade", s, pos.current_price,
+                                            position_id=pos.position_id,
+                                            unrealized_pnl=pos.unrealized_pnl)
 
                     self.check_exits()
 
@@ -611,7 +627,20 @@ class TTPaperBook:
                         sig = self._evaluate(s, b)
                         if sig:
                             self.signals_generated += 1
-                            self._try_enter(sig)
+                            result = self._try_enter(sig)
+                            try:
+                                ledger.log_signal(
+                                    "tastytrade", s,
+                                    f"tt_{_asset_class(s)}_momentum",
+                                    "ENTERED" if result == "entered" else "REJECTED",
+                                    direction="LONG", price=sig["price"],
+                                    edge=sig["edge"],
+                                    reject_reason=None if result == "entered" else result,
+                                    features={"ret20": sig.get("ret20"),
+                                              "atr": sig.get("atr")},
+                                )
+                            except Exception:  # noqa: BLE001
+                                pass
 
                 except Exception as e:
                     logger.warning("tt.cycle_error", error=str(e)[:200])
