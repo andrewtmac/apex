@@ -102,6 +102,7 @@ class PaperPosition:
     stop_loss: float = -0.25
     take_profit: float = 0.20
     expires_at: str | None = None  # ISO timestamp when market closes/trading stops
+    entry_thesis: str | None = None  # AI thesis generated moments after open
 
 
 # ---------------------------------------------------------------------------
@@ -776,6 +777,7 @@ class ApexV2Trader:
         self.trades_executed += 1
         self._daily_trades += 1
         self.signals_generated += 1
+        self._spawn_entry_thesis(pos)
 
         logger.info(
             "v2.trade_executed",
@@ -888,6 +890,31 @@ class ApexV2Trader:
 
         return len(exit_ids)
 
+    def _spawn_entry_thesis(self, pos, save_fn=None):
+        """Generate the entry thesis moments after a position opens (both
+        books) so the UI can show WHY the bot is in the trade while it's
+        still live — not only after close. Fire-and-forget like all
+        narration; save_fn lets the TT book persist its own state file."""
+        async def _run():
+            record = asdict(pos)
+            if "symbol" in record:  # TT position — add narrator-schema fields
+                record.update({
+                    "venue": "tastytrade",
+                    "market_id": pos.symbol,
+                    "question": f"{pos.symbol} {pos.asset_class} momentum long",
+                    "strategy": f"tt_{pos.asset_class}_momentum",
+                    "stop_loss": round((pos.stop_price - pos.entry_price) / pos.entry_price, 4),
+                    "take_profit": round((pos.target_price - pos.entry_price) / pos.entry_price, 4),
+                })
+            thesis = await narrate_entry_thesis(record)
+            if thesis and pos.status == "OPEN":
+                pos.entry_thesis = thesis
+                (save_fn or self.save_state)()
+        try:
+            asyncio.get_running_loop().create_task(_run())
+        except RuntimeError:
+            pass  # no loop (tests) — thesis is best-effort
+
     def _spawn_close_narration(self, trade_record: dict):
         """v3 flywheel: generate the close summary off the trading path.
 
@@ -979,6 +1006,8 @@ class ApexV2Trader:
         self.learner.generate_insight(trade_record)
 
         record = asdict(pos)
+        if pos.entry_thesis:
+            record["entryThesis"] = pos.entry_thesis
         self.closed_trades.append(record)
         self._spawn_close_narration(record)
 
@@ -1101,6 +1130,8 @@ class ApexV2Trader:
         self.learner.record_trade(trade_record)
 
         record = asdict(pos)
+        if pos.entry_thesis:
+            record["entryThesis"] = pos.entry_thesis
         self.closed_trades.append(record)
         self._spawn_close_narration(record)
 
@@ -1798,6 +1829,7 @@ class ApexV2Trader:
                         "take_profit": pos.take_profit,
                         "peak_pnl_pct": pos.peak_pnl_pct,
                         "mark_fresh": True,
+                        "entryThesis": pos.entry_thesis,
                     })
                 tt = get_tt_book()
                 for pos in tt.positions.values():
@@ -1822,6 +1854,7 @@ class ApexV2Trader:
                         "take_profit": round((pos.target_price - pos.entry_price) / pos.entry_price, 4),
                         "peak_pnl_pct": pos.peak_pnl_pct,
                         "mark_fresh": True,
+                        "entryThesis": pos.entry_thesis,
                     })
                 return result
 
@@ -2116,6 +2149,16 @@ class ApexV2Trader:
         # model, same process/dashboard. Narration reuses the flywheel.
         tt_book = get_tt_book()
         tt_book._narrate = self._spawn_close_narration
+        tt_book._entry_narrate = lambda pos: self._spawn_entry_thesis(pos, tt_book.save_state)
+
+        # Positions that were opened before the entry-thesis feature (or
+        # while the narrator was down) get their thesis on startup.
+        for pos in self.positions.values():
+            if pos.status == "OPEN" and not pos.entry_thesis:
+                self._spawn_entry_thesis(pos)
+        for pos in tt_book.positions.values():
+            if pos.status == "OPEN" and not pos.entry_thesis:
+                self._spawn_entry_thesis(pos, tt_book.save_state)
 
         # Decision ledger (fire-and-forget Postgres analytics) + nightly
         # flywheel job (outcome labeling, calibration, MiMo lesson).

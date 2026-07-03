@@ -1273,6 +1273,7 @@ function adaptOpen(rows) {
     cost: p.cost_basis ?? 0,
     contracts: p.shares ?? 0,
     openedAt: p.entry_time,
+    entryThesis: p.entryThesis || null,
   }));
 }
 function adaptCats(obj) {
@@ -2168,7 +2169,8 @@ function renderOpenPositions() {
       market: marketText, platform: p.platform || 'Kalshi', direction: dir, strategy,
       entryPrice: entry, contracts: p.contracts || p.quantity || 0, cost: p.cost || 0,
       pnl: pnl, openedAt: p.openedAt || null, closedAt: null,
-      decisionInputs: { edge: edge, currentPrice: current, note: 'live position — narratives generate at close' },
+      entryThesis: p.entryThesis || null,
+      decisionInputs: { edge: edge, currentPrice: current, note: 'live position — close summary generates at close' },
     }));
     return `<tr class="trade-clickable" onclick='openTradePanel(${inline})'>
       <td style="color:${dirColor};font-weight:600">${esc(dir)}</td>
@@ -2433,7 +2435,7 @@ function renderTradePanel(d) {
       </div>
     </div>
     ${tpNarrative('Why it closed', d.closeSummary, d.closedAt ? 'Close summary is generated moments after each close — check back shortly.' : 'Position still open — the close summary is written when it closes.')}
-    ${tpNarrative('Entry thesis', d.entryThesis, d._narrating ? 'Generating\u2026' : 'Not yet generated.')}
+    ${tpNarrative('Entry thesis', d.entryThesis, d._narrating ? 'Generating\u2026' : (d.closedAt ? 'Not yet generated.' : 'Thesis is generated moments after entry \u2014 check back shortly.'))}
     ${tpNarrative('Do better next time', d.improvementNote, d._narrating ? 'Generating\u2026' : 'Not yet generated.')}
     <div class="trade-panel-section">
       <h4>Decision inputs</h4>

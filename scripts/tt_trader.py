@@ -140,6 +140,7 @@ class TTPosition:
     exit_time: str | None = None
     realized_pnl: float = 0.0
     entry_fee: float = 0.0
+    entry_thesis: str | None = None  # AI thesis generated moments after open
 
 
 class TTPaperBook:
@@ -159,6 +160,7 @@ class TTPaperBook:
         self._bars: dict[str, dict] = {}     # symbol -> {ts, closes, volumes, highs, lows}
         self._quotes: dict[str, float] = {}
         self._narrate = None                  # injected close-narration callback
+        self._entry_narrate = None            # injected entry-thesis callback
         self._universe: list[str] = []        # full stock universe (S&P 500 + core)
         self._focus: list[str] = []           # today's top-ranked tradeable stocks
         self._scan_meta: dict[str, dict] = {} # symbol -> {dma50, dma200, mom, score...}
@@ -496,6 +498,11 @@ class TTPaperBook:
         self.bankroll -= pos.cost_basis + fee
         self.positions[symbol] = pos
         self.save_state()
+        if self._entry_narrate:
+            try:
+                self._entry_narrate(pos)
+            except Exception:  # noqa: BLE001
+                pass
         logger.info("tt.trade_executed", symbol=symbol, qty=qty,
                     entry=pos.entry_price, stop=pos.stop_price,
                     target=pos.target_price, cost=pos.cost_basis,
@@ -526,6 +533,8 @@ class TTPaperBook:
                 self._consec_losses = 0
                 logger.warning("tt.cooldown", minutes=CONSEC_LOSS_COOLDOWN[1] // 60)
         record = asdict(pos)
+        if pos.entry_thesis:
+            record["entryThesis"] = pos.entry_thesis
         # narrator-compatible fields
         record.update({
             "market_id": pos.symbol,
