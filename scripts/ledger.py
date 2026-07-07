@@ -32,7 +32,7 @@ DSN = os.environ.get(
     "APEX_LEDGER_DSN",
     "postgresql://postgres:postgres@localhost:5432/apex_ledger",
 )
-CURRENT_EPOCH = 2          # bump at every epoch reset (see data/epochs/)
+CURRENT_EPOCH = 3          # bump at every epoch reset (see data/epochs/)
 QUEUE_MAX = 2000
 REJECT_DEDUP_SECONDS = 3600  # same (market,strategy,reason) logged 1x/hour
 MARK_INTERVAL_SECONDS = 300  # per-market mark throttle
