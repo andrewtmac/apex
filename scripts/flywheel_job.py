@@ -37,7 +37,7 @@ from ledger import DSN
 logger = structlog.get_logger("apex.flywheel")
 
 KALSHI_API = "https://api.elections.kalshi.com/trade-api/v2"
-LABEL_BATCH = 300          # markets checked per run (politeness cap)
+LABEL_BATCH = 500          # markets checked per run (politeness cap)
 RUN_AT_UTC_HOUR = 7        # 07:10 UTC nightly
 
 
@@ -48,11 +48,28 @@ def _kalshi_fee(price: float) -> float:
 
 
 async def label_outcomes(pool) -> int:
-    """Settle unlabeled signal rows against Kalshi market results."""
+    """Settle unlabeled signal rows against Kalshi market results.
+
+    2026-07-07 fix: the naive DISTINCT+LIMIT query let long-dated markets
+    (December hurricane tickers etc.) eat the whole nightly budget — they never
+    settle, so 0 of 4,299 signals got labeled in 4 nights. Now a label_checks
+    memo defers each unsettled market ~20h after a check, and candidates are
+    ordered oldest-signal-first so same-day markets (which settle within hours)
+    label immediately.
+    """
+    await pool.execute(
+        """CREATE TABLE IF NOT EXISTS label_checks (
+             market_id TEXT PRIMARY KEY,
+             last_checked TIMESTAMPTZ,
+             checks INT DEFAULT 0)""")
     rows = await pool.fetch(
-        """SELECT DISTINCT market_id FROM signals
-           WHERE venue = 'kalshi' AND labeled_at IS NULL
-             AND ts < now() - interval '2 hours'
+        """SELECT s.market_id
+           FROM signals s
+           LEFT JOIN label_checks lc ON lc.market_id = s.market_id
+           WHERE s.venue = 'kalshi' AND s.labeled_at IS NULL
+             AND s.ts < now() - interval '2 hours'
+             AND (lc.last_checked IS NULL OR lc.last_checked < now() - interval '20 hours')
+           GROUP BY s.market_id ORDER BY min(s.ts) ASC
            LIMIT $1""", LABEL_BATCH)
     labeled = 0
     async with httpx.AsyncClient(timeout=15) as http:
@@ -60,11 +77,16 @@ async def label_outcomes(pool) -> int:
             mid = r["market_id"]
             try:
                 resp = await http.get(f"{KALSHI_API}/markets/{mid}")
+                await pool.execute(
+                    """INSERT INTO label_checks (market_id, last_checked, checks)
+                       VALUES ($1, now(), 1)
+                       ON CONFLICT (market_id) DO UPDATE SET
+                         last_checked = now(), checks = label_checks.checks + 1""", mid)
                 if resp.status_code != 200:
                     continue
                 m = resp.json().get("market", {})
                 result = m.get("result")          # "yes" | "no" | "" while open
-                if m.get("status") != "settled" or result not in ("yes", "no"):
+                if m.get("status") not in ("settled", "finalized") or result not in ("yes", "no"):
                     continue
                 await pool.execute(
                     """UPDATE signals SET
@@ -107,7 +129,22 @@ async def cohort_stats(pool) -> dict:
                   count(*) FILTER (WHERE pnl >= 0) AS wins
            FROM trades WHERE ts > now() - interval '7 days'
            GROUP BY 1, 2, 3 ORDER BY n DESC""")
+    # THE capital gate (2026-07-07): per-strategy claimed-edge calibration.
+    # A strategy whose WR does not rise with claimed edge is noise paying fees.
+    trade_calib = await pool.fetch(
+        """SELECT strategy, width_bucket(LEAST(abs(edge_at_entry), 0.99), 0, 1.0, 5) AS bucket,
+                  count(*) AS n, count(*) FILTER (WHERE pnl >= 0) AS wins,
+                  round(avg(entry_price)::numeric, 3) AS avg_price,
+                  round(sum(pnl)::numeric, 2) AS pnl
+           FROM trades WHERE ts > now() - interval '14 days' AND edge_at_entry IS NOT NULL
+           GROUP BY 1, 2 ORDER BY 1, 2""")
     return {
+        "trade_calibration": [
+            {"strategy": r["strategy"],
+             "edge_range": f"{(r['bucket'] - 1) * 0.2:.1f}-{r['bucket'] * 0.2:.1f}",
+             "n": r["n"], "win_rate": round(r["wins"] / r["n"], 3) if r["n"] else None,
+             "avg_entry_price": float(r["avg_price"] or 0), "pnl": float(r["pnl"] or 0)}
+            for r in trade_calib],
         "cohorts": [dict(r) for r in cohorts],
         "calibration": [
             {"edge_range": f"{(b['bucket'] - 1) * 0.1:.1f}-{b['bucket'] * 0.1:.1f}",
@@ -122,14 +159,16 @@ async def synthesize_lesson(stats: dict) -> str | None:
     try:
         from trade_narrator import _generate
         return await _generate(
-            "You are a trading bot's weekly quant reviewer. Below are 7-day "
-            "decision cohorts (every signal taken AND rejected, with "
-            "counterfactual outcomes where markets settled), edge-bucket "
-            "calibration, and trade outcomes. In 4-6 plain sentences: name "
-            "the single biggest leak (a gate rejecting winners, or letting "
-            "losers through), whether claimed edge is calibrated to realized "
-            "win rate, and the one parameter change with the best expected "
-            "value. Be specific with numbers. No preamble, no headers.",
+            "You are a trading bot's weekly quant reviewer. House rule: NO "
+            "CALIBRATION, NO CAPITAL — a strategy only deserves size if its "
+            "claimed edge predicts its realized win rate (trade_calibration "
+            "table: WR must RISE with edge and beat avg_entry_price by more "
+            "than fees, ~3pts). Below are 7-day decision cohorts (signals "
+            "taken AND rejected with counterfactuals where settled), edge "
+            "calibration, and trade outcomes. In 4-6 plain sentences: verdict "
+            "per strategy (CALIBRATED / FLAT-noise / insufficient), the single "
+            "biggest leak, and the one change with best expected value. Be "
+            "specific with numbers. No preamble, no headers.",
             json.dumps(stats, default=str)[:6000],
         )
     except Exception as e:  # noqa: BLE001

@@ -714,17 +714,17 @@ class ApexV2Trader:
             if signal["direction"] == "SELL":
                 # SELL trades: prices should decay toward 0
                 base_tp = 0.30
-                # 2026-07-03: stop widened -0.20 → -0.25. The flywheel's
-                # aggregated post-mortems flagged noise-stops (normal
-                # intraday volatility) as the single largest recurring loss;
-                # 24 stop-outs cost -$577 while TPs ran 100% WR.
-                base_sl = -0.25
+                # 2026-07-03: stop widened -0.20 → -0.25; 2026-07-07: → -0.30
+                # (probation terms — epoch-2 notes still flagged noise-stops as
+                # the dominant loss driver at -0.25; sizing is 1% equity now so
+                # the wider stop risks the same dollars).
+                base_sl = -0.30
                 if confidence >= 0.8 and abs_edge >= 0.15:
                     base_tp = 0.40
             else:
                 # BUY trades: prices should rise toward 1
                 base_tp = 0.25
-                base_sl = -0.25
+                base_sl = -0.30
                 if confidence >= 0.8 and abs_edge >= 0.15:
                     base_tp = 0.35
 
@@ -1482,8 +1482,21 @@ class ApexV2Trader:
                     # trades below 0.30 edge were net losers; the learner's
                     # 0.05 default floor is far too permissive. Learner can
                     # only raise the bar, never lower it below the floor.
+                    # WEATHER PROBATION (2026-07-07): 69 epoch-2 trades ran 30%
+                    # WR on claimed edges of 0.3-0.8 — the model is miscalibrated
+                    # even inside the same-day gate. Post-trade notes converge on
+                    # the mechanism: entries land on stale forecasts right before
+                    # model-update cycles reprice the market. Probation terms:
+                    # 15:00-22:00 UTC only (after the 12Z model suite propagates),
+                    # min edge 0.35, ~1% equity sizing. Capital returns only when
+                    # the nightly calibration table shows WR rising with edge.
                     if strategy == "weather":
-                        min_edge = max(min_edge, 0.30)
+                        min_edge = max(min_edge, 0.35)
+                        hour_utc = datetime.now(timezone.utc).hour
+                        if not (15 <= hour_utc < 22):
+                            self._ledger_signal(s, "REJECTED", "weather_probation_window")
+                            continue
+                        s["size_pct"] = min(s.get("size_pct", 0.05), 0.01)
                     if abs(s["edge"]) >= min_edge:
                         filtered_signals.append(s)
                     else:
