@@ -185,6 +185,35 @@ def log_mark(venue: str, market_id: str, price, *, position_id: str | None = Non
     )
 
 
+async def _read_pool():
+    """Shared read pool (created on first use; separate from the writer's)."""
+    global _pool
+    import asyncpg
+    if _pool is None:
+        _pool = await asyncpg.create_pool(DSN, min_size=1, max_size=2)
+    return _pool
+
+
+async def fetch_closed_trades(hours: int | None = None) -> list[dict]:
+    """Current-epoch closes from the durable ledger (uncapped — the state
+    JSON truncates to 500 rows on reload and silently starves the dashboard's
+    bar strip). Newest first."""
+    pool = await _read_pool()
+    where = "epoch = $1"
+    args: list = [CURRENT_EPOCH]
+    if hours:
+        where += " AND COALESCE(exit_time, ts) > now() - ($2 || ' hours')::interval"
+        args.append(str(hours))
+    rows = await pool.fetch(
+        f"""SELECT venue, position_id, market_id, question, strategy, direction,
+                   entry_price, exit_price, shares, cost_basis, pnl, status,
+                   edge_at_entry, entry_time, exit_time,
+                   close_summary, entry_thesis, improvement_note
+            FROM trades WHERE {where}
+            ORDER BY COALESCE(exit_time, ts) DESC LIMIT 5000""", *args)
+    return [dict(r) for r in rows]
+
+
 def log_scan(scan_date: str, *, risk_on: bool, universe: int, eligible: int,
              focus: list[str], top: list[dict]):
     """TT daily universe scan — one row per trading day (upsert)."""

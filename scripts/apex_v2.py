@@ -1783,7 +1783,33 @@ class ApexV2Trader:
             async def api_closed_full(hours: int = Query(default=168)):
                 cutoff = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
                 result = []
-                all_closed = list(trader.closed_trades) + list(get_tt_book().closed_trades)
+                # Durable ledger first — the state JSON truncates closed_trades
+                # to 500 on reload, which starved the bar strip on epik's
+                # equivalent (993 closes, 200 shown). Fallback: in-memory.
+                all_closed = []
+                try:
+                    for r in await ledger.fetch_closed_trades(hours):
+                        all_closed.append({
+                            "position_id": r["position_id"], "market_id": r["market_id"],
+                            "question": r["question"], "strategy": r["strategy"],
+                            "direction": r["direction"],
+                            "entry_price": float(r["entry_price"] or 0),
+                            "exit_price": float(r["exit_price"]) if r["exit_price"] is not None else None,
+                            "shares": float(r["shares"] or 0),
+                            "cost_basis": float(r["cost_basis"] or 0),
+                            "realized_pnl": float(r["pnl"] or 0),
+                            "status": r["status"], "venue": r["venue"],
+                            "edge_at_entry": float(r["edge_at_entry"] or 0),
+                            "entry_time": r["entry_time"].isoformat() if r["entry_time"] else "",
+                            "exit_time": r["exit_time"].isoformat() if r["exit_time"] else "",
+                            "closeSummary": r["close_summary"],
+                            "entryThesis": r["entry_thesis"],
+                            "improvementNote": r["improvement_note"],
+                        })
+                except Exception:
+                    all_closed = []
+                if not all_closed:
+                    all_closed = list(trader.closed_trades) + list(get_tt_book().closed_trades)
                 for t in all_closed:
                     closed_at = t.get("exit_time", "")
                     if closed_at and closed_at < cutoff:
@@ -1826,14 +1852,44 @@ class ApexV2Trader:
             # ---- /api/equity/curve ----
             @app.get("/api/equity/curve")
             async def api_equity_curve(days: int = Query(default=7)):
-                cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
-                points = []
-                for e in trader.equity_history:
-                    if e["ts"] >= cutoff:
-                        points.append({"date": e["ts"], "equity": e["equity"]})
-                if not points:
-                    points = [{"date": datetime.now(timezone.utc).isoformat(),
-                              "equity": trader.equity}]
+                # Reconstructed from ledger closes (2026-07-14). The old path
+                # replayed equity_history, which (a) caps at 5000 cycle
+                # snapshots (~5 days), so 30D/3M/All could never reach further
+                # back, and (b) tracked the KALSHI book only — the TT book was
+                # missing from the portfolio line entirely. Walk-back from the
+                # live combined equity is exact: Apex trade pnl includes fees.
+                tt = get_tt_book()
+                current_total = round(trader.equity + tt.equity, 2)
+                now = datetime.now(timezone.utc)
+                closes: list = []
+                try:
+                    for r in await ledger.fetch_closed_trades(None):
+                        if r["exit_time"]:
+                            closes.append((r["exit_time"], float(r["pnl"] or 0)))
+                except Exception:
+                    closes = []
+                if not closes:
+                    cutoff = (now - timedelta(days=days)).isoformat()
+                    pts = [{"date": e["ts"], "equity": e["equity"]}
+                           for e in trader.equity_history if e["ts"] >= cutoff]
+                    return pts or [{"date": now.isoformat(), "equity": current_total}]
+                closes.sort(key=lambda x: x[0])
+                epoch_start = closes[0][0] - timedelta(hours=1)
+                window_start = max(now - timedelta(days=days), epoch_start)
+                bucket = timedelta(hours=1) if days <= 2 else timedelta(days=1)
+                in_window = [(w, v) for w, v in closes if w >= window_start]
+                running = current_total - sum(v for _, v in in_window)
+                points = [{"date": window_start.isoformat(), "equity": round(running, 2)}]
+                idx, t = 0, window_start
+                while t <= now:
+                    t_end = t + bucket
+                    while idx < len(in_window) and in_window[idx][0] < t_end:
+                        running += in_window[idx][1]
+                        idx += 1
+                    points.append({"date": min(t_end, now).isoformat(),
+                                   "equity": round(running, 2)})
+                    t = t_end
+                points[-1]["equity"] = current_total
                 return points
 
             # ---- /api/open-positions-live ----
