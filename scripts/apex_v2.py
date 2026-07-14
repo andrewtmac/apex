@@ -1876,19 +1876,33 @@ class ApexV2Trader:
                 closes.sort(key=lambda x: x[0])
                 epoch_start = closes[0][0] - timedelta(hours=1)
                 window_start = max(now - timedelta(days=days), epoch_start)
-                bucket = timedelta(hours=1) if days <= 2 else timedelta(days=1)
+                # Daily ranges bucket on UTC midnight and emit YYYY-MM-DD date
+                # strings — the chart's x-axis labels slice(5) an epik-style
+                # date; full ISO timestamps rendered as garbage there.
+                daily = days > 2
+                if daily:
+                    window_start = window_start.replace(hour=0, minute=0,
+                                                        second=0, microsecond=0)
+                bucket = timedelta(days=1) if daily else timedelta(hours=1)
                 in_window = [(w, v) for w, v in closes if w >= window_start]
                 running = current_total - sum(v for _, v in in_window)
-                points = [{"date": window_start.isoformat(), "equity": round(running, 2)}]
+                points = []
                 idx, t = 0, window_start
                 while t <= now:
                     t_end = t + bucket
                     while idx < len(in_window) and in_window[idx][0] < t_end:
                         running += in_window[idx][1]
                         idx += 1
-                    points.append({"date": min(t_end, now).isoformat(),
-                                   "equity": round(running, 2)})
+                    points.append({
+                        "date": t.date().isoformat() if daily
+                                else min(t_end, now).isoformat(),
+                        "equity": round(running, 2),
+                    })
                     t = t_end
+                if len(points) < 2:
+                    points.insert(0, {"date": window_start.date().isoformat() if daily
+                                      else window_start.isoformat(),
+                                      "equity": round(current_total - sum(v for _, v in in_window), 2)})
                 points[-1]["equity"] = current_total
                 return points
 
